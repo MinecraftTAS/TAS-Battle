@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "tasbattle",
+  "version": "${version}",
+
+  "name": "TAS Battle",
+  "description": "TAS Battle is a mod where you fight in slowmotion. :)!",
+  "authors": [
+    "Pancake"
+  ],
+  "contact": {
+    "homepage": "https://mgnet.work/",
+    "sources": "https://github.com/MCPfannkuchenYT/TASBattle"
+  },
+  "accessWidener": "lotas.accesswidener",
+  "license": "GPTv3",
+  "icon": "TODO",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.pfannekuchen.tasbattle.TASBattle"
+    ]
+  },
+  "mixins": [
+    "tasbattle.mixin.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "minecraft": "1.17.1",
+    "java": ">=16"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

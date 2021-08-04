@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "de.pfannekuchen.tasbattle.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+  ],
+  "client": [
+    "MixinMinecraft",
+    "MixinTitleScreen",
+    "MixinLaunchArgs"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
