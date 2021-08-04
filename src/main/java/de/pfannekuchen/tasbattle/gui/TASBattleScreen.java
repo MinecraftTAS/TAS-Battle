@@ -13,7 +13,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import de.pfannekuchen.tasbattle.TASBattle;
 import de.pfannekuchen.tasbattle.TASBattle.TASServer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
