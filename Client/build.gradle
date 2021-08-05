@@ -8,10 +8,19 @@ targetCompatibility = JavaVersion.VERSION_16
 version = project.mod_version
 group = project.maven_group
 
+Set<String> apiModules = [
+    "fabric-api-base",
+    "fabric-command-api-v1",
+    "fabric-networking-api-v1"
+]
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	apiModules.forEach {
+	    include(modImplementation(fabricApi.module(it, "0.37.0+1.17")))
+	}
 }
 
 loom {

@@ -9,6 +9,7 @@ import java.util.List;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Timer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -41,7 +42,13 @@ public class TASBattle implements ModInitializer {
 	
 	@Override
 	public void onInitialize() { 	
-		
+		ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation("tickratechanger", "data"), (player, handler, data, d) -> {
+			try {
+				onTickratePacket(data.readFloat());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 	public static void onTickratePacket(float tickrate) throws Exception {
@@ -50,7 +57,7 @@ public class TASBattle implements ModInitializer {
 		Object timer = timerField.get(Minecraft.getInstance());
 		Field tickrateField = Timer.class.getDeclaredField("msPerTick");
 		tickrateField.setAccessible(true);
-		tickrateField.setFloat(timer, tickrate);
+		tickrateField.setFloat(timer, 1000F / tickrate);
 	}
 	
 	public static void onGameInitialize() {

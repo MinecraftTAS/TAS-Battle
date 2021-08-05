@@ -1,0 +1,16 @@
+main: de.pfannekuchen.tickratechanger.Paperchanger
+name: Paperchanger
+version: 1.0.0-SNAPSHOT
+description: Adds Commands and Settings to the Tickrate Changer Fork (github.com/MCPfannkuchenYT/Paper)
+api-version: 1.17
+load: STARTUP
+author: Pancake
+authors: [Scribble]
+website: mgnet.work
+prefix: TickrateChanger
+commands:
+  ticks:
+    description: Changes the Tickrate
+    aliases: [tickrate, tickratechanger]
+    permission: work.mgnet.ticks
+    usage: "Usage: /ticks (default) [tickrate]"
