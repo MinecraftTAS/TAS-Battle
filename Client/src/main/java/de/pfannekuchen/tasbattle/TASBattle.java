@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
@@ -41,6 +43,7 @@ public class TASBattle implements ModInitializer {
 	public static final ResourceLocation CUSTOM_EDITION_RESOURCE_LOCATION = new ResourceLocation("tasbattle", "custom_edition.png");
 	public static List<TASServer> servers = new ArrayList<>();
 	public static float tickrate = 20f;
+	public static HashMap<UUID, ResourceLocation> capes = new HashMap<>();
 	
 	@Override
 	public void onInitialize() { 	
@@ -84,6 +87,13 @@ public class TASBattle implements ModInitializer {
 				String imageurl = reader.readLine().trim();
 				TASBattle.servers.add(new TASServer(name, id, imageurl, readText(reader)));
 				reader.readLine();
+			}
+			int capes = Integer.parseInt(reader.readLine().trim());
+			for (int i = 0; i < capes; i++) {
+				UUID uuid = UUID.fromString(reader.readLine());
+				ResourceLocation loc = new ResourceLocation("tasbattle", "cape_" + uuid.toString());
+				Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(NativeImage.read(new URL(reader.readLine()).openStream())));
+				TASBattle.capes.put(uuid, loc);
 			}
 			reader.close();
 		} catch (IOException e) {
