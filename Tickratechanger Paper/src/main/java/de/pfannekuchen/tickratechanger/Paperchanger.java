@@ -37,7 +37,7 @@ public class Paperchanger extends JavaPlugin implements Listener, PluginMessageL
 		queuedPlayers.add(e.getPlayer().getUniqueId());
 		new Thread(() -> {
 			try {
-				Thread.sleep(1500);
+				Thread.sleep(2500);
 			} catch (Exception e2) {
 				
 			}
