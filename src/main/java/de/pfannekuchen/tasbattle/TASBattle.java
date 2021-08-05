@@ -57,9 +57,9 @@ public class TASBattle implements ModInitializer {
 		try {
 			Minecraft.getInstance().getTextureManager().register(CUSTOM_EDITION_RESOURCE_LOCATION, new DynamicTexture(NativeImage.read(TASBattle.class.getResourceAsStream("edition.png"))));
 			servers = Arrays.asList(
-					new TASServer("Anarchy Server", "mgnet.work", new String[] {"The Anarchy Server hosted by Pancake", "running on tickrate 0.5", "", "There are currently 0 players", "playing on the anarchy server."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"),
-					new TASServer("Minigames Server", "mgnet.work", new String[] {"This Server is not available yet."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"),
-					new TASServer("FFA Server", "mgnet.work", new String[] {"This Server is not available yet."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"));
+					new TASServer("Anarchy Server", "mgnet.work:5000", new String[] {"The Anarchy Server hosted by Pancake", "running on tickrate 0.5.", "Hacks are not allowed!", "", "There are currently 0 players", "playing on the anarchy server."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"),
+					new TASServer("Minigames Server", "mgnet.work:25565", new String[] {"This Server is not available yet."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"),
+					new TASServer("FFA Server", "mgnet.work:25565", new String[] {"This Server is not available yet."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
