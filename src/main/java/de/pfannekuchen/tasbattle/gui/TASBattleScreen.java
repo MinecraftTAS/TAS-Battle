@@ -59,9 +59,9 @@ public class TASBattleScreen extends Screen {
 		addRenderableWidget(new Button(5, height - 30, 250, 20, new TextComponent("Connect to the server"), b -> {
 			String ip = selected.ip;
 			String port = 25565 + "";
-			if (ip.contains("\\:")) {
-				ip = ip.split("\\:")[0];
-				port = ip.split("\\:")[1];
+			if (ip.contains(":")) {
+				port = ip.split(":")[1];
+				ip = ip.split(":")[0];
 			}
 			if (selected != null) ConnectScreen.startConnecting(this, minecraft, new ServerAddress(ip, Integer.parseInt(port)), new ServerData(selected.name, selected.ip, false));
 		}));
