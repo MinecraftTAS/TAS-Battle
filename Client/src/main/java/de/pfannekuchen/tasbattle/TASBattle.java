@@ -9,6 +9,7 @@ import java.util.List;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Timer;
@@ -39,12 +40,20 @@ public class TASBattle implements ModInitializer {
 	
 	public static final ResourceLocation CUSTOM_EDITION_RESOURCE_LOCATION = new ResourceLocation("tasbattle", "custom_edition.png");
 	public static List<TASServer> servers;
+	public static float tickrate = 20f;
 	
 	@Override
 	public void onInitialize() { 	
 		ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation("tickratechanger", "data"), (player, handler, data, d) -> {
 			try {
 				onTickratePacket(data.readFloat());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		ClientPlayConnectionEvents.DISCONNECT.register((a, b) -> {
+			try {
+				onTickratePacket(20.0f);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -58,6 +67,7 @@ public class TASBattle implements ModInitializer {
 		Field tickrateField = Timer.class.getDeclaredField("msPerTick");
 		tickrateField.setAccessible(true);
 		tickrateField.setFloat(timer, 1000F / tickrate);
+		TASBattle.tickrate = tickrate;
 	}
 	
 	public static void onGameInitialize() {

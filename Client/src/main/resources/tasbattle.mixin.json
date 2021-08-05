@@ -8,7 +8,11 @@
   "client": [
     "MixinMinecraft",
     "MixinTitleScreen",
-    "MixinLaunchArgs"
+    "MixinLaunchArgs",
+    "tickratechanger.MixinTickrateChangerAchievement",
+    "tickratechanger.MixinTickrateChangerAudioPitch",
+    "tickratechanger.MixinTickrateChangerEnchantmentGlimm",
+    "tickratechanger.MixinTickrateChangerWorldborder"
   ],
   "injectors": {
     "defaultRequire": 1
