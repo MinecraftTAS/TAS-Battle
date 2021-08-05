@@ -1,9 +1,11 @@
 package de.pfannekuchen.tasbattle;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.platform.NativeImage;
@@ -22,13 +24,11 @@ public class TASBattle implements ModInitializer {
 		public String name;
 		public String ip;
 		public String[] text;
-		public boolean isGameRunning;
 		public ResourceLocation location;
-		public TASServer(String name, String ip, String[] text, boolean isRunning, String imageurl) {
+		public TASServer(String name, String ip, String imageurl, String[] text) {
 			this.name = name;
 			this.ip = ip;
 			this.text = text;
-			this.isGameRunning = isRunning;
 			this.location = new ResourceLocation("tasbattle", name.toLowerCase().replaceAll(" ", "_") + ".png");
 			try {
 				Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(NativeImage.read(new URL(imageurl).openStream())));
@@ -39,7 +39,7 @@ public class TASBattle implements ModInitializer {
 	}
 	
 	public static final ResourceLocation CUSTOM_EDITION_RESOURCE_LOCATION = new ResourceLocation("tasbattle", "custom_edition.png");
-	public static List<TASServer> servers;
+	public static List<TASServer> servers = new ArrayList<>();
 	public static float tickrate = 20f;
 	
 	@Override
@@ -73,13 +73,31 @@ public class TASBattle implements ModInitializer {
 	public static void onGameInitialize() {
 		try {
 			Minecraft.getInstance().getTextureManager().register(CUSTOM_EDITION_RESOURCE_LOCATION, new DynamicTexture(NativeImage.read(TASBattle.class.getResourceAsStream("edition.png"))));
-			servers = Arrays.asList(
-					new TASServer("Anarchy Server", "mgnet.work:5000", new String[] {"The Anarchy Server hosted by Pancake", "running on tickrate 0.5.", "Hacks are not allowed!", "", "There are currently 0 players", "playing on the anarchy server."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"),
-					new TASServer("Minigames Server", "mgnet.work:25565", new String[] {"This Server is not available yet."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"),
-					new TASServer("FFA Server", "mgnet.work:25565", new String[] {"This Server is not available yet."}, false, "http://mgnet.work/tasbattle_anarchy.jpg"));
+			/* Read the Supercool TAS Battle Config File from the server! */
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://mgnet.work/TASBATTLE/servers.dat").openStream()));
+			int comments = Integer.parseInt(reader.readLine().trim());
+			for (int i = 0; i < comments; i++) reader.readLine();
+			int servers = Integer.parseInt(reader.readLine().trim());
+			for (int i = 0; i < servers; i++) {
+				String name = reader.readLine().trim();
+				String id = reader.readLine().trim();
+				String imageurl = reader.readLine().trim();
+				TASBattle.servers.add(new TASServer(name, id, imageurl, readText(reader)));
+				reader.readLine();
+			}
+			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Reads a String array
+	 */
+	private static String[] readText(BufferedReader reader) throws NumberFormatException, IOException {
+		String[] array = new String[Integer.parseInt(reader.readLine().trim())];
+		for (int i = 0; i < array.length; i++) array[i] = reader.readLine().trim();
+		return array;
 	}
 	
 }
