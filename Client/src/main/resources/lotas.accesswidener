@@ -1,2 +1,2 @@
 accessWidener v1 named
-accessible field net/minecraft/client/gui/screens/TitleScreen MINECRAFT_EDITION Lnet/minecraft/resources/ResourceLocation;
+mutable    field    net/minecraft/client/Timer    msPerTick    F

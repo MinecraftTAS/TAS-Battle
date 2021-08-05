@@ -3,7 +3,6 @@ package de.pfannekuchen.tasbattle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +11,12 @@ import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import de.pfannekuchen.tasbattle.mixin.accessor.MinecraftAccessor;
+import de.pfannekuchen.tasbattle.mixin.accessor.TimerAccessor;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Timer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -64,12 +64,7 @@ public class TASBattle implements ModInitializer {
 	}
 	
 	public static void onTickratePacket(float tickrate) throws Exception {
-		Field timerField = Minecraft.class.getDeclaredField("timer");
-		timerField.setAccessible(true);
-		Object timer = timerField.get(Minecraft.getInstance());
-		Field tickrateField = Timer.class.getDeclaredField("msPerTick");
-		tickrateField.setAccessible(true);
-		tickrateField.setFloat(timer, 1000F / tickrate);
+		((TimerAccessor) ((MinecraftAccessor) Minecraft.getInstance()).getTimer()).setMsPerTick(1000F / tickrate);
 		TASBattle.tickrate = tickrate;
 	}
 	

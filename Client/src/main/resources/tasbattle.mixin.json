@@ -13,7 +13,9 @@
     "tickratechanger.MixinTickrateChangerAchievement",
     "tickratechanger.MixinTickrateChangerAudioPitch",
     "tickratechanger.MixinTickrateChangerEnchantmentGlimm",
-    "tickratechanger.MixinTickrateChangerWorldborder"
+    "tickratechanger.MixinTickrateChangerWorldborder",
+    "accessor.MinecraftAccessor",
+    "accessor.TimerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
