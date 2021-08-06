@@ -1,13 +1,13 @@
 package de.pfannekuchen.tasbattle;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-
-import org.apache.commons.lang.SerializationUtils;
 
 public class Configuration implements Serializable {
 	
@@ -24,15 +24,22 @@ public class Configuration implements Serializable {
 	 * @throws IOException IO Exception
 	 */
 	public static void save() throws IOException {
-		Files.write(configFile.toPath(), SerializationUtils.serialize(self), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+		if (!configFile.createNewFile());
+		ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(configFile));
+		stream.writeObject(self);
+		stream.close();
 	}
 	
 	/**
 	 * Loads the Configuration from a File
-	 * @throws IOException IO Exception
+	 * @throws Exception IO Exception
 	 */
-	public static void load() throws IOException {
-		if (configFile.exists()) self = (Configuration) SerializationUtils.deserialize(Files.readAllBytes(configFile.toPath()));
+	public static void load() throws Exception {
+		if (configFile.exists()) {
+			ObjectInputStream stream = new ObjectInputStream(new FileInputStream(configFile));
+			self = (Configuration) stream.readObject();
+			stream.close();
+		}
 	}
 	
 	/* ======== Configuration Starts Here ============= */
@@ -47,7 +54,7 @@ public class Configuration implements Serializable {
 		public String name;
 		@Override public String toString() { return name; }
 	}
-	public static enum Combat { OLD, DEFAULT, NEW }
+	public static enum Combat implements Serializable { OLD, DEFAULT, NEW }
 	
 	public ArrayList<Arena> arenas = new ArrayList<>();
 	public ArrayList<Kit> kits = new ArrayList<>();
