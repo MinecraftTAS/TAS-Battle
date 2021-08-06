@@ -39,6 +39,7 @@ public class Configuration implements Serializable {
 	public static class Kit implements Serializable {
 		private static final long serialVersionUID = 7823455149842909884L;
 		public String name;
+		public String[] data;
 		@Override public String toString() { return name; }
 	}
 	public static class Arena implements Serializable {
