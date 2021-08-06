@@ -28,10 +28,11 @@ public class BukkitSerialization {
 	 */
 	public static String[] playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
 		//get the main content part, this doesn't return the armor
-		String content = toBase64(playerInventory);
+		String content = itemStackArrayToBase64(playerInventory.getContents());
+		String additional = itemStackArrayToBase64(playerInventory.getExtraContents());
 		String armor = itemStackArrayToBase64(playerInventory.getArmorContents());
 		
-		return new String[] { content, armor };
+		return new String[] { content, additional, armor };
 	}
 	
 	
@@ -45,10 +46,11 @@ public class BukkitSerialization {
 	 */
 	public static void playerInventoryToBase64(Player p, String[] data) throws IllegalStateException, IOException {
 		//get the main content part, this doesn't return the armor
-		Inventory content = fromBase64(data[0]);
-		ItemStack[] armor = itemStackArrayFromBase64(data[1]);
-
-		p.getInventory().setContents(content.getContents());
+		ItemStack[] content = itemStackArrayFromBase64(data[0]);
+		ItemStack[] additional = itemStackArrayFromBase64(data[1]);
+		ItemStack[] armor = itemStackArrayFromBase64(data[2]);
+		p.getInventory().setContents(content);
+		p.getInventory().setExtraContents(additional);
 		p.getInventory().setArmorContents(armor);
 	}
 	
@@ -82,74 +84,6 @@ public class BukkitSerialization {
 	        return Base64Coder.encodeLines(outputStream.toByteArray());
 	    } catch (Exception e) {
 	        throw new IllegalStateException("Unable to save item stacks.", e);
-	    }
-	}
-	
-	/**
-	 * A method to serialize an inventory to Base64 string.
-	 * 
-	 * <p />
-	 * 
-	 * Special thanks to Comphenix in the Bukkit forums or also known
-	 * as aadnk on GitHub.
-	 * 
-	 * <a href="https://gist.github.com/aadnk/8138186">Original Source</a>
-	 * 
-	 * @param inventory to serialize
-	 * @return Base64 string of the provided inventory
-	 * @throws IllegalStateException
-	 */
-	public static String toBase64(Inventory inventory) throws IllegalStateException {
-	    try {
-	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	        BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-	        
-	        // Write the size of the inventory
-	        dataOutput.writeInt(inventory.getSize());
-	        
-	        // Save every element in the list
-	        for (int i = 0; i < inventory.getSize(); i++) {
-	            dataOutput.writeObject(inventory.getItem(i));
-	        }
-	        
-	        // Serialize that array
-	        dataOutput.close();
-	        return Base64Coder.encodeLines(outputStream.toByteArray());
-	    } catch (Exception e) {
-	        throw new IllegalStateException("Unable to save item stacks.", e);
-	    }
-	}
-	
-	/**
-	 * 
-	 * A method to get an {@link Inventory} from an encoded, Base64, string.
-	 * 
-	 * <p />
-	 * 
-	 * Special thanks to Comphenix in the Bukkit forums or also known
-	 * as aadnk on GitHub.
-	 * 
-	 * <a href="https://gist.github.com/aadnk/8138186">Original Source</a>
-	 * 
-	 * @param data Base64 string of data containing an inventory.
-	 * @return Inventory created from the Base64 string.
-	 * @throws IOException
-	 */
-	public static Inventory fromBase64(String data) throws IOException {
-	    try {
-	        ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
-	        BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-	        Inventory inventory = Bukkit.getServer().createInventory(null, dataInput.readInt());
-	
-	        // Read the serialized inventory
-	        for (int i = 0; i < inventory.getSize(); i++) {
-	            inventory.setItem(i, (ItemStack) dataInput.readObject());
-	        }
-	        
-	        dataInput.close();
-	        return inventory;
-	    } catch (ClassNotFoundException e) {
-	        throw new IOException("Unable to decode class type.", e);
 	    }
 	}
 	
