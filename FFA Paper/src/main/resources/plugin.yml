@@ -1,0 +1,16 @@
+main: de.pfannekuchen.tasbattle.FFA
+name: FFA
+version: 1.0.0-SNAPSHOT
+description: Fully Customizable FFA Plugin with Tickrate Changer
+api-version: 1.17
+load: STARTUP
+author: Pancake
+authors: [Scribble]
+website: mgnet.work
+prefix: FFA
+commands:
+  ffa:
+    description: Configures the Plugin
+    aliases: [freeforall, ffaconfig]
+    permission: work.mgnet.ffa
+    usage: "Usage: /ffa help"
