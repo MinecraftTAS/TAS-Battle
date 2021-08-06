@@ -7,10 +7,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +29,17 @@ import net.kyori.adventure.text.Component;
 
 public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 
+	/* Disable Block Placing and Damage in the Lobby World */
+	@EventHandler public void onBlockBreak(BlockBreakEvent e) { if (e.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && !e.getPlayer().isOp()) e.setCancelled(true); }
+	@EventHandler public void onBlockPlace(BlockPlaceEvent e) { if (e.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && !e.getPlayer().isOp()) e.setCancelled(true); }
+	@EventHandler public void onDamage(EntityDamageEvent e) { if (e.getEntity().getWorld().getName().equalsIgnoreCase("lobby")) e.setCancelled(true); }
+	/* Teleport Players that connect to the Lobby, or the spectating Lobby */
+	@EventHandler public void onConnect(PlayerJoinEvent e) {
+		// TODO: Spectator
+		e.joinMessage(null);
+		e.getPlayer().teleport(new Location(Bukkit.getWorld("lobby"), 0, 100, 0));
+	}
+	
 	public static FFA PLUGIN;
 	
 	@Override
@@ -74,58 +91,70 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 		if (args.length == 0) return false;
 		switch (args[0]) {
 			case "help":
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7Displaying Help for /ffa\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa help - ï¿½bDisplays this help page\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa arenas - ï¿½bShows all arenas\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa addarena <name> - ï¿½bAdds an arena with <name> as worldname\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa setarena <name> - ï¿½bSets an arena with <name> as active\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa delarena <name> - ï¿½bRemoves an arena from the list\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa togglecombat <combat> - ï¿½bForces a specific combat system for the next game\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa addkit <name> - ï¿½bAdds your current inventory as a kit\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa delkit <name> - ï¿½bRemoves a kit registration\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa getkit <name> - ï¿½bLoads the kit into your inventory\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa selkit <name> - ï¿½bSelects a kit for the next game\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa kits - ï¿½bList all kits\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa togglecommunity - ï¿½bDisables or enables community voting\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa start - ï¿½bStarts the game now.\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa stop - ï¿½bStops the game now.\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa info - ï¿½bDisplays current settings.\n"
-						+ "ï¿½6ï¿½ ï¿½7/ffa spectate - ï¿½bSpectates the current game, instead of playing."));
+				sender.sendMessage(Component.text("§6» §7Displaying Help for /ffa\n"
+						+ "§6» §7/ffa help - §bDisplays this help page\n"
+						+ "§6» §7/ffa arenas - §bShows all arenas\n"
+						+ "§6» §7/ffa addarena <name> - §bAdds an arena with <name> as worldname\n"
+						+ "§6» §7/ffa setarena <name> - §bSets an arena with <name> as active\n"
+						+ "§6» §7/ffa delarena <name> - §bRemoves an arena from the list\n"
+						+ "§6» §7/ffa togglecombat <combat> - §bForces a specific combat system for the next game\n"
+						+ "§6» §7/ffa addkit <name> - §bAdds your current inventory as a kit\n"
+						+ "§6» §7/ffa delkit <name> - §bRemoves a kit registration\n"
+						+ "§6» §7/ffa getkit <name> - §bLoads the kit into your inventory\n"
+						+ "§6» §7/ffa selkit <name> - §bSelects a kit for the next game\n"
+						+ "§6» §7/ffa kits - §bList all kits\n"
+						+ "§6» §7/ffa togglecommunity - §bDisables or enables community voting\n"
+						+ "§6» §7/ffa start - §bStarts the game now.\n"
+						+ "§6» §7/ffa stop - §bStops the game now.\n"
+						+ "§6» §7/ffa info - §bDisplays current settings.\n"
+						+ "§6» §7/ffa spectate - §bSpectates the current game, instead of playing."));
 				break;
 			case "arenas":
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7There are " + Configuration.getInstance().arenas.size()  + " arenas registered."));
-				for (Arena arena : Configuration.getInstance().arenas) sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7" + arena.name));
+				sender.sendMessage(Component.text("§6» §7There are " + Configuration.getInstance().arenas.size()  + " arenas registered."));
+				for (Arena arena : Configuration.getInstance().arenas) sender.sendMessage(Component.text("§6» §7" + arena.name));
 				break;
-			case "addarena": 
-				// TODO: Add the arena
-				break;
+			case "addarena":
+				if (args.length != 2) {
+					sender.sendMessage(Component.text("§6» §7Enter a world name"));
+					return true;
+				}
+				File world_dir = new File(getDataFolder().getParentFile().getParentFile(), args[1]);
+				if (!world_dir.exists()) {
+					sender.sendMessage(Component.text("§6» §7Enter a world name."));
+					return true;
+				}
+				Arena ar = new Arena();
+				ar.name = args[1];
+				Configuration.getInstance().arenas.add(ar);
+				sender.sendMessage(Component.text("§6» §7Arena created."));
+				return true;
 			case "setarena": 
 				if (args.length != 2) {
-					sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Arena to select?"));
+					sender.sendMessage(Component.text("§6» §7What Arena to select?"));
 					return true;
 				}
 				for (Arena arena : Configuration.getInstance().arenas) {
 					if (arena.name.equalsIgnoreCase(args[1])) {
-						sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7Arena selected."));
+						sender.sendMessage(Component.text("§6» §7Arena selected."));
 						Configuration.getInstance().currentArena = arena;
 						return true;
 					}
 				}
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Arena to select?"));
+				sender.sendMessage(Component.text("§6» §7What Arena to select?"));
 				break;
 			case "delarena": 
 				if (args.length != 2) {
-					sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Arena to remove?"));
+					sender.sendMessage(Component.text("§6» §7What Arena to remove?"));
 					return true;
 				}
 				for (Arena arena : new ArrayList<>(Configuration.getInstance().arenas)) {
 					if (arena.name.equalsIgnoreCase(args[1])) {
 						Configuration.getInstance().arenas.remove(arena);
-						sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7The Arena has been deleted."));
+						sender.sendMessage(Component.text("§6» §7The Arena has been deleted."));
 						return true;
 					}
 				}
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Arena to remove?"));
+				sender.sendMessage(Component.text("§6» §7What Arena to remove?"));
 				break;
 			case "togglecombat": 
 				if (args.length == 2) {
@@ -137,49 +166,49 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 						return true;
 					} catch (Exception e) {}
 				}
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Combat Mode? NEW, OLD, DEFAULT."));
+				sender.sendMessage(Component.text("§6» §7What Combat Mode? NEW, OLD, DEFAULT."));
 				break;
 			case "addkit": 
 				// TODO: Add the kit
 				break;
 			case "delkit": 
 				if (args.length != 2) {
-					sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Kit to remove?"));
+					sender.sendMessage(Component.text("§6» §7What Kit to remove?"));
 					return true;
 				}
 				for (Kit kit : new ArrayList<>(Configuration.getInstance().kits)) {
 					if (kit.name.equalsIgnoreCase(args[1])) {
 						Configuration.getInstance().kits.remove(kit);
-						sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7The Kit has been deleted."));
+						sender.sendMessage(Component.text("§6» §7The Kit has been deleted."));
 						return true;
 					}
 				}
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Kit to remove?"));
+				sender.sendMessage(Component.text("§6» §7What Kit to remove?"));
 				break;
 			case "getkit": 
 				// TODO: Load Kit Items
 				break;
 			case "selkit": 
 				if (args.length != 2) {
-					sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Kit to select?"));
+					sender.sendMessage(Component.text("§6» §7What Kit to select?"));
 					return true;
 				}
 				for (Kit kit : Configuration.getInstance().kits) {
 					if (kit.name.equalsIgnoreCase(args[1])) {
-						sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7Kit selected."));
+						sender.sendMessage(Component.text("§6» §7Kit selected."));
 						Configuration.getInstance().currentKit = kit;
 						return true;
 					}
 				}
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7What Kit to select?"));
+				sender.sendMessage(Component.text("§6» §7What Kit to select?"));
 				break;
 			case "kits": 
-				sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7There are " + Configuration.getInstance().arenas.size()  + " kit registered."));
-				for (Kit kit : Configuration.getInstance().kits) sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7" + kit.name));
+				sender.sendMessage(Component.text("§6» §7There are " + Configuration.getInstance().arenas.size()  + " kit registered."));
+				for (Kit kit : Configuration.getInstance().kits) sender.sendMessage(Component.text("§6» §7" + kit.name));
 			case "togglecommunity":
 				Configuration.getInstance().shouldAskCommunity = !Configuration.getInstance().shouldAskCommunity;
-				if (Configuration.getInstance().shouldAskCommunity) sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7The Players can now decide what settings to play with."));	
-				else sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7The Players are forced to play the selected kit."));
+				if (Configuration.getInstance().shouldAskCommunity) sender.sendMessage(Component.text("§6» §7The Players can now decide what settings to play with."));	
+				else sender.sendMessage(Component.text("§6» §7The Players are forced to play the selected kit."));
 				break;
 			case "start": 
 				// TODO: Start the Game
@@ -188,11 +217,11 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 				// TODO: End the Game
 				break;
 			case "info": 
-				if (Configuration.getInstance().shouldAskCommunity) sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7There are no settings, because the Community can decide which Map/Kit to play with."));
+				if (Configuration.getInstance().shouldAskCommunity) sender.sendMessage(Component.text("§6» §7There are no settings, because the Community can decide which Map/Kit to play with."));
 				else {
-					sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7Current Settings:"));
-					sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7Map: " + Configuration.getInstance().currentArena));
-					sender.sendMessage(Component.text("ï¿½6ï¿½ ï¿½7Kit: " + Configuration.getInstance().currentKit));
+					sender.sendMessage(Component.text("§6» §7Current Settings:"));
+					sender.sendMessage(Component.text("§6» §7Map: " + Configuration.getInstance().currentArena));
+					sender.sendMessage(Component.text("§6» §7Kit: " + Configuration.getInstance().currentKit));
 				}
 				break;
 			case "spectate": 
