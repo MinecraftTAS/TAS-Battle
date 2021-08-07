@@ -10,12 +10,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -33,12 +35,13 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 	/* Disable Block Placing and Damage in the Lobby World */
 	@EventHandler public void onBlockBreak(BlockBreakEvent e) { if (e.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && !e.getPlayer().isOp()) e.setCancelled(true); }
 	@EventHandler public void onBlockPlace(BlockPlaceEvent e) { if (e.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && !e.getPlayer().isOp()) e.setCancelled(true); }
-	@EventHandler public void onDamage(EntityDamageEvent e) { if (e.getEntity().getWorld().getName().equalsIgnoreCase("lobby")) e.setCancelled(true); }
+	@EventHandler public void onDamage(EntityDamageEvent e) { if (e.getEntity().getType() == EntityType.PLAYER) if (e.getEntity().getWorld().getName().equalsIgnoreCase("lobby") || (Game.isGameRunning && !Game.isPlayerPlaying((@NotNull Player) e.getEntity()))) e.setCancelled(true); }
+	@EventHandler public void onDeath(EntityDeathEvent e) { if (e.getEntity().getType() == EntityType.PLAYER) if (!e.getEntity().getWorld().getName().equalsIgnoreCase("lobby") && Game.isGameRunning && Game.isPlayerPlaying((@NotNull Player) e.getEntity())) Game.eliminateAndRemovePlayer((Player) e.getEntity()); }
 	/* Teleport Players that connect to the Lobby, or the spectating Lobby */
 	@EventHandler public void onConnect(PlayerJoinEvent e) {
-		// TODO: Spectator
 		e.joinMessage(null);
-		e.getPlayer().teleport(new Location(Bukkit.getWorld("lobby"), 0, 100, 0));
+		if (Game.isGameRunning) Game.lateJoin(e.getPlayer());
+		else e.getPlayer().teleport(new Location(Bukkit.getWorld("lobby"), 0, 100, 0));	
 	}
 	
 	public static FFA PLUGIN;
@@ -108,8 +111,8 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 				if (args.length == 3) {
 					try {
 						Combat c = Combat.valueOf(args[2].toUpperCase());
-						// TODO: Update Combat Mode
 						Configuration.getInstance().combatmode = c;
+						sender.sendMessage(Component.text("§6» §7The Combat mode for the next game will be " + c.name()));
 						break;
 					} catch (Exception e) {}
 				}
@@ -121,10 +124,10 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 				else sender.sendMessage(Component.text("§6» §7The Players are forced to play the selected settings."));
 				break;
 			case "start": 
-				// TODO: Start the Game
+				Game.start();
 				break;
 			case "stop": 
-				// TODO: End the Game
+				Game.stop();
 				break;
 			case "info": 
 				if (Configuration.getInstance().shouldAskCommunity) sender.sendMessage(Component.text("§6» §7There are no settings, because the Community can decide which Map/Kit to play with."));
@@ -135,7 +138,7 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 				}
 				break;
 			case "spectate": 
-				// TODO: Spectate a game
+				if (Game.isGameRunning && Game.isPlayerPlaying((@NotNull Player) sender)) Game.removePlayer((Player) sender);
 				break;
 			}
 		} else if (args[0].equalsIgnoreCase("kit") && args.length >= 2) {
