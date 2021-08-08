@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,6 +20,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
@@ -36,19 +38,29 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 	@EventHandler public void onBlockBreak(BlockBreakEvent e) { if (e.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && !e.getPlayer().isOp()) e.setCancelled(true); }
 	@EventHandler public void onBlockPlace(BlockPlaceEvent e) { if (e.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && !e.getPlayer().isOp()) e.setCancelled(true); }
 	@EventHandler public void onDamage(EntityDamageEvent e) { if (e.getEntity().getType() == EntityType.PLAYER) if (e.getEntity().getWorld().getName().equalsIgnoreCase("lobby") || (Game.isGameRunning && !Game.isPlayerPlaying((@NotNull Player) e.getEntity()))) e.setCancelled(true); }
-	@EventHandler public void onDeath(EntityDeathEvent e) { if (e.getEntity().getType() == EntityType.PLAYER) if (!e.getEntity().getWorld().getName().equalsIgnoreCase("lobby") && Game.isGameRunning && Game.isPlayerPlaying((@NotNull Player) e.getEntity())) Game.eliminateAndRemovePlayer((Player) e.getEntity()); }
+	@EventHandler public void onDeath(EntityDeathEvent e) { if (e.getEntity().getType() == EntityType.PLAYER) if (Game.isGameRunning && Game.isPlayerPlaying((@NotNull Player) e.getEntity())) Game.eliminateAndRemovePlayer((Player) e.getEntity()); }
 	/* Teleport Players that connect to the Lobby, or the spectating Lobby */
 	@EventHandler public void onConnect(PlayerJoinEvent e) {
+		e.getPlayer().getInventory().clear();
 		e.joinMessage(null);
 		if (Game.isGameRunning) Game.lateJoin(e.getPlayer());
-		else e.getPlayer().teleport(new Location(Bukkit.getWorld("lobby"), 0, 100, 0));	
+		else {
+			e.getPlayer().teleport(new Location(Bukkit.getWorld("lobby"), 0, 100, 0));	
+			e.getPlayer().setGameMode(GameMode.ADVENTURE);
+		}
+	}
+	@EventHandler public void onConnect(PlayerQuitEvent e) {
+		e.quitMessage(null);
+		Game.removePlayer(e.getPlayer());
 	}
 	
 	public static FFA PLUGIN;
+	public static File dir;
 	
 	@Override
 	public void onEnable() {
 		PLUGIN = this;
+		dir = getDataFolder().getParentFile().getParentFile();
 		getDataFolder().mkdirs();
 		Configuration.configFile = new File(getDataFolder(), "config.dat");
 		try {
@@ -123,8 +135,8 @@ public class FFA extends JavaPlugin implements Listener, PluginMessageListener {
 				if (Configuration.getInstance().shouldAskCommunity) sender.sendMessage(Component.text("§6» §7The Players can now decide what settings to play with."));	
 				else sender.sendMessage(Component.text("§6» §7The Players are forced to play the selected settings."));
 				break;
-			case "start": 
-				Game.start();
+			case "start":
+				for (Player p : Bukkit.getOnlinePlayers()) Game.join(p); // join everyone on force start
 				break;
 			case "stop": 
 				Game.stop();
