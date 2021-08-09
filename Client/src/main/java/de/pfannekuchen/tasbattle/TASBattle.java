@@ -87,7 +87,7 @@ public class TASBattle implements ModInitializer {
 			for (int i = 0; i < capes; i++) {
 				UUID uuid = UUID.fromString(reader.readLine());
 				ResourceLocation loc = new ResourceLocation("tasbattle", "cape_" + uuid.toString());
-				Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(NativeImage.read(new URL(reader.readLine().toLowerCase()).openStream())));
+				Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(NativeImage.read(new URL(reader.readLine()).openStream())));
 				TASBattle.capes.put(uuid, loc);
 			}
 			reader.close();
