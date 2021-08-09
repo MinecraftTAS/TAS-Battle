@@ -22,6 +22,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Modified Server List Screen with buttons for TAS Battle
@@ -44,26 +45,38 @@ public class TASBattleScreen extends Screen {
 	 */
 	@Override
 	protected void init() {
-		int widthPerBtn = (width - 10) / TASBattle.servers.size();
 		int x = 5;
 		for (int i = 0; i < TASBattle.servers.size(); i++) {
 			int FUCKYOUJAVAIWILLKILLYOU = i;
-			btns.add(addRenderableWidget(new Button(x, 35, widthPerBtn, 20, new TextComponent(TASBattle.servers.get(i).name), b -> {
+			btns.add(addRenderableWidget(new Button(x, 35, 20, 20, new TextComponent(""), b -> {
 				for (GuiEventListener btnl : new ArrayList<>(children())) if (btns.contains(btnl)) ((Button) btnl).active = true;
 				b.active = false;
 				/* Add Labels */
 				selected = TASBattle.servers.get(FUCKYOUJAVAIWILLKILLYOU);
-			})));
-			x += widthPerBtn;
+			}) {
+				
+				ResourceLocation loc = new ResourceLocation("textures/" + TASBattle.servers.get(FUCKYOUJAVAIWILLKILLYOU).item + ".png");
+				@Override
+				public void renderButton(PoseStack poseStack, int i, int j, float f) {
+					super.renderButton(poseStack, i, j, f);
+					if (this.isHovered()) {
+						this.renderToolTip(poseStack, i, j);
+					}
+					// how to draw image 101
+					RenderSystem.setShader(GameRenderer::getPositionTexShader);
+					RenderSystem.setShaderTexture(0, loc);
+					RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+					RenderSystem.enableBlend();
+					RenderSystem.defaultBlendFunc();
+					RenderSystem.enableDepthTest();
+					RenderSystem.enableTexture();
+					blit(poseStack, x + 2, y + 2, 0, 0, 16, 16, 16, 16);
+				}
+			}));
+			x += 20;
 		}
 		addRenderableWidget(new Button(5, height - 30, 250, 20, new TextComponent("Connect to the server"), b -> {
-			String ip = selected.ip;
-			String port = 25565 + "";
-			if (ip.contains(":")) {
-				port = ip.split(":")[1];
-				ip = ip.split(":")[0];
-			}
-			if (selected != null) ConnectScreen.startConnecting(this, minecraft, new ServerAddress(ip, Integer.parseInt(port)), new ServerData(selected.name, selected.ip, false));
+			if (selected != null) ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 5001), new ServerData(selected.name, "mgnet.work:5001", false));
 		}));
 	}
 	

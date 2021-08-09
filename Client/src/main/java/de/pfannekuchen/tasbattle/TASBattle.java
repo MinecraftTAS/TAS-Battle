@@ -24,12 +24,12 @@ public class TASBattle implements ModInitializer {
 
 	public static class TASServer {
 		public String name;
-		public String ip;
+		public String item;
 		public String[] text;
 		public ResourceLocation location;
-		public TASServer(String name, String ip, String imageurl, String[] text) {
+		public TASServer(String name, String item, String imageurl, String[] text) {
 			this.name = name;
-			this.ip = ip;
+			this.item = item;
 			this.text = text;
 			this.location = new ResourceLocation("tasbattle", name.toLowerCase().replaceAll(" ", "_") + ".png");
 			try {
@@ -78,16 +78,16 @@ public class TASBattle implements ModInitializer {
 			int servers = Integer.parseInt(reader.readLine().trim());
 			for (int i = 0; i < servers; i++) {
 				String name = reader.readLine().trim();
-				String id = reader.readLine().trim();
+				String item = reader.readLine().trim();
 				String imageurl = reader.readLine().trim();
-				TASBattle.servers.add(new TASServer(name, id, imageurl, readText(reader)));
+				TASBattle.servers.add(new TASServer(name, item.toLowerCase(), imageurl, readText(reader)));
 				reader.readLine();
 			}
 			int capes = Integer.parseInt(reader.readLine().trim());
 			for (int i = 0; i < capes; i++) {
 				UUID uuid = UUID.fromString(reader.readLine());
 				ResourceLocation loc = new ResourceLocation("tasbattle", "cape_" + uuid.toString());
-				Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(NativeImage.read(new URL(reader.readLine()).openStream())));
+				Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(NativeImage.read(new URL(reader.readLine().toLowerCase()).openStream())));
 				TASBattle.capes.put(uuid, loc);
 			}
 			reader.close();
