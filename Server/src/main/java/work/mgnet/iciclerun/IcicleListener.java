@@ -21,6 +21,7 @@ import work.mgnet.Tournament;
 import work.mgnet.blockrun.BlockrunRun;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class IcicleListener implements Listener {
 
@@ -48,9 +49,14 @@ public class IcicleListener implements Listener {
 				if (player.getGameMode() == GameMode.ADVENTURE) iciclers.add(player);
 			}
 			iciclers.remove(e.getEntity());
-			e.getEntity().sendMessage(Prefix.ICICLERUN + "§6You earned " + ((3 - iciclers.size()) > 0 ? (3 - iciclers.size()) : 0) + " points for your parcouring!");
+			e.getEntity().sendMessage(Prefix.ICICLERUN + "§6You earned " + ((3 - iciclers.size()) > 0 ? (3 - iciclers.size()) : 0) + " points for your parkouring!");
 			StatisticManager.addPoints(e.getEntity().getName(), (3 - iciclers.size()) > 0 ? (3 - iciclers.size()) : 0);
 			if (iciclers.size() == 1) {
+				try {
+					UtilListener.updateTickrate(20f);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
 				Tournament.CURRENTGAME = Games.NONE;
 				Bukkit.broadcastMessage(Prefix.ICICLERUN + "§6% was the coolest, and earned 5 points!".replaceAll("%", iciclers.get(0).getName()));
 				StatisticManager.addPoints(iciclers.get(0).getName(), 5);

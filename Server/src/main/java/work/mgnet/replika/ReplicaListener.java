@@ -23,6 +23,7 @@ import work.mgnet.Tournament;
 import work.mgnet.paperextensions.Configuration;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class ReplicaListener implements Listener {
 
@@ -82,6 +83,11 @@ public class ReplicaListener implements Listener {
 						Configuration.restrictInteract = true;
 						p.setAllowFlight(false);
 						p.getInventory().clear();
+						try {
+							UtilListener.updateTickrate(20f);
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
 						Tournament.CURRENTGAME = Games.NONE;
 						p.teleport(p.getWorld().getSpawnLocation());
 						p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 1.0f, 1f);

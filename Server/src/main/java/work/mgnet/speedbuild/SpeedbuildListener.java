@@ -24,6 +24,7 @@ import work.mgnet.Tournament;
 import work.mgnet.paperextensions.Configuration;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class SpeedbuildListener implements Listener {
 
@@ -72,6 +73,11 @@ public class SpeedbuildListener implements Listener {
 						p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, 1.0f, 1f);
 						done.clear();
 						p.setGameMode(GameMode.SPECTATOR);
+					}
+					try {
+						UtilListener.updateTickrate(20f);
+					} catch (Exception e2) {
+						e2.printStackTrace();
 					}
 					Bukkit.getScheduler().scheduleSyncDelayedTask(Tournament.self, new Runnable() {
 						

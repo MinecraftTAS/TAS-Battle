@@ -15,6 +15,7 @@ import work.mgnet.Tournament;
 import work.mgnet.paperextensions.Configuration;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class CraftmaniaListener implements Listener {
 	
@@ -49,6 +50,11 @@ public class CraftmaniaListener implements Listener {
 		}, 40L);
 		else {
 			Tournament.CURRENTGAME = Games.NONE;
+			try {
+				UtilListener.updateTickrate(20f);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
 			Bukkit.broadcast(Component.text(Prefix.CRAFTMANIA + "The Game is done!"));
 			Configuration.restrictInventory = true;
 			Configuration.restrictCrafting = true;

@@ -11,7 +11,7 @@ public class Prefix {
 	public static final String FFA = "§9[§bFFA§9] §7";
 	public static final String DROPPER = "§a[§eDropper§a] §7";
 	public static final String CRAFTMANIA = "§9[§6Craftmania§9] §7";
-	public static final String PARCOUR = "§9[§6Parcour§9] §7";
+	public static final String PARKOUR = "§9[§6Parkour§9] §7";
 	public static final String SPEEDBUILD = "§9[§bSpeedbuild§9] §7";
 	
 }

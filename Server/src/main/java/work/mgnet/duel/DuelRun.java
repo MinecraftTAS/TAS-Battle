@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import work.mgnet.Games;
 import work.mgnet.Tournament;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class DuelRun {
 	
@@ -38,6 +39,11 @@ public class DuelRun {
 		if (fights.size() == 0) {
 			Bukkit.broadcast(Component.text(Prefix.DUEL + "The Game is over!"));
 			Tournament.CURRENTGAME = Games.NONE;
+			try {
+				UtilListener.updateTickrate(20f);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
 			return;
 		}
 		pvp1 = fights.get(0).split(":")[0];

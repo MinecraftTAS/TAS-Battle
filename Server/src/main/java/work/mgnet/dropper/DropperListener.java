@@ -16,6 +16,7 @@ import work.mgnet.Games;
 import work.mgnet.Tournament;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class DropperListener implements Listener {
 	 
@@ -72,6 +73,11 @@ public class DropperListener implements Listener {
 						Tournament.CURRENTGAME = Games.NONE;
 						done.clear();
 						player.setHealth(20);
+					}
+					try {
+						UtilListener.updateTickrate(20f);
+					} catch (Exception e2) {
+						e2.printStackTrace();
 					}
 				}
 				

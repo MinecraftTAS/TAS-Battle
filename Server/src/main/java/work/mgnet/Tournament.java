@@ -6,9 +6,10 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -32,7 +33,7 @@ import work.mgnet.oldschoolffa.OldSchoolFFAListener;
 import work.mgnet.paperextensions.Configuration;
 import work.mgnet.paperextensions.listener.ExtensionListener;
 import work.mgnet.paperextensions.listener.RestrictionListener;
-import work.mgnet.parcour.ParcourListener;
+import work.mgnet.parkour.ParkourListener;
 import work.mgnet.replika.ReplicaListener;
 import work.mgnet.speedbuild.SpeedbuildListener;
 import work.mgnet.speedbuild.SpeedbuildRun;
@@ -51,7 +52,7 @@ public class Tournament extends JavaPlugin {
 	public static boolean isTournament = false;
 	
 	public int currentIndex = 0;
-	public static String[] existingGames = new String[] {"IcicleRun", "Replica", "Blockrun", "Spleef", "Dropper", "FFA", "OldSchoolFFA", "Craftmania", "Parcour", "Replica3D"};
+	public static String[] existingGames = new String[] {"IcicleRun", "Replica", "Blockrun", "Spleef", "Dropper", "FFA", "OldSchoolFFA", "Craftmania", "Parkour", "Replica3D"};
 	public static ArrayList<String> games = new ArrayList<String>();
 	
 	@Override
@@ -89,7 +90,7 @@ public class Tournament extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new FFAListener(), this);
 		Bukkit.getPluginManager().registerEvents(new OldSchoolFFAListener(), this);
 		Bukkit.getPluginManager().registerEvents(new CraftmaniaListener(), this);
-		Bukkit.getPluginManager().registerEvents(new ParcourListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ParkourListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SpeedbuildListener(), this);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, IcicleRun.fallingBlocksThread(), 5L, 5L);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, BlockrunRun.fallingBlocksThread(), 3L, 3L);
@@ -199,10 +200,60 @@ public class Tournament extends JavaPlugin {
 		
 	}
 	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		return Arrays.asList("IcicleRun", "Replica", "Blockrun", "Spleef", "Duel", "Dropper", "FFA", "OldSchoolFFA", "Craftmania", "Parkour", "Replica3D");
+	}
+	
 	@SuppressWarnings({ "deprecation" })
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		try {
+			if (command.getName().equalsIgnoreCase("start") && CURRENTGAME == Games.NONE && (Bukkit.getOnlinePlayers().size() >= 2)) {
+				switch (args[0].toLowerCase()) {
+					case "iciclerun":
+						GameStarter.startIcicleRun();
+						break;
+					case "replica":
+						GameStarter.startReplica();
+						break;
+					case "blockrun":
+						GameStarter.startBlockrun();
+						break;
+					case "spleef":
+						GameStarter.startSpleef();
+						break;
+					case "duel":
+						GameStarter.startDuel();
+						break;
+					case "dropper":
+						GameStarter.startDropper();
+						break;
+					case "ffa":
+						GameStarter.startFFA();
+						break;
+					case "oldschoolffa":
+						GameStarter.startOldSchoolFFA();
+						break;
+					case "craftmania":
+						GameStarter.startCraftmania();
+						break;
+					case "parkour":
+						GameStarter.startParkour();
+						break;
+					case "replica3d":
+						GameStarter.startReplica3d();
+						break;
+					default:
+						break;
+				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
 		if (!sender.isOp()) return true;
+		
 		if (command.getName().equalsIgnoreCase("ticks")) {
 			if (args.length == 1) {
 				try {
@@ -285,8 +336,8 @@ public class Tournament extends JavaPlugin {
 					case "Craftmania":
 						GameStarter.startCraftmania();
 						break;
-					case "Parcour":
-						GameStarter.startParcour();
+					case "Parkour":
+						GameStarter.startParkour();
 						break;
 					case "Replica3D":
 						GameStarter.startReplica3d();
@@ -299,84 +350,6 @@ public class Tournament extends JavaPlugin {
 					updateScoreboard();
 				}
 			}, 80L);
-		} else if (command.getName().equalsIgnoreCase("start") && CURRENTGAME == Games.NONE) {
-			if (args[0].equalsIgnoreCase("random")) {
-				switch (existingGames[new Random().nextInt(existingGames.length)]) {
-				case "IcicleRun":
-					GameStarter.startIcicleRun();
-					break;
-				case "Replica":
-					GameStarter.startReplica();
-					break;
-				case "Blockrun":
-					GameStarter.startBlockrun();
-					break;
-				case "Spleef":
-					GameStarter.startSpleef();
-					break;
-				case "Duel":
-					GameStarter.startDuel();
-					break;
-				case "Dropper":
-					GameStarter.startDropper();
-					break;
-				case "FFA":
-					GameStarter.startFFA();
-					break;
-				case "OldSchoolFFA":
-					GameStarter.startOldSchoolFFA();
-					break;
-				case "Craftmania":
-					GameStarter.startCraftmania();
-					break;
-				case "Parcour":
-					GameStarter.startParcour();
-					break;
-				case "Replica3D":
-					GameStarter.startReplica3d();
-					break;
-				default:
-					break;
-				}
-			} else {
-				switch (args[0].toLowerCase()) {
-				case "iciclerun":
-					GameStarter.startIcicleRun();
-					break;
-				case "replica":
-					GameStarter.startReplica();
-					break;
-				case "blockrun":
-					GameStarter.startBlockrun();
-					break;
-				case "spleef":
-					GameStarter.startSpleef();
-					break;
-				case "duel":
-					GameStarter.startDuel();
-					break;
-				case "dropper":
-					GameStarter.startDropper();
-					break;
-				case "ffa":
-					GameStarter.startFFA();
-					break;
-				case "oldschoolffa":
-					GameStarter.startOldSchoolFFA();
-					break;
-				case "craftmania":
-					GameStarter.startCraftmania();
-					break;
-				case "parcour":
-					GameStarter.startParcour();
-					break;
-				case "replica3d":
-					GameStarter.startReplica3d();
-					break;
-				default:
-					break;
-				}
-			}
 		}
 		return true;
 	}

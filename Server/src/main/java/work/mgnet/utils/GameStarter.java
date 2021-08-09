@@ -33,7 +33,7 @@ import work.mgnet.iciclerun.IcicleConfiguration;
 import work.mgnet.iciclerun.IcicleListener;
 import work.mgnet.oldschoolffa.OldSchoolFFAConfiguration;
 import work.mgnet.paperextensions.Configuration;
-import work.mgnet.parcour.ParcourConfiguration;
+import work.mgnet.parkour.ParkourConfiguration;
 import work.mgnet.replika.ReplicaConfiguration;
 import work.mgnet.replika.ReplicaRun;
 import work.mgnet.speedbuild.SpeedbuildRun;
@@ -62,6 +62,11 @@ public class GameStarter {
 			p.setGameMode(GameMode.ADVENTURE);
 			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 		}
+		try {
+			UtilListener.updateTickrate(4f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		DuelRun.getFights();
 		DuelRun.startFight();
 	}
@@ -84,6 +89,11 @@ public class GameStarter {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					p.sendTitle(new Title("§aGo"));
 					p.setTitleTimes(10, 10, 10);
+					try {
+						UtilListener.updateTickrate(4f);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					p.setGameMode(GameMode.ADVENTURE);
 					ItemStack kn = new ItemStack(Material.ENCHANTED_BOOK);
 					ItemMeta mt = kn.getItemMeta();
@@ -118,7 +128,11 @@ public class GameStarter {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					p.sendTitle(new Title("§aGo"));
 					p.setTitleTimes(10, 10, 10);
-					
+					try {
+						UtilListener.updateTickrate(4f);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					ItemStack is = new ItemStack(Material.DIAMOND_SHOVEL);
 					ItemMeta im = is.getItemMeta();
 					im.setUnbreakable(true);
@@ -158,6 +172,11 @@ public class GameStarter {
 						p.hidePlayer(p2);
 						p2.hidePlayer(p);
 					}
+					try {
+						UtilListener.updateTickrate(4f);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					p.sendTitle(new Title("§aGo"));
 					p.setTitleTimes(10, 10, 10);
 					p.setAllowFlight(true);
@@ -170,12 +189,17 @@ public class GameStarter {
 		}, 40L);
 	}
 	
-	public static void startParcour() {
-		Tournament.CURRENTGAME = Games.PARCOUR;
+	public static void startParkour() {
+		Tournament.CURRENTGAME = Games.PARKOUR;
+		try {
+			UtilListener.updateTickrate(4f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			p.sendTitle(new Title("§6Parcour", "§aGo!"));
+			p.sendTitle(new Title("§6Parkour", "§aGo!"));
 			p.setTitleTimes(10, 10, 10);
-			p.teleport(ParcourConfiguration.parcourLocation);
+			p.teleport(ParkourConfiguration.parkourLocation);
 			p.setGameMode(GameMode.ADVENTURE);
 			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 		}
@@ -184,6 +208,11 @@ public class GameStarter {
 	public static void startDropper() {
 		Tournament.CURRENTGAME = Games.DROPPER;
 		DropperRun.loadDropper();
+		try {
+			UtilListener.updateTickrate(4f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.sendTitle(new Title("§eDropper", "§aGo!"));
 			p.setTitleTimes(10, 10, 10);
@@ -224,6 +253,11 @@ public class GameStarter {
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					p.sendTitle(new Title("§aGo"));
+					try {
+						UtilListener.updateTickrate(4f);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					p.setTitleTimes(10, 10, 10);
 					p.sendMessage(Prefix.ICICLERUN + "§6Watch your step " + p.getName() + "!");
 					p.setMaxHealth(0.5);
@@ -304,6 +338,11 @@ public class GameStarter {
 			@Override
 			public void run() {
 				Bukkit.broadcastMessage(Prefix.FFA + "The Fight begins!");
+				try {
+					UtilListener.updateTickrate(4f);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}, 280L);
 	}
@@ -328,6 +367,11 @@ public class GameStarter {
 			public void run() {
 				Bukkit.broadcastMessage(Prefix.CRAFTMANIA + "Go craft fast!");
 				CraftmaniaRun.setCrafting();
+				try {
+					UtilListener.updateTickrate(4f);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}, 100L);
 	}
@@ -350,6 +394,11 @@ public class GameStarter {
 					p.setTitleTimes(10, 10, 10);
 					p.sendMessage("§9[§bSpeedbuild§9]§6 Show me your cps, " + p.getName() + "!");
 					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
+				}
+				try {
+					UtilListener.updateTickrate(4f);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				SpeedbuildRun.loadBuild();
 			}

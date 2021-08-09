@@ -35,6 +35,11 @@ public class FFAListener implements Listener {
 				if (lol.getGameMode() == GameMode.ADVENTURE) c++;
 			}
 			if (c == 2) {
+				try {
+					UtilListener.updateTickrate(20f);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Tournament.self, new Runnable() {
 					
 					@Override

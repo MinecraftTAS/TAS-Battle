@@ -30,6 +30,7 @@ import work.mgnet.iciclerun.IcicleConfiguration;
 import work.mgnet.paperextensions.Configuration;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class SpleefListener implements Listener {
 	
@@ -112,6 +113,11 @@ public class SpleefListener implements Listener {
 					p.getInventory().clear();
 					p.teleport(p.getWorld().getSpawnLocation());
 					p.setGameMode(GameMode.SPECTATOR);
+				}
+				try {
+					UtilListener.updateTickrate(20f);
+				} catch (Exception e2) {
+					e2.printStackTrace();
 				}
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Tournament.self, new Runnable() {
 					

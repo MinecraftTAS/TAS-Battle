@@ -20,6 +20,7 @@ import work.mgnet.Games;
 import work.mgnet.Tournament;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
 public class BlockrunListener implements Listener {
 
@@ -61,6 +62,11 @@ public class BlockrunListener implements Listener {
 					p.setHealth(20.0);
 					p.getInventory().clear();
 					p.setGameMode(GameMode.SPECTATOR);
+				}
+				try {
+					UtilListener.updateTickrate(20f);
+				} catch (Exception e2) {
+					e2.printStackTrace();
 				}
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Tournament.self, new Runnable() {
 

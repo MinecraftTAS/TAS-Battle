@@ -101,6 +101,11 @@ public class UtilListener implements Listener, PluginMessageListener {
 					player.setGameMode(GameMode.ADVENTURE);
 					Tournament.CURRENTGAME = Games.NONE;
 					DropperListener.done.clear();
+					try {
+						UtilListener.updateTickrate(20f);
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
 					player.setHealth(20);
 				}
 			}
@@ -146,6 +151,10 @@ public class UtilListener implements Listener, PluginMessageListener {
 	@EventHandler
 	public void onJoin(PlayerPreLoginEvent e) {
 		if (Tournament.isTournament) e.disallow(Result.KICK_OTHER, "§8There is currently a Tournament running");
+		if (Tournament.CURRENTGAME != Games.NONE) {
+			e.disallow(Result.KICK_OTHER, "§8There is currently a game running, the players have been notified.");
+			Bukkit.broadcast(Component.text("§a" + e.getName() + " would like to join."));
+		}
 	}
 	
 	@EventHandler

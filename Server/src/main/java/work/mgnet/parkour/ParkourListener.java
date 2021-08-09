@@ -1,4 +1,4 @@
-package work.mgnet.parcour;
+package work.mgnet.parkour;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,15 +21,16 @@ import work.mgnet.Games;
 import work.mgnet.Tournament;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.Prefix;
+import work.mgnet.utils.UtilListener;
 
-public class ParcourListener implements Listener {
+public class ParkourListener implements Listener {
 
 	public static HashMap<String, Location> checkpoints = new HashMap<>();
 	public static ArrayList<Player> done = new ArrayList<>();
 	
 	@EventHandler
 	public void onMove(PlayerMoveEvent e) {
-		if (e.getTo().getY() < 80 && Tournament.CURRENTGAME == Games.PARCOUR) {
+		if (e.getTo().getY() < 80 && Tournament.CURRENTGAME == Games.PARKOUR) {
 			e.getPlayer().teleport(checkpoints.get(e.getPlayer().getName()));
 			e.getPlayer().setGameMode(GameMode.ADVENTURE);
 		}
@@ -37,7 +38,7 @@ public class ParcourListener implements Listener {
 	
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
-		if (Tournament.CURRENTGAME == Games.PARCOUR) {
+		if (Tournament.CURRENTGAME == Games.PARKOUR) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Tournament.self, new Runnable() {
 				
 				@Override
@@ -51,37 +52,42 @@ public class ParcourListener implements Listener {
 	
 	@EventHandler
 	public void onCheckpoint(PlayerInteractEvent e) {
-		if (e.getAction() == Action.PHYSICAL && e.hasBlock() && Tournament.CURRENTGAME == Games.PARCOUR) {
+		if (e.getAction() == Action.PHYSICAL && e.hasBlock() && Tournament.CURRENTGAME == Games.PARKOUR) {
 			if (e.getClickedBlock().getType() == Material.HEAVY_WEIGHTED_PRESSURE_PLATE) {
 				
 				if (checkpoints.containsKey(e.getPlayer().getName())) {
 					if (checkpoints.get(e.getPlayer().getName()).getBlock().getLocation().distance(e.getPlayer().getLocation().getBlock().getLocation()) <= 10) return;
 					checkpoints.remove(e.getPlayer().getName());
 				}
-				e.getPlayer().sendMessage(Prefix.PARCOUR + "You hit a checkpoint!");
+				e.getPlayer().sendMessage(Prefix.PARKOUR + "You hit a checkpoint!");
 				e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 				checkpoints.put(e.getPlayer().getName(), e.getPlayer().getLocation().clone());
 			} else if (e.getClickedBlock().getType() == Material.LIGHT_WEIGHTED_PRESSURE_PLATE) {
 				done.add(e.getPlayer());
 				if (done.size() == 1) {
 					StatisticManager.addPoints(e.getPlayer().getName(), 5);
-					e.getPlayer().sendMessage(Prefix.PARCOUR + "You won and got 5 points!");
-					Bukkit.broadcast(Component.text(Prefix.PARCOUR + e.getPlayer().getName() + " was first!"));
+					e.getPlayer().sendMessage(Prefix.PARKOUR + "You won and got 5 points!");
+					Bukkit.broadcast(Component.text(Prefix.PARKOUR + e.getPlayer().getName() + " was first!"));
 					e.getPlayer().setGameMode(GameMode.SPECTATOR);
 				} else if (done.size() == 2) {
 					StatisticManager.addPoints(e.getPlayer().getName(), 2);
-					e.getPlayer().sendMessage(Prefix.PARCOUR + "You finished second and got 2 points!");
-					Bukkit.broadcast(Component.text(Prefix.PARCOUR + e.getPlayer().getName() + " was second!"));
+					e.getPlayer().sendMessage(Prefix.PARKOUR + "You finished second and got 2 points!");
+					Bukkit.broadcast(Component.text(Prefix.PARKOUR + e.getPlayer().getName() + " was second!"));
 					e.getPlayer().setGameMode(GameMode.SPECTATOR);
 				} else if (done.size() == 3) {
 					StatisticManager.addPoints(e.getPlayer().getName(), 1);
-					e.getPlayer().sendMessage(Prefix.PARCOUR + "You finished third and got 1 points!");
-					Bukkit.broadcast(Component.text(Prefix.PARCOUR + e.getPlayer().getName() + " was third!"));
+					e.getPlayer().sendMessage(Prefix.PARKOUR + "You finished third and got 1 points!");
+					Bukkit.broadcast(Component.text(Prefix.PARKOUR + e.getPlayer().getName() + " was third!"));
 					e.getPlayer().setGameMode(GameMode.SPECTATOR);
 				}
 				
 				if (done.size() == Bukkit.getOnlinePlayers().size() || done.size() == 3) {
-					Bukkit.broadcast(Component.text(Prefix.PARCOUR + "The Game has ended!"));
+					Bukkit.broadcast(Component.text(Prefix.PARKOUR + "The Game has ended!"));
+					try {
+						UtilListener.updateTickrate(20f);
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						player.teleport(player.getWorld().getSpawnLocation());
 						player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 1.0f, 1f);
