@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import net.kyori.adventure.text.Component;
 import work.mgnet.Games;
 import work.mgnet.Tournament;
+import work.mgnet.paperextensions.Configuration;
 import work.mgnet.utils.Prefix;
 import work.mgnet.utils.UtilListener;
 
@@ -39,6 +40,9 @@ public class DuelRun {
 		if (fights.size() == 0) {
 			Bukkit.broadcast(Component.text(Prefix.DUEL + "The Game is over!"));
 			Tournament.CURRENTGAME = Games.NONE;
+			Configuration.restrictInventory = true;
+			Configuration.restrictOffhand = true;
+			Configuration.restrictInteract = true;
 			try {
 				UtilListener.updateTickrate(20f);
 			} catch (Exception e2) {

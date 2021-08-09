@@ -55,6 +55,9 @@ public class GameStarter {
 	
 	public static void startDuel() {
 		Tournament.CURRENTGAME = Games.DUEL;
+		Configuration.restrictInventory = false;
+		Configuration.restrictOffhand = false;
+		Configuration.restrictInteract = false;
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.sendTitle(new Title("§7Duel", "§cGet ready!"));
 			p.setTitleTimes(5, 5, 5);
@@ -270,9 +273,9 @@ public class GameStarter {
 	public static void startOldSchoolFFA() {
 		Tournament.CURRENTGAME = Games.OLDSCHOOLFFA;
 		UtilListener.enablePVP = true;
-		
-		
-		
+		Configuration.restrictInventory = false;
+		Configuration.restrictOffhand = false;
+		Configuration.restrictInteract = false;
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.teleport(OldSchoolFFAConfiguration.pvpLocation);
 			p.setGameMode(GameMode.ADVENTURE);
@@ -307,6 +310,9 @@ public class GameStarter {
 	public static void startFFA() {
 		Tournament.CURRENTGAME = Games.FFA;
 		UtilListener.enablePVP = true;
+		Configuration.restrictInventory = false;
+		Configuration.restrictOffhand = false;
+		Configuration.restrictInteract = false;
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.teleport(FFAConfiguration.pvpLocation);
 			p.setGameMode(GameMode.ADVENTURE);

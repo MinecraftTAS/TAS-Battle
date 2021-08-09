@@ -10,6 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import work.mgnet.Games;
 import work.mgnet.Tournament;
+import work.mgnet.paperextensions.Configuration;
 import work.mgnet.statistic.StatisticManager;
 import work.mgnet.utils.GameStarter;
 import work.mgnet.utils.Prefix;
@@ -40,6 +41,9 @@ public class FFAListener implements Listener {
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
+				Configuration.restrictInventory = true;
+				Configuration.restrictOffhand = true;
+				Configuration.restrictInteract = true;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Tournament.self, new Runnable() {
 					
 					@Override
