@@ -76,7 +76,10 @@ public class TASBattleScreen extends Screen {
 			x += 20;
 		}
 		addRenderableWidget(new Button(5, height - 30, 250, 20, new TextComponent("Connect to the server"), b -> {
-			if (selected != null) ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 5001), new ServerData(selected.name, "mgnet.work:5001", false));
+			ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 5001), new ServerData("asd", "mgnet.work:5001", false));
+		}));
+		addRenderableWidget(new Button(255, height - 30, width - 260, 20, new TextComponent("Connect to the anarchy server"), b -> {
+			ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 5000), new ServerData("asd", "mgnet.work:5000", false));
 		}));
 	}
 	
