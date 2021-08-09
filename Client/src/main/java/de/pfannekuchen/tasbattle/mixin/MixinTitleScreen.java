@@ -28,7 +28,6 @@ public abstract class MixinTitleScreen extends Screen {
 	/**
 	 * Modifies the Texture that is being rendered below the Title, aka "Java Edition"
 	 */
-// TODO: @Mumfrey, fix this :D
 //	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/resources/ResourceLocation;)V", ordinal = 2), index = 1)
 //	private ResourceLocation modifyJavaEditionLabel(ResourceLocation original) {
 //		return TASBattle.CUSTOM_EDITION_RESOURCE_LOCATION;
