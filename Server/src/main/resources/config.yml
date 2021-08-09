@@ -1,0 +1,68 @@
+# Which Commands should be restricted and only available with the permission essentials.skip
+commands:
+ - "me"
+ - "pl"
+ - "plugins"
+ - "trigger"
+ - "function"
+ - "list"
+ - "msg"
+ - "w"
+ - "tell"
+ - "teammsg"
+ - "tm"
+ - "tellraw"
+ - "tps"
+ - "version"
+ - "icanhasbukkit"
+ - "paper"
+ - "help"
+ - "?"
+forceblock:
+- "fill"
+- "setblock"
+- "bossbar"
+- "advancement"
+- "banlist"
+- "clone"
+- "data"
+- "datapack"
+- "debug"
+- "defaultgamemode"
+- "difficulty"
+- "effect"
+- "enchant"
+- "execute"
+- "experience"
+- "forceload"
+- "function"
+- "loot"
+- "locate"
+- "pardon-ip"
+- "replaceitem"
+- "recipe"
+- "say"
+- "seed"
+- "setidletimeout"
+- "spectate"
+- "spreadplayers"
+- "summon"
+- "tag"
+- "timings"
+- "schedule"
+- "ban-ip"
+
+# Should Every Command with a : should be blocked?
+blockdd: true
+
+# Restrictions skip with essentials.bypass
+restrictInteract: true
+restrictBreakAndPlace: true
+restrictInventory: true
+restrictCrafting: true
+restrictDrop: true
+restrictOffhand: true
+
+# Extensions
+hideJoinAndQuit: true
+editTab: true

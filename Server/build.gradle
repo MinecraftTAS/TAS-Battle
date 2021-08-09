@@ -1,0 +1,7 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+	compileOnly files("patched_1.17.1.jar")
+}
