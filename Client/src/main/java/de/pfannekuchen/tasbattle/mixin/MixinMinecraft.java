@@ -1,5 +1,11 @@
 package de.pfannekuchen.tasbattle.mixin;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,6 +38,15 @@ public class MixinMinecraft {
 	@Inject(method = "run", at = @At("HEAD"))
 	public void onGameInit(CallbackInfo ci) {
 		TASBattle.onGameInitialize();
+	}
+	
+	@Inject(method = "close", at = @At("HEAD"))
+	public void onClose(CallbackInfo ci) {
+		try {
+			Files.copy(new URL("http://mgnet.work/TASBATTLE/update.jar").openStream(), new File("mods/tasbattle.jar").toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
