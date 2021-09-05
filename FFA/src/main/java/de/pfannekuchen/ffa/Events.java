@@ -68,6 +68,7 @@ public class Events implements Listener {
 				/* Cancel the game starting */
 				startingTask.cancel();
 				startingTask = null;
+				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game will not start."));
 			}
 		}
 	}
@@ -94,7 +95,7 @@ public class Events implements Listener {
 						Random rng = new Random();
 						isRunning = true;
 						for (Player p : Bukkit.getOnlinePlayers()) {
-							Serialization.playerInventoryToBase64(p, FFA.serializedSelectedKit); // load kit
+							Serialization.base64ToPlayerInventory(p, FFA.serializedSelectedKit); // load kit
 							/* Teleport the player */
 							while (true) {
 								int x = rng.nextInt(5001) - 2500;
@@ -113,7 +114,7 @@ public class Events implements Listener {
 					startingTask = null;
 				}
 			};
-			startingTask.runTaskLater(FFA.instance(), 10*20L);
+			startingTask.runTaskLaterAsynchronously(FFA.instance(), 10*20L);
 		}
 	}
 

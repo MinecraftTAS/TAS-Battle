@@ -13,15 +13,15 @@ website: mgnet.work
 prefix: FFA
 
 commands:
-	savekit:
-		usage: /savekit <kit>
-		description: Saves the specified Inventory as the Kit.
-	loadkit:
-		usage: /loadkit <kit>
-		description: Loads the specified Kit into the Inventory.
-	kit:
-		usage: /kit <kit>
-		description: Changes the active kit.
-	delkit:
-		usage: /delkit <kit>
-		description: Deletes a kit
+    savekit:
+        usage: /savekit <kit>
+        description: Saves the specified Inventory as the Kit.
+    loadkit:
+        usage: /loadkit <kit>
+        description: Loads the specified Kit into the Inventory.
+    kit:
+        usage: /kit <kit>
+        description: Changes the active kit.
+    delkit:
+        usage: /delkit <kit>
+        description: Deletes a kit

@@ -1,4 +1,4 @@
-package de.pfannekuchen.ffa;
+	package de.pfannekuchen.ffa;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class FFA extends JavaPlugin {
 
 	/** The currently selected kit */
-	public static String[] serializedSelectedKit;
+	public static byte[][] serializedSelectedKit;
 	/** The currently selected kit name */
 	public static String selectedKitName;
 	
@@ -59,7 +59,7 @@ public class FFA extends JavaPlugin {
 			File kit = new File(getDataFolder(), args[0]);
 			if (command.getName().equalsIgnoreCase("savekit")) {
 				/* Save the players inventory as a kit */
-				String[] serializedInventory = Serialization.playerInventoryToBase64(((Player) sender).getInventory());
+				byte[][] serializedInventory = Serialization.playerInventoryToBase64(((Player) sender).getInventory());
 				Files.write(kit.toPath(), Arrays.asList(serializedInventory), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 				sender.sendMessage("\u00A7b\u00bb \u00A77Your kit was successfully saved to \u00A7a\"" + kit.getName() + "\"\u00A77.");
 				return true;
@@ -67,8 +67,8 @@ public class FFA extends JavaPlugin {
 			if (!kit.exists()) return false; // Only check for the load commands if the kit was found.
 			if (command.getName().equalsIgnoreCase("loadkit")) {
 				/* Load a kit into the players inventory */
-				String[] serializedInventory = Files.readAllLines(kit.toPath()).toArray(new String[2]);
-				Serialization.playerInventoryToBase64((Player) sender, serializedInventory);
+				byte[] serializedInventory = Files.readAllBytes(kit.toPath()).toArray(new String[2]);
+				Serialization.base64ToPlayerInventory((Player) sender, serializedInventory);
 				sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully loaded into your Inventory.");
 				return true;
 			} else if (command.getName().equalsIgnoreCase("kit")) {
