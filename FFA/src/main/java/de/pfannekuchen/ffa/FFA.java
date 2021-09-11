@@ -3,7 +3,6 @@
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -60,20 +59,30 @@ public class FFA extends JavaPlugin {
 			if (command.getName().equalsIgnoreCase("savekit")) {
 				/* Save the players inventory as a kit */
 				byte[][] serializedInventory = Serialization.playerInventoryToBase64(((Player) sender).getInventory());
-				Files.write(kit.toPath(), Arrays.asList(serializedInventory), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+				kit.mkdir();
+				Files.write(new File(kit, "inv.dat").toPath(), serializedInventory[0], StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+				Files.write(new File(kit, "extra.dat").toPath(), serializedInventory[1], StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+				Files.write(new File(kit, "armor.dat").toPath(), serializedInventory[2], StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 				sender.sendMessage("\u00A7b\u00bb \u00A77Your kit was successfully saved to \u00A7a\"" + kit.getName() + "\"\u00A77.");
 				return true;
 			}
 			if (!kit.exists()) return false; // Only check for the load commands if the kit was found.
 			if (command.getName().equalsIgnoreCase("loadkit")) {
 				/* Load a kit into the players inventory */
-				byte[] serializedInventory = Files.readAllBytes(kit.toPath()).toArray(new String[2]);
-				Serialization.base64ToPlayerInventory((Player) sender, serializedInventory);
+				byte[][] items = new byte[3][];
+				items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
+				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
+				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+				Serialization.base64ToPlayerInventory((Player) sender, items);
 				sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully loaded into your Inventory.");
 				return true;
 			} else if (command.getName().equalsIgnoreCase("kit")) {
 				/* Select a kit as active */
-				serializedSelectedKit = Files.readAllLines(kit.toPath()).toArray(new String[2]);
+				byte[][] items = new byte[3][];
+				items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
+				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
+				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+				serializedSelectedKit = items;
 				sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully marked as active.");
 				selectedKitName = kit.getName();
 				Events.instance().onKitSelectedEvent();

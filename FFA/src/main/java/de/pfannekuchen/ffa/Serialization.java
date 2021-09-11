@@ -13,7 +13,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 /**
  * Serialize Stuff
- * @author graywolf336
+ * @author Pancake
  */
 public class Serialization {
 	
@@ -44,7 +44,6 @@ public class Serialization {
 	 */
 	public static void base64ToPlayerInventory(Player p, byte[][] data) throws IllegalStateException, IOException {
 		//get the main content part, this doesn't return the armor
-		System.out.println(data[0]);
 		ItemStack[] content = itemStackArrayFromBase64(data[0]);
 		ItemStack[] additional = itemStackArrayFromBase64(data[1]);
 		ItemStack[] armor = itemStackArrayFromBase64(data[2]);

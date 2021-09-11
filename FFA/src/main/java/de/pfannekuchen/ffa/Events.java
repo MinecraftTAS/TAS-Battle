@@ -98,8 +98,8 @@ public class Events implements Listener {
 							Serialization.base64ToPlayerInventory(p, FFA.serializedSelectedKit); // load kit
 							/* Teleport the player */
 							while (true) {
-								int x = rng.nextInt(5001) - 2500;
-								int z = rng.nextInt(5001) - 2500;
+								int x = rng.nextInt(801) - 400;
+								int z = rng.nextInt(801) - 400;
 								Block b = p.getWorld().getHighestBlockAt(x, z);
 								if (b != null && b.getType() != Material.AIR) {
 									p.teleport(new Location(p.getWorld(), x, b.getY() + 1, z));
@@ -108,13 +108,13 @@ public class Events implements Listener {
 							}
 						}
 					} catch (Exception e) {
-						Bukkit.broadcast(Component.text("\u00A7b\u00bc \u00A7cAn error occured whilst trying to start the game!"));
+						Bukkit.broadcast(Component.text("\u00A7b\u00bb	 \u00A7cAn error occured whilst trying to start the game!"));
 						e.printStackTrace();
 					}
 					startingTask = null;
 				}
 			};
-			startingTask.runTaskLaterAsynchronously(FFA.instance(), 10*20L);
+			startingTask.runTaskLater(FFA.instance(), 10*20L);
 		}
 	}
 
