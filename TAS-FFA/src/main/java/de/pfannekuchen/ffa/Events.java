@@ -37,6 +37,8 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.title.Title;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 /**
  * Simple events for the FFA Plugin
@@ -210,8 +212,10 @@ public class Events implements Listener {
 				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
 				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
 			}
-			if (winner != null)
+			if (winner != null) {
 				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + winner.getName() + "\u00A77 won the game!"));
+				winner.showTitle(Title.title(Component.text("\u00A7cYou won!"), Component.empty()));
+			}
 			new BukkitRunnable() {
 				@Override
 				public void run() {
