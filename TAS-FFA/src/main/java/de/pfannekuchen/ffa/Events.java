@@ -76,7 +76,7 @@ public class Events implements Listener {
 		if (isRunning) {
 			e.getPlayer().sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + e.getPlayer().getName() + "\u00A77 has joined the game."));
 			e.joinMessage(null);
-			p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEACON_ACTIVATE, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
+			e.getPlayer().playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEACON_ACTIVATE, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 			e.getPlayer().setGameMode(GameMode.SPECTATOR);
 			return;
 		}
