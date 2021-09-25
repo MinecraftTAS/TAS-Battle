@@ -7,6 +7,7 @@ author: Pancake(MCPfannkuchenYT)
 # Code Info
 main: de.pfannekuchen.ffa.FFA
 load: POSTWORLD
+api-version: 1.17
 
 # Additional Stuff
 website: mgnet.work

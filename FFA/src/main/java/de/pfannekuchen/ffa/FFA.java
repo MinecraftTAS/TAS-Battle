@@ -1,8 +1,11 @@
 	package de.pfannekuchen.ffa;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -21,6 +24,8 @@ public class FFA extends JavaPlugin {
 
 	/** The currently selected kit */
 	public static byte[][] serializedSelectedKit;
+	/** All available kits */
+	public static HashMap<String, byte[][]> availableKits = new HashMap<>(); 
 	/** The currently selected kit name */
 	public static String selectedKitName;
 	
@@ -35,6 +40,22 @@ public class FFA extends JavaPlugin {
 		instance = this;
 		if (!getDataFolder().exists()) getDataFolder().mkdir();
 		Bukkit.getPluginManager().registerEvents(new Events(), this);
+		/* Read available Kits */
+		for (File folder : getDataFolder().listFiles()) {
+			try {
+				if (folder.isDirectory()) {
+					File kit = new File(getDataFolder(), folder.getName());
+					byte[][] items = new byte[3][];
+					items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
+					items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
+					items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+					availableKits.put(folder.getName(), items);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		super.onEnable();
 	}
 	
@@ -44,7 +65,7 @@ public class FFA extends JavaPlugin {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 		if (!sender.isOp()) return null;
-		return super.onTabComplete(sender, command, alias, args);
+		return new ArrayList<String>(availableKits.keySet());
 	}
 
 	/**
@@ -83,9 +104,13 @@ public class FFA extends JavaPlugin {
 				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
 				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
 				serializedSelectedKit = items;
-				sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully marked as active.");
 				selectedKitName = kit.getName();
-				Events.instance().onKitSelectedEvent();
+				if (Events.instance().onKitSelectedEvent()) {
+					Events.shouldAllowVoting = false;
+					sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully selected for the this game");
+				} else {
+					sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 could not be selected, because there need to be at least 2 people online.");
+				}
 				return true;
 			} else if (command.getName().equalsIgnoreCase("delkit")) {
 				if (!kit.delete()) throw new Exception("Could not delete file: " + kit.getName());
