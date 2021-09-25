@@ -13,8 +13,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import net.kyori.adventure.text.Component;
 
 /**
  * Main and basically everything of the FFA Plugin
@@ -55,7 +58,13 @@ public class FFA extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		
+		/* Start a Thread */
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				for (Player p : Bukkit.getOnlinePlayers()) if (!Events.isRunning) p.sendActionBar(Component.text("\u00A7cLC to view a kit. RC to vote a kit."));	
+			}
+		}.runTaskTimer(this, 0L, 20L);
 		super.onEnable();
 	}
 	

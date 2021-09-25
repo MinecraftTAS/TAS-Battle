@@ -47,7 +47,7 @@ public class Events implements Listener {
 	/** Task when the game is starting */
 	private static BukkitRunnable startingTask;
 	/** Whether the game is actually running */
-	private static boolean isRunning;
+	public static boolean isRunning;
 	/** Allow voting */
 	public static boolean shouldAllowVoting = true;
 	/** Alive players of the game */
@@ -77,7 +77,6 @@ public class Events implements Listener {
 		}
 		Player p = e.getPlayer();
 		p.sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
-		p.sendActionBar(Component.text("\u00A7cLC to view a kit. RC to vote a kit."));
 		for (String map : FFA.availableKits.keySet()) {
 			ItemStack item = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
 			item.editMeta(c -> {
