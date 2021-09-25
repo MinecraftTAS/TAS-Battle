@@ -1,0 +1,18 @@
+[submodule "TAS-Server/PaperMC-SlowPaper"]
+	path = TAS-Server/PaperMC-SlowPaper
+	url = https://github.com/MCPfannkuchenYT/SlowPaper.git
+[submodule "TAS-Server/PaperMC-Waterfall"]
+	path = TAS-Server/PaperMC-Waterfall
+	url = https://github.com/MCPfannkuchenYT/Waterfall.git
+[submodule "TAS-Lobby/AdvancedLobby"]
+	path = TAS-Lobby/AdvancedLobby
+	url = https://github.com/MCPfannkuchenYT/AdvancedLobby.git
+[submodule "TAS-Lobby/zNPC"]
+	path = TAS-Lobby/zNPC
+	url = https://github.com/MCPfannkuchenYT/znpc-servers.git
+[submodule "TAS-Bedwars/SBA"]
+	path = TAS-Bedwars/SBA
+	url = https://github.com/MCPfannkuchenYT/SBA.git
+[submodule "TAS-Bedwars/ScreamingBedWars"]
+	path = TAS-Bedwars/ScreamingBedWars
+	url = https://github.com/MCPfannkuchenYT/BedWars.git
