@@ -68,6 +68,13 @@ public class Events implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
+		e.getPlayer().teleport(e.getPlayer().getWorld().getSpawnLocation());
+		if (isRunning) {
+			e.getPlayer().sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + e.getPlayer().getName() + "\u00A77 has joined the game."));
+			e.joinMessage(null);
+			e.getPlayer().setGameMode(GameMode.SPECTATOR);
+			return;
+		}
 		Player p = e.getPlayer();
 		p.sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
 		p.sendActionBar(Component.text("\u00A7cLC to view a kit. RC to vote a kit."));
