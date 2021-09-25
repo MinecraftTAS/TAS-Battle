@@ -7,7 +7,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -18,7 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 public class Serialization {
 
 	/**
-	 * Converts the player inventory to a String array of Base64 strings. First string is the content and second string is the armor.
+	 * Serialized the Player Inventory
 	 *
 	 * @param playerInventory to turn into an array of strings.
 	 * @return Array of strings: [ main content, armor content ]
@@ -35,7 +34,7 @@ public class Serialization {
 
 
 	/**
-	 * Converts the base 64 array to a Player Inventory. First string is the content and second string is the armor.
+	 * Deserializes the Player Inventory
 	 *
 	 * @param playerInventory to turn into an array of strings.
 	 * @return Array of strings: [ main content, armor content ]
@@ -54,12 +53,10 @@ public class Serialization {
 
 	/**
 	 *
-	 * A method to serialize an {@link ItemStack} array to Base64 String.
+	 * Serialized an Item
 	 *
-	 * Based off of {@link #toBase64(Inventory)}.
-	 *
-	 * @param items to turn into a Base64 String.
-	 * @return Base64 string of the items.
+	 * @param items to turn into a byte array
+	 * @return item serialized
 	 * @throws IllegalStateException
 	 */
 	private static byte[] serializeItemStack(ItemStack[] items) throws IllegalStateException {
@@ -79,17 +76,15 @@ public class Serialization {
 	        stream.close();
 	        return outputStream.toByteArray();
 	    } catch (Exception e) {
-	        throw new IllegalStateException("Unable to save item stacks.", e);
+	        throw new IllegalStateException("Unable to save item stack.", e);
 	    }
 	}
 
 	/**
-	 * Gets an array of ItemStacks from Base64 string.
+	 * Deserialize an Item
 	 *
-	 * Base off of {@link #fromBase64(String)}.
-	 *
-	 * @param data Base64 string to convert to ItemStack array.
-	 * @return ItemStack array created from the Base64 string.
+	 * @param data byte array to convert into item stack
+	 * @return ItemStack item
 	 * @throws IOException
 	 */
 	private static ItemStack[] deserializeItemStack(byte[] data) throws IOException {
@@ -107,7 +102,7 @@ public class Serialization {
 	        stream.close();
 	        return items;
 	    } catch (Exception e) {
-	        throw new IOException("Unable to decode class type.", e);
+	        throw new IOException("Unable to load item stack.", e);
 	    }
 	}
 

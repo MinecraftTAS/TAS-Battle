@@ -1,11 +1,9 @@
-	package de.pfannekuchen.ffa;
+package de.pfannekuchen.ffa;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -13,24 +11,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import net.kyori.adventure.text.Component;
 
 /**
  * Main and basically everything of the FFA Plugin
  * @author Pancake
  */
 public class FFA extends JavaPlugin {
-
-	/** The currently selected kit */
-	public static byte[][] serializedSelectedKit;
-	/** All available kits */
-	public static HashMap<String, byte[][]> availableKits = new HashMap<>();
-	/** The currently selected kit name */
-	public static String selectedKitName;
 
 	private static FFA instance;
 	public static FFA instance() { return instance; }
@@ -40,32 +28,14 @@ public class FFA extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
-		instance = this;
-		if (!getDataFolder().exists()) getDataFolder().mkdir();
-		Bukkit.getPluginManager().registerEvents(new Events(), this);
-		/* Read available Kits */
-		for (File folder : getDataFolder().listFiles()) {
-			try {
-				if (folder.isDirectory()) {
-					File kit = new File(getDataFolder(), folder.getName());
-					byte[][] items = new byte[3][];
-					items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
-					items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
-					items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
-					availableKits.put(folder.getName(), items);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			instance = this;
+			if (!getDataFolder().exists()) getDataFolder().mkdir();
+			Bukkit.getPluginManager().registerEvents(new Events(), this);
+			Game.onStartup();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		/* Start a Thread */
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				for (Player p : Bukkit.getOnlinePlayers()) if (!Events.isRunning) p.sendActionBar(Component.text("\u00A7cLC to view a kit. RC to vote a kit."));
-			}
-		}.runTaskTimer(this, 0L, 20L);
-		super.onEnable();
 	}
 
 	/**
@@ -74,7 +44,7 @@ public class FFA extends JavaPlugin {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 		if (!sender.isOp()) return null;
-		return new ArrayList<>(availableKits.keySet());
+		return new ArrayList<>(Game.availableKits.keySet());
 	}
 
 	/**
@@ -111,10 +81,10 @@ public class FFA extends JavaPlugin {
 				items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
 				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
 				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
-				serializedSelectedKit = items;
-				selectedKitName = kit.getName();
-				if (Events.instance().onKitSelectedEvent()) {
-					Events.shouldAllowVoting = false;
+				Game.serializedSelectedKit = items;
+				Game.selectedKitName = kit.getName();
+				if (Game.onKitSelectedEvent()) {
+					Game.shouldAllowVoting = false;
 					sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully selected for the this game");
 				} else {
 					sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 could not be selected, because there need to be at least 2 people online.");
