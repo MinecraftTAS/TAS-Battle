@@ -24,11 +24,11 @@ public class Serialization {
 	 * @return Array of strings: [ main content, armor content ]
 	 * @throws IllegalStateException
 	 */
-	public static byte[][] playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
+	public static byte[][] serializeInventory(PlayerInventory playerInventory) throws IllegalStateException {
 		//get the main content part, this doesn't return the armor
-		byte[] content = itemStackArrayToBase64(playerInventory.getContents());
-		byte[] additional = itemStackArrayToBase64(playerInventory.getExtraContents());
-		byte[] armor = itemStackArrayToBase64(playerInventory.getArmorContents());
+		byte[] content = serializeItemStack(playerInventory.getContents());
+		byte[] additional = serializeItemStack(playerInventory.getExtraContents());
+		byte[] armor = serializeItemStack(playerInventory.getArmorContents());
 
 		return new byte[][] { content, additional, armor };
 	}
@@ -42,11 +42,11 @@ public class Serialization {
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public static void base64ToPlayerInventory(Player p, byte[][] data) throws IllegalStateException, IOException {
+	public static void deserializeInventory(Player p, byte[][] data) throws IllegalStateException, IOException {
 		//get the main content part, this doesn't return the armor
-		ItemStack[] content = itemStackArrayFromBase64(data[0]);
-		ItemStack[] additional = itemStackArrayFromBase64(data[1]);
-		ItemStack[] armor = itemStackArrayFromBase64(data[2]);
+		ItemStack[] content = deserializeItemStack(data[0]);
+		ItemStack[] additional = deserializeItemStack(data[1]);
+		ItemStack[] armor = deserializeItemStack(data[2]);
 		p.getInventory().setContents(content);
 		p.getInventory().setExtraContents(additional);
 		p.getInventory().setArmorContents(armor);
@@ -62,7 +62,7 @@ public class Serialization {
 	 * @return Base64 string of the items.
 	 * @throws IllegalStateException
 	 */
-	private static byte[] itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
+	private static byte[] serializeItemStack(ItemStack[] items) throws IllegalStateException {
 		try {
 	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 	        DataOutputStream stream = new DataOutputStream(outputStream);
@@ -92,7 +92,7 @@ public class Serialization {
 	 * @return ItemStack array created from the Base64 string.
 	 * @throws IOException
 	 */
-	private static ItemStack[] itemStackArrayFromBase64(byte[] data) throws IOException {
+	private static ItemStack[] deserializeItemStack(byte[] data) throws IOException {
 		try {
 	        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 	        DataInputStream stream = new DataInputStream(inputStream);

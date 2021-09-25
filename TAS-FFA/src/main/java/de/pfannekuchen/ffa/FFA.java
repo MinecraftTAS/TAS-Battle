@@ -87,7 +87,7 @@ public class FFA extends JavaPlugin {
 			File kit = new File(getDataFolder(), args[0]);
 			if (command.getName().equalsIgnoreCase("savekit")) {
 				/* Save the players inventory as a kit */
-				byte[][] serializedInventory = Serialization.playerInventoryToBase64(((Player) sender).getInventory());
+				byte[][] serializedInventory = Serialization.serializeInventory(((Player) sender).getInventory());
 				kit.mkdir();
 				Files.write(new File(kit, "inv.dat").toPath(), serializedInventory[0], StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 				Files.write(new File(kit, "extra.dat").toPath(), serializedInventory[1], StandardOpenOption.CREATE, StandardOpenOption.WRITE);
@@ -102,7 +102,7 @@ public class FFA extends JavaPlugin {
 				items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
 				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
 				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
-				Serialization.base64ToPlayerInventory((Player) sender, items);
+				Serialization.deserializeInventory((Player) sender, items);
 				sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully loaded into your Inventory.");
 				return true;
 			} else if (command.getName().equalsIgnoreCase("kit")) {

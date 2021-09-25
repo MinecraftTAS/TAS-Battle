@@ -104,14 +104,14 @@ public class Events implements Listener {
 		if (e.getItem().getType() == Material.CYAN_STAINED_GLASS_PANE && e.getItem().getItemMeta().hasDisplayName()) {
 			String name = PlainTextComponentSerializer.plainText().serialize(e.getItem().getItemMeta().displayName()).replaceAll("\u00A7f", "");
 			if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-				byte[][] inventorySave = Serialization.playerInventoryToBase64(e.getPlayer().getInventory());
-				Serialization.base64ToPlayerInventory(e.getPlayer(), FFA.availableKits.get(name));
+				byte[][] inventorySave = Serialization.serializeInventory(e.getPlayer().getInventory());
+				Serialization.deserializeInventory(e.getPlayer(), FFA.availableKits.get(name));
 				new BukkitRunnable() {
 
 					@Override
 					public void run() {
 						try {
-							Serialization.base64ToPlayerInventory(e.getPlayer(), inventorySave); // Revert back Inventory
+							Serialization.deserializeInventory(e.getPlayer(), inventorySave); // Revert back Inventory
 							e.getPlayer().playSound(Sound.sound(org.bukkit.Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 						} catch (IllegalStateException | IOException e) {
 							e.printStackTrace();
@@ -241,7 +241,7 @@ public class Events implements Listener {
 						for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
 						isRunning = true;
 						for (Player p : Bukkit.getOnlinePlayers()) {
-							Serialization.base64ToPlayerInventory(p, FFA.serializedSelectedKit); // load kit
+							Serialization.deserializeInventory(p, FFA.serializedSelectedKit); // load kit
 							p.setGameMode(GameMode.SURVIVAL);
 							p.setLevel(0);
 							p.getWorld().setDifficulty(Difficulty.HARD);
