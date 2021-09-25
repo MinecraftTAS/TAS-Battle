@@ -232,7 +232,7 @@ public class Events implements Listener {
 								int x = rng.nextInt(801) - 400;
 								int z = rng.nextInt(801) - 400;
 								Block b = p.getWorld().getHighestBlockAt(x, z);
-								if (b != null && b.getType() != Material.AIR) {
+								if (b != null && b.getType() != Material.AIR && b.getY() > 1) {
 									p.teleport(new Location(p.getWorld(), x, b.getY() + 1, z));
 									break;
 								}
