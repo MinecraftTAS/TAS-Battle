@@ -33,6 +33,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -72,6 +74,7 @@ public class Events implements Listener {
 		if (isRunning) {
 			e.getPlayer().sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + e.getPlayer().getName() + "\u00A77 has joined the game."));
 			e.joinMessage(null);
+			p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEACON_ACTIVATE, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 			e.getPlayer().setGameMode(GameMode.SPECTATOR);
 			return;
 		}
@@ -84,6 +87,7 @@ public class Events implements Listener {
 			});
 			p.getInventory().addItem(item);
 		}
+		p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 		e.joinMessage(null);
 	}
 	
@@ -107,13 +111,16 @@ public class Events implements Listener {
 					public void run() {
 						try {
 							Serialization.base64ToPlayerInventory(e.getPlayer(), inventorySave); // Revert back Inventory
+							e.getPlayer().playSound(Sound.sound(org.bukkit.Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 						} catch (IllegalStateException | IOException e) {
 							e.printStackTrace();
 						}
 					}
 				}.runTaskLater(FFA.instance(), 20L * 6L);
+				e.getPlayer().playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHORUS_FLOWER_GROW, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 			} else if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				e.getPlayer().sendMessage(Component.text("\u00A7b\u00bb \u00A77You selected kit " + name));
+				e.getPlayer().playSound(Sound.sound(org.bukkit.Sound.BLOCK_SCAFFOLDING_BREAK, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 				onPlayerVoteKitEvent(e.getPlayer(), name);
 			}
 		}
@@ -132,6 +139,7 @@ public class Events implements Listener {
 				/* Cancel the game starting */
 				startingTask.cancel();
 				startingTask = null;
+				for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEACON_DEACTIVATE, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game will not start."));
 			}
 		}
@@ -145,6 +153,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerDeathEvent(PlayerDeathEvent e) {
 		e.deathMessage(null);
+		e.getEntity().playSound(Sound.sound(org.bukkit.Sound.ENTITY_ENDERMAN_SCREAM, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 		if (alivePlayers.contains(e.getEntity()) && isRunning) onPlayerOut(e.getEntity());
 	}
 	
@@ -190,10 +199,17 @@ public class Events implements Listener {
 		Player killer = player.getKiller();
 		if (killer == null)
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 died"));
-		else 
+		else {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 was slain by \u00A7a" + killer.getName()));
+			killer.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
+		}
 		if (alivePlayers.size() <= 1) {
 			Player winner = alivePlayers.get(0);
+			for (Player player2 : Bukkit.getOnlinePlayers()) {
+				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
+				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
+				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
+			}
 			if (winner != null)
 				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + winner.getName() + "\u00A77 won the game!"));
 			new BukkitRunnable() {
@@ -212,12 +228,14 @@ public class Events implements Listener {
 		if (Bukkit.getOnlinePlayers().size() >= 2 /* Check if the game is startable */)  {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The selected kit is: \u00A7b" + FFA.selectedKitName + "\u00A77."));
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game will start in 10 seconds."));
+			for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_LAND, Source.BLOCK, .6f, 1.2f), Sound.Emitter.self());
 			startingTask = new BukkitRunnable() {
 				@Override public void run() {
 					/* Start the game */
 					try {
 						Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game has started."));
 						Random rng = new Random();
+						for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
 						isRunning = true;
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							Serialization.base64ToPlayerInventory(p, FFA.serializedSelectedKit); // load kit
