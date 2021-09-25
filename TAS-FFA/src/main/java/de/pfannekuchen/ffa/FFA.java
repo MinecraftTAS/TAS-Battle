@@ -28,13 +28,13 @@ public class FFA extends JavaPlugin {
 	/** The currently selected kit */
 	public static byte[][] serializedSelectedKit;
 	/** All available kits */
-	public static HashMap<String, byte[][]> availableKits = new HashMap<>(); 
+	public static HashMap<String, byte[][]> availableKits = new HashMap<>();
 	/** The currently selected kit name */
 	public static String selectedKitName;
-	
+
 	private static FFA instance;
 	public static FFA instance() { return instance; }
-	
+
 	/**
 	 * Creates the Data Folder and registers the events on initialization
 	 */
@@ -62,19 +62,19 @@ public class FFA extends JavaPlugin {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				for (Player p : Bukkit.getOnlinePlayers()) if (!Events.isRunning) p.sendActionBar(Component.text("\u00A7cLC to view a kit. RC to vote a kit."));	
+				for (Player p : Bukkit.getOnlinePlayers()) if (!Events.isRunning) p.sendActionBar(Component.text("\u00A7cLC to view a kit. RC to vote a kit."));
 			}
 		}.runTaskTimer(this, 0L, 20L);
 		super.onEnable();
 	}
-	
+
 	/**
 	 * Returns a list of kits for every tab completion
 	 */
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 		if (!sender.isOp()) return null;
-		return new ArrayList<String>(availableKits.keySet());
+		return new ArrayList<>(availableKits.keySet());
 	}
 
 	/**
@@ -83,8 +83,7 @@ public class FFA extends JavaPlugin {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 		try {
-			if (!sender.isOp()) return false;
-			if (args.length != 1) return false;
+			if (!sender.isOp() || (args.length != 1)) return false;
 			File kit = new File(getDataFolder(), args[0]);
 			if (command.getName().equalsIgnoreCase("savekit")) {
 				/* Save the players inventory as a kit */
@@ -134,5 +133,5 @@ public class FFA extends JavaPlugin {
 		}
 		return false;
 	}
-	
+
 }

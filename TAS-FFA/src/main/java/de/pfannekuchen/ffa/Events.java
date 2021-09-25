@@ -38,7 +38,6 @@ import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
-import net.md_5.bungee.api.chat.BaseComponent;
 
 /**
  * Simple events for the FFA Plugin
@@ -56,7 +55,7 @@ public class Events implements Listener {
 	public static boolean shouldAllowVoting = true;
 	/** Alive players of the game */
 	private static List<Player> alivePlayers = new LinkedList<>();
-	
+
 	private static Events instance;
 	public Events() { Events.instance = this; }
 	public static Events instance() { return instance; }
@@ -65,7 +64,7 @@ public class Events implements Listener {
 	@EventHandler public void onPlayerBlockPlace(BlockPlaceEvent e) { if (!e.getPlayer().isOp() && !isRunning) e.setCancelled(true); }
 	@EventHandler public void onPlayerDamage(EntityDamageEvent e) { if (!e.getEntity().isOp() && !isRunning) e.setCancelled(true); }
 	@EventHandler public void onPlayerDrop(PlayerDropItemEvent e) { if (!e.getPlayer().isOp() && !isRunning) e.setCancelled(true); }
-	
+
 	/**
 	 * Whenever a player join, play a sound, send them a Message and start the game if can
 	 * @param e Join Event
@@ -92,9 +91,9 @@ public class Events implements Listener {
 		p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 		e.joinMessage(null);
 	}
-	
+
 	/**
-	 * Whenever a player clicks on a Kit item open or select the Kit 
+	 * Whenever a player clicks on a Kit item open or select the Kit
 	 * @param e Interaction Event
 	 * @throws IOException Well shit
 	 * @throws IllegalStateException Well shit
@@ -108,7 +107,7 @@ public class Events implements Listener {
 				byte[][] inventorySave = Serialization.playerInventoryToBase64(e.getPlayer().getInventory());
 				Serialization.base64ToPlayerInventory(e.getPlayer(), FFA.availableKits.get(name));
 				new BukkitRunnable() {
-					
+
 					@Override
 					public void run() {
 						try {
@@ -127,7 +126,7 @@ public class Events implements Listener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Clear a player from the game or vote list if they leave the server
 	 */
@@ -147,7 +146,7 @@ public class Events implements Listener {
 		}
 		if (alivePlayers.contains(e.getPlayer()) && isRunning) onPlayerOut(e.getPlayer());
 	}
-	
+
 	/**
 	 * Whenever a player dies, remove them from the game
 	 * @param e Death Event for Players
@@ -158,7 +157,7 @@ public class Events implements Listener {
 		e.getEntity().playSound(Sound.sound(org.bukkit.Sound.ENTITY_ENDERMAN_SCREAM, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 		if (alivePlayers.contains(e.getEntity()) && isRunning) onPlayerOut(e.getEntity());
 	}
-	
+
 	/**
 	 * Whenever a player selects a kit with RC
 	 * @throws IOException Uhh, cry?
@@ -191,7 +190,7 @@ public class Events implements Listener {
 			onKitSelectedEvent();
 		}
 	}
-	
+
 	/**
 	 * Whenever a player dies or quits the server
 	 * @param player The Player that died
@@ -224,7 +223,7 @@ public class Events implements Listener {
 			}.runTaskLater(FFA.instance(), 20L * 5L);
 		}
 	}
-	
+
 	/**
 	 * Whenever a kit gets selected, a countdown of 10 seconds will start, after which the players will be spread across the map.
 	 */

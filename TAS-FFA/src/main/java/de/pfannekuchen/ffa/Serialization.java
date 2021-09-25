@@ -16,10 +16,10 @@ import org.bukkit.inventory.PlayerInventory;
  * @author Pancake
  */
 public class Serialization {
-	
+
 	/**
 	 * Converts the player inventory to a String array of Base64 strings. First string is the content and second string is the armor.
-	 * 
+	 *
 	 * @param playerInventory to turn into an array of strings.
 	 * @return Array of strings: [ main content, armor content ]
 	 * @throws IllegalStateException
@@ -29,18 +29,18 @@ public class Serialization {
 		byte[] content = itemStackArrayToBase64(playerInventory.getContents());
 		byte[] additional = itemStackArrayToBase64(playerInventory.getExtraContents());
 		byte[] armor = itemStackArrayToBase64(playerInventory.getArmorContents());
-		
+
 		return new byte[][] { content, additional, armor };
 	}
-	
-	
+
+
 	/**
 	 * Converts the base 64 array to a Player Inventory. First string is the content and second string is the armor.
-	 * 
+	 *
 	 * @param playerInventory to turn into an array of strings.
 	 * @return Array of strings: [ main content, armor content ]
 	 * @throws IllegalStateException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static void base64ToPlayerInventory(Player p, byte[][] data) throws IllegalStateException, IOException {
 		//get the main content part, this doesn't return the armor
@@ -51,13 +51,13 @@ public class Serialization {
 		p.getInventory().setExtraContents(additional);
 		p.getInventory().setArmorContents(armor);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * A method to serialize an {@link ItemStack} array to Base64 String.
-	 * 
+	 *
 	 * Based off of {@link #toBase64(Inventory)}.
-	 * 
+	 *
 	 * @param items to turn into a Base64 String.
 	 * @return Base64 string of the items.
 	 * @throws IllegalStateException
@@ -67,12 +67,12 @@ public class Serialization {
 	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 	        DataOutputStream stream = new DataOutputStream(outputStream);
 	        stream.writeInt(items.length);
-	        for (int i = 0; i < items.length; i++) {
-	        	if (items[i] == null) {
+	        for (ItemStack item : items) {
+	        	if (item == null) {
 	        		stream.writeInt(-1);
 	        		continue;
 	        	}
-				byte[] serialized = items[i].serializeAsBytes();
+				byte[] serialized = item.serializeAsBytes();
 				stream.writeInt(serialized.length);
 				stream.write(serialized);
 	        }
@@ -82,12 +82,12 @@ public class Serialization {
 	        throw new IllegalStateException("Unable to save item stacks.", e);
 	    }
 	}
-	
+
 	/**
 	 * Gets an array of ItemStacks from Base64 string.
-	 * 
+	 *
 	 * Base off of {@link #fromBase64(String)}.
-	 * 
+	 *
 	 * @param data Base64 string to convert to ItemStack array.
 	 * @return ItemStack array created from the Base64 string.
 	 * @throws IOException
@@ -110,5 +110,5 @@ public class Serialization {
 	        throw new IOException("Unable to decode class type.", e);
 	    }
 	}
-	
+
 }
