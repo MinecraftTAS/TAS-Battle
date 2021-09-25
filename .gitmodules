@@ -7,3 +7,6 @@
 [submodule "zNPC"]
 	path = zNPC
 	url = https://github.com/MCPfannkuchenYT/znpc-servers
+[submodule "Proxyserver"]
+	path = Proxyserver
+	url = https://github.com/MCPfannkuchenYT/Waterfall
