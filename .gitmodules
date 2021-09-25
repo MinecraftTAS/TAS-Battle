@@ -7,6 +7,3 @@
 [submodule "Proxyserver"]
 	path = Proxyserver
 	url = https://github.com/MCPfannkuchenYT/Waterfall
-[submodule "Server"]
-	path = Server
-	url = https://github.com/MCPfannkuchenYT/Paper.git
