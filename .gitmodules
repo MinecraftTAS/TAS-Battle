@@ -1,3 +1,9 @@
 [submodule "Server"]
 	path = Server
 	url = https://github.com/MCPfannkuchenYT/Paper
+[submodule "Lobby"]
+	path = Lobby
+	url = https://github.com/MCPfannkuchenYT/AdvancedLobby.git
+[submodule "zNPC"]
+	path = zNPC
+	url = https://github.com/MCPfannkuchenYT/znpc-servers
