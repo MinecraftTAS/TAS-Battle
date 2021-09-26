@@ -91,6 +91,7 @@ public class FFA extends JavaPlugin {
 				}
 				return true;
 			} else if (command.getName().equalsIgnoreCase("delkit")) {
+				for (File f : kit.listFiles()) f.delete();
 				if (!kit.delete()) throw new Exception("Could not delete file: " + kit.getName());
 				sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully deleted.");
 				/* Delete a kit */
