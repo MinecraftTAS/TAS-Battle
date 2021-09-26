@@ -23,7 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
@@ -149,7 +148,7 @@ public class Game {
 	 * Runs on player disconnect
 	 * @param p Player to disconnect
 	 */
-	public static void onQuit(@NotNull Player p) {
+	public static void onQuit(Player p) {
 		if (kits.containsKey(p.getUniqueId())) kits.remove(p.getUniqueId());
 		if (startingTask != null) {
 			int playersLeft = Bukkit.getOnlinePlayers().size() - 1;
@@ -283,7 +282,7 @@ public class Game {
 	 * Runs on player death
 	 * @param p Player that died
 	 */
-	public static void onDeath(@NotNull Player p) {
+	public static void onDeath(Player p) {
 		p.playSound(Sound.sound(org.bukkit.Sound.ENTITY_ENDERMAN_SCREAM, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 		if (alivePlayers.contains(p) && isRunning) onPlayerOut(p);
 	}
