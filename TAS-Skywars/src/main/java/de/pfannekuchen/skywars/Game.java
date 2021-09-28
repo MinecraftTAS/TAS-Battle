@@ -3,10 +3,12 @@ package de.pfannekuchen.skywars;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -14,6 +16,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -240,6 +243,51 @@ public class Game {
 	public static void onDeath(Player p) {
 		p.playSound(Sound.sound(org.bukkit.Sound.ENTITY_ENDERMAN_SCREAM, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 		if (alivePlayers.contains(p) && isRunning) onPlayerOut(p);
+	}
+
+	/**
+	 * List of Items to spawn in a chest
+	 */
+	public static final ItemStack[] ITEMS = new ItemStack[] {
+		new ItemStack(Material.DIAMOND, 3),
+		new ItemStack(Material.GOLDEN_APPLE, 1),
+		Utils.enchant(new ItemStack(Material.IRON_CHESTPLATE, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
+		Utils.enchant(new ItemStack(Material.IRON_LEGGINGS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
+		Utils.enchant(new ItemStack(Material.IRON_HELMET, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
+		Utils.enchant(new ItemStack(Material.IRON_BOOTS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
+		Utils.enchant(new ItemStack(Material.DIAMOND_CHESTPLATE, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
+		Utils.enchant(new ItemStack(Material.DIAMOND_LEGGINGS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
+		Utils.enchant(new ItemStack(Material.DIAMOND_HELMET, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
+		Utils.enchant(new ItemStack(Material.DIAMOND_BOOTS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
+		new ItemStack(Material.BRICKS, 64),
+		new ItemStack(Material.STONE, 64),
+		new ItemStack(Material.OAK_PLANKS, 64),
+		new ItemStack(Material.COBBLESTONE, 64),
+		new ItemStack(Material.ANDESITE, 64),
+		new ItemStack(Material.DIORITE, 64),
+		new ItemStack(Material.EXPERIENCE_BOTTLE, new Random().nextInt(16) + 1),
+		new ItemStack(Material.IRON_INGOT, 7),
+		new ItemStack(Material.WATER_BUCKET, 1),
+		new ItemStack(Material.EGG, 16),
+		new ItemStack(Material.COBWEB, 16),
+		Utils.enchant(new ItemStack(Material.DIAMOND_PICKAXE, 1), Enchantment.DIG_SPEED, 4),
+		Utils.enchant(new ItemStack(Material.IRON_AXE, 1), Enchantment.DIG_SPEED, 4),
+		new ItemStack(Material.TNT, 64)
+	};
+	
+	/**
+	 * Refills a chest
+	 * @return List of items for chest
+	 */
+	public static ItemStack[] refillChest() {
+		Random rng = new Random();
+		int itemCount = rng.nextInt(5) + 4;
+		List<ItemStack> list = new ArrayList<>();
+		for (int i = 0; i < itemCount; i++) list.add(ITEMS[rng.nextInt(ITEMS.length)]);
+		if (rng.nextBoolean()) list.add(Utils.enchant(new ItemStack(Material.WOODEN_SWORD, 1), Enchantment.DAMAGE_ALL, 2));
+		if (rng.nextBoolean()) list.add(new ItemStack(Material.GOLDEN_APPLE, 1));
+		if (rng.nextBoolean()) list.add(new ItemStack(Material.STONE, 64));
+		return list.toArray(ItemStack[]::new);
 	}
 
 }

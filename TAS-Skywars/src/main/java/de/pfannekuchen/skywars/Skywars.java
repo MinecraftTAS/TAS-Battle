@@ -32,6 +32,7 @@ public class Skywars extends JavaPlugin {
 			instance = this;
 			if (!getDataFolder().exists()) getDataFolder().mkdir();
 			Bukkit.getPluginManager().registerEvents(new Events(), this);
+			Bukkit.getPluginManager().registerEvents(new ChestUtils(), this);
 			Game.onStartup();
 		} catch (Exception e) {
 			e.printStackTrace();
