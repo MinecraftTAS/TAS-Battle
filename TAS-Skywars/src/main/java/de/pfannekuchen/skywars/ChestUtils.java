@@ -17,6 +17,10 @@ public class ChestUtils implements Listener {
 	
 	@EventHandler
 	public void onChestOpen(InventoryOpenEvent e) {
+		if (!Game.isRunning) {
+			e.setCancelled(true);
+			return;
+		}
 		InventoryHolder holder = e.getInventory().getHolder();
 		if (holder != null) {
 			if (holder instanceof Chest) {
