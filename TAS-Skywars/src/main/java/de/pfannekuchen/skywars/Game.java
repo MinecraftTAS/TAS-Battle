@@ -54,7 +54,7 @@ public class Game {
 	 * @return Whether the event should be cancalled or not
 	 */
 	public static boolean shouldAllowInteraction(Entity entity) {
-		return !entity.isOp() && !Game.isRunning;
+		return !Game.isRunning;
 	}
 
 	/**
