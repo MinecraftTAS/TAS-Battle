@@ -95,7 +95,7 @@ public class Game {
 		}
 		p.sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
 		for (String map : availableKits.keySet()) {
-			ItemStack item = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
+			ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 			item.editMeta(c -> {
 				c.displayName(Component.text("\u00A7f" + map));
 			});
@@ -116,7 +116,7 @@ public class Game {
 	 */
 	public static void onInteract(Player p, ItemStack item, Action action) throws Exception {
 		if (isRunning || startingTask != null || item == null) return;
-		if (item.getType() == Material.CYAN_STAINED_GLASS_PANE && item.getItemMeta().hasDisplayName()) {
+		if (item.getType() == Material.RED_STAINED_GLASS_PANE && item.getItemMeta().hasDisplayName()) {
 			String name = PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName()).replaceAll("\u00A7f", "");
 			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 				byte[][] inventorySave = Serialization.serializeInventory(p.getInventory());
