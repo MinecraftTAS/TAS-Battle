@@ -105,7 +105,7 @@ public class Game {
 			p.getInventory().addItem(item);
 		}
 		p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
-		if (Bukkit.getOnlinePlayers().size() >= 2) {
+		if (Bukkit.getOnlinePlayers().size() >= 2 && startingTask == null) {
 			startGame();
 		}
 	}
