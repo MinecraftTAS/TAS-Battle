@@ -273,16 +273,13 @@ public class Game {
 		addEntry(new ItemStack(Material.SNOWBALL, 16), 10.0);
 		
 		addEntry(new ItemStack(Material.EXPERIENCE_BOTTLE, 32), 4.0);
-		addEntry(new ItemStack(Material.DIAMOND_PICKAXE, 16), 10.0);
-		addEntry(new ItemStack(Material.DIAMOND_AXE, 16), 10.0);
+		addEntry(new ItemStack(Material.DIAMOND_PICKAXE), 10.0);
+		addEntry(new ItemStack(Material.DIAMOND_AXE), 10.0);
 		
-		addEntry(new ItemStack(Material.WATER_BUCKET, 16), 7.0);
-		addEntry(new ItemStack(Material.LAVA_BUCKET, 16), 7.0);
+		addEntry(new ItemStack(Material.WATER_BUCKET), 7.0);
+		addEntry(new ItemStack(Material.LAVA_BUCKET), 7.0);
 		
 		addEntry(new ItemStack(Material.GOLDEN_APPLE), 30.0);
-		
-		addEntry(new ItemStack(Material.POTION, 16), 7.0);
-		addEntry(new ItemStack(Material.LAVA_BUCKET, 16), 7.0);		
 	}};
 	
 	/**
