@@ -1,6 +1,9 @@
 package de.pfannekuchen.skywars;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -13,7 +16,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 
 /**
@@ -31,6 +37,15 @@ public class Events implements Listener {
 	@EventHandler public void onPlayerConsume(PlayerItemConsumeEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getPlayer())); }
 	@EventHandler public void onInteractEvent(PlayerInteractEvent e) throws Exception { Game.onInteract(e.getPlayer(), e.getItem(), e.getAction()); }
 	@EventHandler public void onInteractEvent2(PlayerInteractEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getPlayer())); }
+	@EventHandler public void onProjectileHit(ProjectileCollideEvent e) { 
+		if (e.getEntity().getType() == EntityType.SNOWBALL || e.getEntity().getType() == EntityType.EGG) {
+			Entity entity = e.getCollidedWith();
+			if (entity instanceof Player) {
+				((Player) entity).damage(0.5);
+				((Player) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 1));
+			}
+		}
+	}
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
 		e.joinMessage(null);
