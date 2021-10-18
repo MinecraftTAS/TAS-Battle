@@ -138,7 +138,7 @@ public class Game {
 	 * @throws Exception Happens..
 	 */
 	public static void onInteract(Player p, ItemStack item, Action action) throws Exception {
-		if (isRunning || startingTask != null || item == null) return;
+		if (isRunning || item == null) return;
 		if (item.getItemMeta().hasDisplayName()) {
 			String name = PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName()).replaceAll("\u00A7f", "");
 			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
