@@ -203,11 +203,11 @@ public class Game {
 	}
 
 	/**
-	 * Whenever a kit gets selected, a countdown of 10 seconds will start, after which the players will be spread across the map.
+	 * Whenever a kit gets selected, a countdown of 20 seconds will start, after which the players will be spread across the map.
 	 */
 	public static boolean startGame() {
 		if (Bukkit.getOnlinePlayers().size() >= 2 /* Check if the game is startable */)  {
-			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game will start in 10 seconds."));
+			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game will start in 20 seconds."));
 			for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_LAND, Source.BLOCK, .6f, 1.2f), Sound.Emitter.self());
 			startingTask = new BukkitRunnable() {
 				@Override public void run() {
@@ -233,7 +233,7 @@ public class Game {
 					startingTask = null;
 				}
 			};
-			startingTask.runTaskLater(Skywars.instance(), 10*20L);
+			startingTask.runTaskLater(Skywars.instance(), 20*20L);
 		} else {
 			return false;
 		}
