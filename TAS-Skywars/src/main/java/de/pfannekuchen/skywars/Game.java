@@ -235,6 +235,7 @@ public class Game {
 						isRunning = true;
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							if (selectedKits.containsKey(p.getUniqueId())) Serialization.deserializeInventory(p, selectedKits.get(p.getUniqueId()));
+							else Serialization.deserializeInventory(p, availableKits.values().iterator().next());
 							p.setGameMode(GameMode.SURVIVAL);
 							p.setLevel(0);
 							p.getWorld().setDifficulty(Difficulty.HARD);
