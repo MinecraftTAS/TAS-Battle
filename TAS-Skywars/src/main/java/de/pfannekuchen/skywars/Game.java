@@ -248,32 +248,42 @@ public class Game {
 	/**
 	 * List of Items to spawn in a chest
 	 */
-	public static final ItemStack[] ITEMS = new ItemStack[] {
-		new ItemStack(Material.DIAMOND, 3),
-		new ItemStack(Material.GOLDEN_APPLE, 1),
-		Utils.enchant(new ItemStack(Material.IRON_CHESTPLATE, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
-		Utils.enchant(new ItemStack(Material.IRON_LEGGINGS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
-		Utils.enchant(new ItemStack(Material.IRON_HELMET, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
-		Utils.enchant(new ItemStack(Material.IRON_BOOTS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 2),
-		Utils.enchant(new ItemStack(Material.DIAMOND_CHESTPLATE, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
-		Utils.enchant(new ItemStack(Material.DIAMOND_LEGGINGS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
-		Utils.enchant(new ItemStack(Material.DIAMOND_HELMET, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
-		Utils.enchant(new ItemStack(Material.DIAMOND_BOOTS, 1), Enchantment.PROTECTION_ENVIRONMENTAL, 1),
-		new ItemStack(Material.BRICKS, 64),
-		new ItemStack(Material.STONE, 64),
-		new ItemStack(Material.OAK_PLANKS, 64),
-		new ItemStack(Material.COBBLESTONE, 64),
-		new ItemStack(Material.ANDESITE, 64),
-		new ItemStack(Material.DIORITE, 64),
-		new ItemStack(Material.EXPERIENCE_BOTTLE, new Random().nextInt(16) + 1),
-		new ItemStack(Material.IRON_INGOT, 7),
-		new ItemStack(Material.WATER_BUCKET, 1),
-		new ItemStack(Material.EGG, 16),
-		new ItemStack(Material.COBWEB, 16),
-		Utils.enchant(new ItemStack(Material.DIAMOND_PICKAXE, 1), Enchantment.DIG_SPEED, 4),
-		Utils.enchant(new ItemStack(Material.IRON_AXE, 1), Enchantment.DIG_SPEED, 4),
-		new ItemStack(Material.TNT, 64)
-	};
+	public static final WeightedRandomBag<ItemStack> ITEMS = new WeightedRandomBag<>() {{
+		addEntry(new ItemStack(Material.IRON_HELMET), 5.0);
+		addEntry(new ItemStack(Material.IRON_CHESTPLATE), 5.0);
+		addEntry(new ItemStack(Material.IRON_LEGGINGS), 5.0);
+		addEntry(new ItemStack(Material.IRON_BOOTS), 5.0);
+		addEntry(new ItemStack(Material.DIAMOND_HELMET), 5.0);
+		addEntry(new ItemStack(Material.DIAMOND_CHESTPLATE), 5.0);
+		addEntry(new ItemStack(Material.DIAMOND_LEGGINGS), 5.0);
+		addEntry(new ItemStack(Material.DIAMOND_BOOTS), 5.0);
+		
+		addEntry(new ItemStack(Material.STONE, 64), 20.0);
+		addEntry(new ItemStack(Material.OAK_LOG, 64), 20.0);
+		
+		addEntry(Utils.enchant(new ItemStack(Material.DIAMOND_SWORD), Enchantment.DAMAGE_ALL, 1), 4.0);
+		addEntry(new ItemStack(Material.DIAMOND_SWORD), 5.0);
+		
+		addEntry(Utils.enchant(new ItemStack(Material.BOW), Enchantment.ARROW_DAMAGE, 3), 4.0);
+		addEntry(new ItemStack(Material.EGG, 16), 10.0);
+		addEntry(new ItemStack(Material.SNOWBALL, 16), 10.0);
+		
+		addEntry(Utils.enchant(new ItemStack(Material.BOW), Enchantment.ARROW_DAMAGE, 3), 4.0);
+		addEntry(new ItemStack(Material.EGG, 16), 10.0);
+		addEntry(new ItemStack(Material.SNOWBALL, 16), 10.0);
+		
+		addEntry(new ItemStack(Material.EXPERIENCE_BOTTLE, 32), 4.0);
+		addEntry(new ItemStack(Material.DIAMOND_PICKAXE, 16), 10.0);
+		addEntry(new ItemStack(Material.DIAMOND_AXE, 16), 10.0);
+		
+		addEntry(new ItemStack(Material.WATER_BUCKET, 16), 7.0);
+		addEntry(new ItemStack(Material.LAVA_BUCKET, 16), 7.0);
+		
+		addEntry(new ItemStack(Material.GOLDEN_APPLE), 30.0);
+		
+		addEntry(new ItemStack(Material.POTION, 16), 7.0);
+		addEntry(new ItemStack(Material.LAVA_BUCKET, 16), 7.0);		
+	}};
 	
 	/**
 	 * Refills a chest
@@ -283,7 +293,7 @@ public class Game {
 		Random rng = new Random();
 		int itemCount = rng.nextInt(5) + 4;
 		List<ItemStack> list = new ArrayList<>();
-		for (int i = 0; i < itemCount; i++) list.add(ITEMS[rng.nextInt(ITEMS.length)]);
+		for (int i = 0; i < itemCount; i++) list.add(ITEMS.getRandom());
 		if (rng.nextBoolean()) list.add(Utils.enchant(new ItemStack(Material.WOODEN_SWORD, 1), Enchantment.DAMAGE_ALL, 2));
 		if (rng.nextBoolean()) list.add(new ItemStack(Material.GOLDEN_APPLE, 1));
 		if (rng.nextBoolean()) list.add(new ItemStack(Material.STONE, 64));
