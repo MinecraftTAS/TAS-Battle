@@ -90,13 +90,16 @@ public class Game {
 	public static void onJoin(Player p) {
 		if (Bukkit.getOnlinePlayers().size() > spawns.size()) p.kick(Component.text("The game is already full!"));
 		p.teleport(p.getWorld().getSpawnLocation());
+		if (startingTask != null) {
+			p.sendMessage(Component.text("\u00A7b\u00bb \u00A7aThe game will start soon!"));
+		}
 		if (isRunning) {
-			p.sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
+			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
 			p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEACON_ACTIVATE, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 			p.setGameMode(GameMode.SPECTATOR);
 			return;
 		}
-		p.sendMessage(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
+		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
 		for (String map : availableKits.keySet()) {
 			ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 			item.editMeta(c -> {
