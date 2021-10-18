@@ -31,7 +31,6 @@ public class Events implements Listener {
 	@EventHandler public void onPlayerPickup(EntityPickupItemEvent e) { e.setCancelled(!Game.isRunning); }
 	@EventHandler public void onPlayerConsume(PlayerItemConsumeEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getPlayer())); }
 	@EventHandler public void onInteractEvent(PlayerInteractEvent e) throws Exception { Game.onInteract(e.getPlayer(), e.getItem(), e.getAction()); }
-	@EventHandler public void onInventoryClick(InventoryClickEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getWhoClicked())); }
 	@EventHandler public void onInteractEvent2(PlayerInteractEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getPlayer())); }
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
