@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,7 +75,10 @@ public class Game {
 			availableKits.put(folder.getName(), items);
 		}
 		/* Read available spawns */
-		for (String line : Files.readAllLines(new File(Skywars.instance().getDataFolder(), "map.yml").toPath())) spawns.add(new Location(Bukkit.getWorlds().get(0), Double.parseDouble(line.split(" ")[0]), Double.parseDouble(line.split(" ")[1]), Double.parseDouble(line.split(" ")[2])));
+		ArrayList<Location> lspawns = new ArrayList<Location>(); 
+		for (String line : Files.readAllLines(new File(Skywars.instance().getDataFolder(), "map.yml").toPath())) lspawns.add(new Location(Bukkit.getWorlds().get(0), Double.parseDouble(line.split(" ")[0]), Double.parseDouble(line.split(" ")[1]), Double.parseDouble(line.split(" ")[2])));
+		Collections.shuffle(lspawns);
+		spawns.addAll(lspawns);
 		/* Start a Thread that updates every second */
 		new BukkitRunnable() {
 			@Override
