@@ -235,6 +235,11 @@ public class Game {
 			killer.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
 		}
 		if (alivePlayers.size() <= 1) {
+			try {
+				FFA.updateTickrate(20.0f);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			Player winner = alivePlayers.get(0);
 			for (Player player2 : Bukkit.getOnlinePlayers()) {
 				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
