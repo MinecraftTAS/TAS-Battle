@@ -5,6 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -104,6 +107,23 @@ public class Serialization {
 	    } catch (Exception e) {
 	        throw new IOException("Unable to load item stack.", e);
 	    }
+	}
+
+	/**
+	 * Deserializes all items into a list of Item Stacks
+	 * @param data byte array to convert into item stacks
+	 * @return ItemStack list
+	 * @throws IOException 
+	 */
+	public static List<ItemStack> getItemStacks(byte[][] data) throws IOException {
+		ItemStack[] content = deserializeItemStack(data[0]);
+		ItemStack[] additional = deserializeItemStack(data[1]);
+		ItemStack[] armor = deserializeItemStack(data[2]);
+		List<ItemStack> list = new ArrayList<>();
+		list.addAll(Arrays.asList(content));
+		list.addAll(Arrays.asList(additional));
+		list.addAll(Arrays.asList(armor));
+		return list;
 	}
 
 }

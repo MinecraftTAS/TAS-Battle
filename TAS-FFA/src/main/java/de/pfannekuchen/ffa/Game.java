@@ -106,6 +106,16 @@ public class Game {
 			ItemStack item = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
 			item.editMeta(c -> {
 				c.displayName(Component.text("\u00A7f" + map));
+				List<Component> itemlist = new LinkedList<>();
+				byte[][] items = availableKits.get(map);
+				try {
+					Serialization.getItemStacks(items).forEach(i -> { 
+						if (i != null) itemlist.add(Component.text("\u00A7f" + i.getAmount() + "x" + i.getI18NDisplayName()));
+					});
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				c.lore(itemlist);
 			});
 			p.getInventory().addItem(item);
 		}
