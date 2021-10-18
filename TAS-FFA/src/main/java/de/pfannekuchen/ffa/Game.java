@@ -24,7 +24,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.pfannekuchen.skywars.Serialization;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
@@ -104,6 +103,7 @@ public class Game {
 			p.sendMessage(Component.text("\u00A7b\u00bb \u00A7aThe game will start soon!"));
 		}
 		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
+		int index = 0;
 		for (String map : availableKits.keySet()) {
 			Material mat = Material.getMaterial(Serialization.getIcon(availableKits.get(map)).replaceAll("\r", "").replaceAll("\n", ""));
 			if (mat == null) mat = Material.RED_STAINED_GLASS_PANE;
@@ -121,7 +121,10 @@ public class Game {
 				}
 				c.lore(itemlist);
 			});
-			p.getInventory().addItem(item);
+			p.getInventory().setItem(index, item); 
+			index++;
+			if (index == 9) index = 27 + 9;
+			if (index > 9) index -= 2;
 		}
 		p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 	}
