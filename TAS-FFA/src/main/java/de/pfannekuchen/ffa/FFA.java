@@ -18,8 +18,6 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import de.pfannekuchen.skywars.Skywars;
-
 /**
  * Main and basically everything of the FFA Plugin
  * @author Pancake
@@ -127,7 +125,7 @@ public class FFA extends JavaPlugin implements PluginMessageListener {
 		f2.setAccessible(true);
 		f2.setFloat(null, float1 / 20.0f);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.sendPluginMessage(Skywars.instance, "tickratechanger:data", ByteBuffer.allocate(4).putFloat(float1).array());
+			player.sendPluginMessage(FFA.instance, "tickratechanger:data", ByteBuffer.allocate(4).putFloat(float1).array());
 		}
 	}
 
