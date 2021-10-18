@@ -68,19 +68,21 @@ public class FFA extends JavaPlugin {
 			if (!kit.exists()) return false; // Only check for the load commands if the kit was found.
 			if (command.getName().equalsIgnoreCase("loadkit")) {
 				/* Load a kit into the players inventory */
-				byte[][] items = new byte[3][];
+				byte[][] items = new byte[4][];
 				items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
 				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
 				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+				items[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 				Serialization.deserializeInventory((Player) sender, items);
 				sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully loaded into your Inventory.");
 				return true;
 			} else if (command.getName().equalsIgnoreCase("kit")) {
 				/* Select a kit as active */
-				byte[][] items = new byte[3][];
+				byte[][] items = new byte[4][];
 				items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
 				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
 				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+				items[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 				Game.serializedSelectedKit = items;
 				Game.selectedKitName = kit.getName();
 				if (Game.onKitSelectedEvent()) {

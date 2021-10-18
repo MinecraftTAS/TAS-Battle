@@ -69,7 +69,7 @@ public class Skywars extends JavaPlugin {
 			if (!kit.exists()) return false; // Only check for the load commands if the kit was found.
 			if (command.getName().equalsIgnoreCase("loadkit")) {
 				/* Load a kit into the players inventory */
-				byte[][] items = new byte[3][];
+				byte[][] items = new byte[4][];
 				items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
 				items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
 				items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());

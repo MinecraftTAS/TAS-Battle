@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +36,14 @@ public class Serialization {
 		return new byte[][] { content, additional, armor };
 	}
 
+	/**
+	 * Return the icon name for the kit
+	 * @param data data array
+	 * @return Kit Icon
+	 */
+	public static String getIcon(byte[][] data) {
+		return new String(data[3], StandardCharsets.US_ASCII);
+	}
 
 	/**
 	 * Deserializes the Player Inventory

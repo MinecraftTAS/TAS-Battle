@@ -66,10 +66,11 @@ public class Game {
 		for (File folder : Skywars.instance().getDataFolder().listFiles()) {
 			if (!folder.isDirectory()) continue;
 			File kit = new File(Skywars.instance().getDataFolder(), folder.getName());
-			byte[][] items = new byte[3][];
+			byte[][] items = new byte[4][];
 			items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
 			items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
 			items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+			items[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 			availableKits.put(folder.getName(), items);
 		}
 		/* Read available spawns */
@@ -101,7 +102,9 @@ public class Game {
 		}
 		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
 		for (String map : availableKits.keySet()) {
-			ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			Material mat = Material.getMaterial(Serialization.getIcon(availableKits.get(map)).replaceAll("\r", "").replaceAll("\n", ""));
+			if (mat == null) mat = Material.RED_STAINED_GLASS_PANE;
+			ItemStack item = new ItemStack(mat);
 			item.editMeta(c -> {
 				c.displayName(Component.text("\u00A7f" + map));
 				List<Component> itemlist = new LinkedList<>();
@@ -132,7 +135,7 @@ public class Game {
 	 */
 	public static void onInteract(Player p, ItemStack item, Action action) throws Exception {
 		if (isRunning || startingTask != null || item == null) return;
-		if (item.getType() == Material.RED_STAINED_GLASS_PANE && item.getItemMeta().hasDisplayName()) {
+		if (item.getItemMeta().hasDisplayName()) {
 			String name = PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName()).replaceAll("\u00A7f", "");
 			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 				byte[][] inventorySave = Serialization.serializeInventory(p.getInventory());
