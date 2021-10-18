@@ -302,6 +302,8 @@ public class Game {
 		addEntry(new ItemStack(Material.LAVA_BUCKET), 7.0);
 		
 		addEntry(new ItemStack(Material.GOLDEN_APPLE), 30.0);
+		
+		addEntry(new ItemStack(Material.ARROW, 32), 30.0);
 	}};
 	
 	/**
