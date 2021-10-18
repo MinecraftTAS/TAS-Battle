@@ -150,6 +150,7 @@ public class Game {
 					@Override
 					public void run() {
 						try {
+							if (isRunning) return;
 							Serialization.deserializeInventory(p, inventorySave); // Revert back Inventory
 							p.playSound(Sound.sound(org.bukkit.Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 						} catch (IllegalStateException | IOException e) {
