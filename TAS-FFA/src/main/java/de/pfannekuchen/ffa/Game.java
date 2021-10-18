@@ -92,6 +92,7 @@ public class Game {
 	 * @param p Player to connect
 	 */
 	public static void onJoin(Player p) {
+		p.setFallDistance(0.0f);
 		p.teleport(p.getWorld().getSpawnLocation());
 		if (isRunning) {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
@@ -281,6 +282,7 @@ public class Game {
 								int z = rng.nextInt(801) - 400;
 								Block b = p.getWorld().getHighestBlockAt(x, z);
 								if (b != null && b.getType() != Material.WATER && b.getType() != Material.AIR && b.getY() > 1) {
+									p.setFallDistance(0.0f);
 									p.teleport(new Location(p.getWorld(), x, b.getY() + 1, z));
 									break;
 								}

@@ -90,6 +90,7 @@ public class Game {
 	 */
 	public static void onJoin(Player p) {
 		if (Bukkit.getOnlinePlayers().size() > spawns.size()) p.kick(Component.text("The game is already full!"));
+		p.setFallDistance(0.0f);
 		p.teleport(p.getWorld().getSpawnLocation());
 		if (startingTask != null) {
 			p.sendMessage(Component.text("\u00A7b\u00bb \u00A7aThe game will start soon!"));
@@ -242,6 +243,7 @@ public class Game {
 							p.setExp(0.0f);
 							alivePlayers.add(p);
 							/* Teleport the player */
+							p.setFallDistance(0.0f);
 							p.teleport(spawns.poll());
 						}
 					} catch (Exception e) {
