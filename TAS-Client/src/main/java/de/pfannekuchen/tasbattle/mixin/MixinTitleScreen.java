@@ -60,7 +60,7 @@ public abstract class MixinTitleScreen extends Screen {
 			long size1 = f.length();
 			File temp = File.createTempFile("jar", "file");
 			temp.deleteOnExit();
-			Files.copy(new URL("http://mgnet.work/TASBATTLE/update.jar").openStream(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(new URL("https://data.mgnet.work/tasbattle/update.jar").openStream(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			long size2 = temp.length();
 			if (size1 == size2) return;
 			((Button) children().get(children().size() - 2)).setMessage(new TextComponent("Update and Quit"));

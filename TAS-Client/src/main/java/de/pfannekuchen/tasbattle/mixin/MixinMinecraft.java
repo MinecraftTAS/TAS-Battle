@@ -43,7 +43,7 @@ public class MixinMinecraft {
 	@Inject(method = "close", at = @At("HEAD"))
 	public void onClose(CallbackInfo ci) {
 		try {
-			Files.copy(new URL("http://mgnet.work/TASBATTLE/update.jar").openStream(), new File("mods/tasbattle.jar").toPath(), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(new URL("https://data.mgnet.work/tasbattle/update.jar").openStream(), new File("mods/tasbattle.jar").toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

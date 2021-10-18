@@ -72,7 +72,7 @@ public class TASBattle implements ModInitializer {
 		try {
 			Minecraft.getInstance().getTextureManager().register(CUSTOM_EDITION_RESOURCE_LOCATION, new DynamicTexture(NativeImage.read(TASBattle.class.getResourceAsStream("edition.png"))));
 			/* Read the Supercool TAS Battle Config File from the server! */
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://mgnet.work/TASBATTLE/servers.dat").openStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("https://data.mgnet.work/tasbattle/servers.dat").openStream()));
 			int comments = Integer.parseInt(reader.readLine().trim());
 			for (int i = 0; i < comments; i++) reader.readLine();
 			int servers = Integer.parseInt(reader.readLine().trim());
