@@ -12,8 +12,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
+
+import net.kyori.adventure.text.Component;
 
 /**
  * Simple events for the FFA Plugin
@@ -46,4 +49,25 @@ public class Events implements Listener {
 		Game.onDeath(e.getEntity());
 	}
 
+	@EventHandler
+	public void onLateJoin(PlayerJoinEvent e) {
+		FFA.queuedPlayers.add(e.getPlayer().getUniqueId());
+		new Thread(() -> {
+			try {
+				Thread.sleep(8000);
+			} catch (Exception e2) {
+				
+			}
+			if (FFA.queuedPlayers.contains(e.getPlayer().getUniqueId()) && e.getPlayer().isOnline()) {
+				FFA.queuedPlayers.remove(e.getPlayer().getUniqueId());
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						e.getPlayer().kick(Component.text("Login Failed."));
+					}
+				}.runTask(FFA.instance());
+			}
+		}).start();
+	}
+	
 }

@@ -18,9 +18,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
+
+import net.kyori.adventure.text.Component;
 
 /**
  * Simple events for the Skywars Plugin
@@ -60,6 +63,27 @@ public class Events implements Listener {
 	public void onPlayerDeathEvent(PlayerDeathEvent e) {
 		e.deathMessage(null);
 		Game.onDeath(e.getEntity());
+	}
+	
+	@EventHandler
+	public void onLateJoin(PlayerJoinEvent e) {
+		Skywars.queuedPlayers.add(e.getPlayer().getUniqueId());
+		new Thread(() -> {
+			try {
+				Thread.sleep(8000);
+			} catch (Exception e2) {
+				
+			}
+			if (Skywars.queuedPlayers.contains(e.getPlayer().getUniqueId()) && e.getPlayer().isOnline()) {
+				Skywars.queuedPlayers.remove(e.getPlayer().getUniqueId());
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						e.getPlayer().kick(Component.text("Login Failed."));
+					}
+				}.runTask(Skywars.instance());
+			}
+		}).start();
 	}
 
 }

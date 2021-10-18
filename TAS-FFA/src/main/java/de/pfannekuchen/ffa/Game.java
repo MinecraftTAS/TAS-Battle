@@ -266,6 +266,11 @@ public class Game {
 				@Override public void run() {
 					/* Start the game */
 					try {
+						FFA.updateTickrate(4f);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					try {
 						Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game has started."));
 						Random rng = new Random();
 						for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
