@@ -206,6 +206,7 @@ public class Game {
 	 */
 	public static void onPlayerOut(Player player) {
 		alivePlayers.remove(player);
+		player.setGameMode(GameMode.SPECTATOR);
 		Player killer = player.getKiller();
 		if (killer == null)
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 died"));
