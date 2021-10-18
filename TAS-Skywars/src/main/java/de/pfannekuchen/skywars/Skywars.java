@@ -102,9 +102,12 @@ public class Skywars extends JavaPlugin implements PluginMessageListener {
 	
 	public static void updateTickrate(float float1) throws Exception {
 		tickrate = float1;
-		Field f = Class.forName("net.minecraft.server.MinecraftServer").getDeclaredField("tickrateServer");
+		Field f = Class.forName("net.minecraft.server.MinecraftServer").getDeclaredField("MS_PER_TICK");
 		f.setAccessible(true);
-		f.setFloat(null, float1);
+		f.setFloat(null, 1000.0f / float1);
+		Field f2 = Class.forName("net.minecraft.server.MinecraftServer").getDeclaredField("GAMESPEED");
+		f2.setAccessible(true);
+		f2.setFloat(null, float1 / 20.0f);
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			player.sendPluginMessage(Skywars.instance, "tickratechanger:data", ByteBuffer.allocate(4).putFloat(float1).array());
 		}

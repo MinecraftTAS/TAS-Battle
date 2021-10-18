@@ -18,6 +18,8 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import de.pfannekuchen.skywars.Skywars;
+
 /**
  * Main and basically everything of the FFA Plugin
  * @author Pancake
@@ -118,11 +120,14 @@ public class FFA extends JavaPlugin implements PluginMessageListener {
 	
 	public static void updateTickrate(float float1) throws Exception {
 		tickrate = float1;
-		Field f = Class.forName("net.minecraft.server.MinecraftServer").getDeclaredField("tickrateServer");
+		Field f = Class.forName("net.minecraft.server.MinecraftServer").getDeclaredField("MS_PER_TICK");
 		f.setAccessible(true);
-		f.setFloat(null, float1);
+		f.setFloat(null, 1000.0f / float1);
+		Field f2 = Class.forName("net.minecraft.server.MinecraftServer").getDeclaredField("GAMESPEED");
+		f2.setAccessible(true);
+		f2.setFloat(null, float1 / 20.0f);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.sendPluginMessage(FFA.instance, "tickratechanger:data", ByteBuffer.allocate(4).putFloat(float1).array());
+			player.sendPluginMessage(Skywars.instance, "tickratechanger:data", ByteBuffer.allocate(4).putFloat(float1).array());
 		}
 	}
 
