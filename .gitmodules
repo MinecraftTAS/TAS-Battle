@@ -19,3 +19,6 @@
 [submodule "TAS-Lobby/SlingShot"]
 	path = TAS-Lobby/SlingShot
 	url = https://github.com/BiscuitSoftware/SlingShot
+[submodule "TAS-Website"]
+	path = TAS-Website
+	url = https://github.com/MCPfannkuchenYT/TAS-Battle-Website

@@ -25,6 +25,10 @@ The TAS-Bedwars Directory is a collection of Paper Plugins for Minecraft 1.17.1 
 
 The TAS-Skywars is a Paper Mod for Minecraft 1.17.1. This Mod is installed on a server
 
+### TAS Website
+
+The TAS-Website is a website based on sphinx
+
 ## Bugs / Feature Requests
 
 Report Bugs under the Issues Section or on our [Discord](https://discord.gg/sdMc5UrGPN)
