@@ -1,10 +1,11 @@
 package de.pfannekuchen.tasbattle.mixin;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,10 +41,18 @@ public class MixinMinecraft {
 		TASBattle.onGameInitialize();
 	}
 	
-	@Inject(method = "close", at = @At("HEAD"))
+	@Inject(method = "close", at = @At("RETURN"))
 	public void onClose(CallbackInfo ci) {
 		try {
-			Files.copy(new URL("https://data.mgnet.work/tasbattle/update.jar").openStream(), new File("mods/tasbattle.jar").toPath(), StandardCopyOption.REPLACE_EXISTING);
+			InputStream stream = new URL("https://data.mgnet.work/tasbattle/update.jar").openStream();
+			OutputStream outstream = new FileOutputStream(new File("mods/tasbattle.jar"), false);
+			byte[] buffer = new byte[8 * 1024];
+            int bytesRead;
+            while ((bytesRead = stream.read(buffer)) != -1) {
+            	outstream.write(buffer, 0, bytesRead);
+            }
+            stream.close();
+            outstream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
