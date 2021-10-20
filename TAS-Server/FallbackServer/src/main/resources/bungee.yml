@@ -1,0 +1,4 @@
+name: FallbackServer
+main: de.pfannekuchen.fallback.FallbackServer
+version: 1.0.0
+author: Pancake
