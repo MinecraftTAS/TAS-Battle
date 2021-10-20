@@ -16,9 +16,6 @@
 [submodule "TAS-Bedwars/ScreamingBedWars"]
 	path = TAS-Bedwars/ScreamingBedWars
 	url = https://github.com/MCPfannkuchenYT/BedWars.git
-[submodule "TAS-Lobby/SlingShot"]
-	path = TAS-Lobby/SlingShot
-	url = https://github.com/BiscuitSoftware/SlingShot
 [submodule "TAS-Website"]
 	path = TAS-Website
 	url = https://github.com/MCPfannkuchenYT/TAS-Battle-Website
