@@ -309,7 +309,7 @@ public class Game {
 		addEntry(new ItemStack(Material.SNOWBALL, 16), 10.0);
 		
 		addEntry(Utils.enchant(new ItemStack(Material.BOW), Enchantment.ARROW_KNOCKBACK, 2), 4.0);
-		addEntry(Utils.enchant(new ItemStack(Material.STICK, 2), Enchantment.KNOCKBACK, 2), 10.0);
+		addEntry(Utils.enchant(new ItemStack(Material.STICK, 1), Enchantment.KNOCKBACK, 2), 10.0);
 		addEntry(new ItemStack(Material.EGG, 16), 10.0);
 		addEntry(new ItemStack(Material.SNOWBALL, 16), 10.0);
 		
