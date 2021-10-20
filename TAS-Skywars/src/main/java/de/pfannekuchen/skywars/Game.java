@@ -292,10 +292,11 @@ public class Game {
 		addEntry(new ItemStack(Material.IRON_CHESTPLATE), 5.0);
 		addEntry(new ItemStack(Material.IRON_LEGGINGS), 5.0);
 		addEntry(new ItemStack(Material.IRON_BOOTS), 5.0);
-		addEntry(new ItemStack(Material.DIAMOND_HELMET), 5.0);
-		addEntry(new ItemStack(Material.DIAMOND_CHESTPLATE), 5.0);
-		addEntry(new ItemStack(Material.DIAMOND_LEGGINGS), 5.0);
-		addEntry(new ItemStack(Material.DIAMOND_BOOTS), 5.0);
+		addEntry(new ItemStack(Material.DIAMOND_HELMET), 10.0);
+		addEntry(new ItemStack(Material.DIAMOND_CHESTPLATE), 10.0);
+		addEntry(new ItemStack(Material.DIAMOND_LEGGINGS), 10.0);
+		addEntry(new ItemStack(Material.DIAMOND_BOOTS), 10.0);
+		addEntry(new ItemStack(Material.ENDER_PEARL, 3), 10.0);
 		
 		addEntry(new ItemStack(Material.STONE, 64), 20.0);
 		addEntry(new ItemStack(Material.OAK_LOG, 64), 20.0);
@@ -307,7 +308,8 @@ public class Game {
 		addEntry(new ItemStack(Material.EGG, 16), 10.0);
 		addEntry(new ItemStack(Material.SNOWBALL, 16), 10.0);
 		
-		addEntry(Utils.enchant(new ItemStack(Material.BOW), Enchantment.ARROW_DAMAGE, 3), 4.0);
+		addEntry(Utils.enchant(new ItemStack(Material.BOW), Enchantment.ARROW_KNOCKBACK, 2), 4.0);
+		addEntry(Utils.enchant(new ItemStack(Material.STICK, 2), Enchantment.KNOCKBACK, 2), 10.0);
 		addEntry(new ItemStack(Material.EGG, 16), 10.0);
 		addEntry(new ItemStack(Material.SNOWBALL, 16), 10.0);
 		
@@ -315,12 +317,17 @@ public class Game {
 		addEntry(new ItemStack(Material.DIAMOND_PICKAXE), 10.0);
 		addEntry(new ItemStack(Material.DIAMOND_AXE), 10.0);
 		
+		addEntry(new ItemStack(Material.ENCHANTING_TABLE), 10.0);
 		addEntry(new ItemStack(Material.WATER_BUCKET), 7.0);
 		addEntry(new ItemStack(Material.LAVA_BUCKET), 7.0);
 		
 		addEntry(new ItemStack(Material.GOLDEN_APPLE), 30.0);
 		
-		addEntry(new ItemStack(Material.ARROW, 32), 30.0);
+		addEntry(new ItemStack(Material.ARROW, 32), 50.0);
+		
+		addEntry(new ItemStack(Material.TNT, 32), 30.0);
+		addEntry(new ItemStack(Material.SPYGLASS, 1), 1.0);
+		
 	}};
 	
 	/**
