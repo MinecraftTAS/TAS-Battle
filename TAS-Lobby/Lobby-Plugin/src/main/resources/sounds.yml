@@ -1,0 +1,122 @@
+#
+# AdvancedLobby | sounds.yml
+#
+#   Make sure using the compatible sounds for your minecraft server version.
+#   Look them up at http://cyne79.ml/advancedlobby/sound_lists/
+#
+
+#Teleporter sounds
+teleporter:
+  open_inventory:
+    enabled: true
+    sound: ENTITY_PLAYER_LEVELUP
+    volume: 1
+    pitch: 2
+  teleport:
+    enabled: true
+    sound: ENTITY_ENDERMAN_TELEPORT
+    volume: 1
+    pitch: 1
+
+#Hotbar switch sound
+hotbar_switch:
+  enabled: true
+  sound: BLOCK_NOTE_BLOCK_HAT
+  volume: 1
+  pitch: 2
+
+#Player hider switch sound
+player_hider:
+  enabled: true
+  sound: ENTITY_CHICKEN_EGG
+  volume: 1
+  pitch: 1
+
+#SilentLobby join & leave sound
+silentlobby:
+  enable_silentlobby:
+    enabled: true
+    sound: ENTITY_FIREWORK_ROCKET_BLAST
+    volume: 1
+    pitch: 2
+  disable_silentlobby:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1
+    pitch: 2
+
+#Shield activate & disable sound
+shield:
+  enable_shield:
+    enabled: true
+    sound: ENTITY_ENDER_DRAGON_HURT
+    volume: 1
+    pitch: 2
+  disable_shield:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1
+    pitch: 2
+
+#Cosmetics sounds
+cosmetics:
+  open_inventory:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1
+    pitch: 2
+  change_page:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1
+    pitch: 2
+  equip_cosmetic:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1
+    pitch: 2
+  disable_cosmetic:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+    volume: 1
+    pitch: 2
+
+#Gadgets sounds
+gadgets:
+  grappling_hook:
+    enabled: true
+    sound: ENTITY_BAT_TAKEOFF
+    volume: 1
+    pitch: 1
+  rocket_jump:
+    enabled: true
+    sound: ENTITY_GENERIC_EXPLODE
+    volume: 1
+    pitch: 2
+  reload_gadget:
+    enabled: true
+    sound: ENTITY_VILLAGER_NO
+    volume: 1
+    pitch: 1
+
+#WorldBorder push back sound
+worldborder_push_back:
+  enabled: true
+  sound: ENTITY_ENDER_DRAGON_AMBIENT
+  volume: 1
+  pitch: 2
+
+#JumpPads push sound
+jumppads:
+  enabled: true
+  sound: ENTITY_ENDER_DRAGON_AMBIENT
+  volume: 1
+  pitch: 2
+
+#Commands sounds
+commands:
+  teleportall_command:
+    enabled: true
+    sound: ENTITY_ENDERMAN_TELEPORT
+    volume: 1
+    pitch: 1

@@ -1,0 +1,330 @@
+#
+#  ____ ___  _  _ ____ _  _ ____ ____ ___  _    ____ ___  ___  _   _
+#  |__| |  \ |  | |__| |\ | |    |___ |  \ |    |  | |__] |__]  \_/
+#  |  | |__/  \/  |  | | \| |___ |___ |__/ |___ |__| |__] |__]   |    v1.3 by cyne, Pancake
+#
+#   In many sections you can use placeholders. Either by the plugin itself or PlaceholderAPI (if installed).
+#   Visit https://www.spigotmc.org/wiki/placeholderapi-placeholders/ to see all PlaceholderAPI placeholders.
+#   Make sure to download the used expansions via /papi ecloud.
+#
+
+#General settings
+multiworld_mode:
+  enabled: false
+  #â®Ÿ Set to true if you want the inventory to be cleared on every world change.
+  clear_inventory: true
+
+lobby_worlds:
+  - world
+  - lobby
+
+#â®Ÿ Set to true if you want the displaynames to be used for the messages.
+use_displaynames: false
+spawn_location: 'spawn'
+block_commands:
+  enabled: true
+  commands:
+    - /help
+    - /plugins
+    - /version
+    - /?
+    - /about
+    - /pl
+    - /ver
+    - /icanhasbukkit
+disable_mob_damage: true
+disable_player_interaction: true
+disable_physical_player_interaction: true
+
+#Weather settings
+#âž¥ Possible weather types are: CLEAR, RAIN, THUNDER
+weather:
+  lock_weather: true
+  weather_type: CLEAR
+
+#Actionbar settings
+#âž¥ You can add multiple messages. - "display_time" in seconds. | Placeholders: PlaceholderAPI
+actionbar:
+  enabled: true
+  display_time: 5
+  messages:
+    - '&7Ping &8â—� &a%player_ping%ms &8â”ƒ &7Time &8â—� &f%server_time_HH:mm:ss%'
+
+#Tablist header & footer settings
+#âž¥ Use \n to start a new line | Placeholders: PlaceholderAPI
+tablist_header_footer:
+  enabled: true
+  #â®Ÿ If activated, the tablist updates every second.
+  update_tablist: true
+  header: '&r\n&bAdvancedLobby &8Ã— &7Minecraft Network &8âžœ &f%server_online%&8/&f%server_max_players%&f\n &8â–º Â§7Server &8â—� &b%player_server% &8â—„ \n'
+  footer: '&r\n&7Twitter &8Â» Â§f@Unknown &8â”ƒ &7TeamSpeak &8Â» &fUnknown\n'
+
+#Player join settings
+player_join:
+  gamemode: 2
+  health: 20
+  clear_inventory: true
+  join_at_spawn: false
+
+#Title settings
+#âž¥ Placeholders: %player%: Player name; PlaceholderAPI
+title:
+  enabled: true
+  title: '&bWelcome&8, &7%player%'
+  subtitle: '&7on &fAdvancedLobby'
+
+#Void teleport settings
+void_teleport:
+  enabled: true
+  height: 0.0
+
+#Worldborder settings
+worldborder:
+  enabled: true
+  radius: 200
+  center_location: 'spawn'
+
+#JumpPads settings
+jumppads:
+  enabled: true
+  lenght: 2.0
+  height: 0.5
+
+#Motd settings
+motd:
+  enabled: true
+  first_line: '  &bAdvancedLobby &8â–¶ &7Minecraft Network &8â”ƒ &8[&f1.8&8-&f1.12.2&8]'
+  second_line: '          &aNow &a&lONLINE &8â—� &7Twitter &8Â» Â§f@Unknown'
+
+#Chat format settings
+#âž¥ Placeholders: %player%: Player name; %message%: Chat message
+chat_format:
+  enabled: true
+  format: '&f%player% &8Â» &7%message%'
+
+#Hotbar items settings
+hotbar_items:
+  teleporter:
+    enabled: true
+    slot: 0
+    material: COMPASS
+    subid: 0
+    displayname: '&bTeleporter &8Ã— &7rightclick'
+    lore: []
+  player_hider:
+    enabled: true
+    slot: 1
+    show_all:
+      material: LIME_DYE
+      subid: 0
+      displayname: '&aAll players visible &8Ã— &7rightclick'
+      lore: []
+    show_vip:
+      material: PURPLE_DYE
+      subid: 0
+      displayname: '&5Only VIP-Players visible &8Ã— &7rightclick'
+      lore: []
+    show_none:
+      material: RED_DYE
+      subid: 0
+      displayname: '&cNo players visible &8Ã— &7rightclick'
+      lore: []
+  cosmetics:
+    enabled: true
+    slot: 8
+    material: CHEST
+    subid: 0
+    displayname: '&dCosmetics &8Ã— &7rightclick'
+    lore: []
+  gadget:
+    enabled: true
+    slot: 7
+    unequipped:
+      material: FIREWORK_STAR
+      subid: 0
+      displayname: '&cNo gadget equipped'
+      lore: []
+    equipped:
+      #â®Ÿ Placeholders: %gadget%: Gadget name
+      displayname: '&b%gadget% &8Ã— &7rightclick'
+      lore: []
+  silentlobby:
+    enabled: true
+    slot: 3
+    activated:
+      material: TNT
+      subid: 0
+      displayname: '&aSilentLobby &8Ã— &7rightclick'
+      lore: []
+    deactivated:
+      material: TNT
+      subid: 0
+      displayname: '&cSilentLobby &8Ã— &7rightclick'
+      lore: []
+  shield:
+    enabled: true
+    slot: 5
+    activated:
+      material: ENDER_EYE
+      subid: 0
+      displayname: '&aShield &8Ã— &7rightclick'
+      lore: []
+    deactivated:
+      material: ENDER_EYE
+      subid: 0
+      displayname: '&cShield &8Ã— &7rightclick'
+      lore: []
+  custom_item:
+    enabled: false
+    slot: 4
+    material: NAME_TAG
+    subid: 0
+    displayname: '&e??? &8Ã— &7rightclick'
+    lore: []
+    command: ''
+
+#Inventory settings
+inventories:
+  #Teleporter inventory
+  teleporter:
+    title: '&bTeleporter'
+    rows: 5
+    #To add new items to the teleporter use the following template:
+    #
+    #example:
+    #  material: GRASS
+    #  subid: 0
+    #  displayname: '&8â—� &bExample'
+    #  lore:
+    #  - '&8&m---------------'
+    #  - ' &8Â» &7Click to teleport'
+    #  slot: 13
+    #  location: 'example'
+    items:
+      spawn:
+        material: MAGMA_CREAM
+        slot: 31
+        displayname: '&8â—� &bSpawn'
+        lore:
+          - '&8&m---------------'
+          - ' &8Â» &7Click to teleport'
+        subid: 0
+        location: 'spawn'
+  #Cosmetics inventory
+  cosmetics:
+    title: '&dCosmetics'
+    hats:
+      displayname: '&bHats'
+      lore: []
+    particles:
+      displayname: '&bParticles'
+      lore: []
+    gadgets:
+      displayname: '&bGadgets'
+      lore: []
+    ballons:
+      displayname: '&bBalloons'
+      lore: []
+
+  #Cosmetics hats inventory
+  cosmetics_hats:
+    title: '&dCosmetics &8Ã— &fHats'
+    go_back:
+      displayname: '&8â—„ &7Go back'
+      lore: []
+    disable:
+      displayname: '&8â–º &cDisable hat'
+      lore: []
+    melon_hat:
+      displayname: '&bMelon'
+      lore: []
+    tnt_hat:
+      displayname: '&bTNT'
+      lore: []
+    glass_hat:
+      displayname: '&bGlass'
+      lore: []
+    sponge_hat:
+      displayname: '&bSponge'
+      lore: []
+    pumpkin_hat:
+      displayname: '&bPumpkin'
+      lore: []
+    cactus_hat:
+      displayname: '&bCactus'
+      lore: []
+
+  #Cosmetics particles inventory
+  cosmetics_particles:
+    title: '&dCosmetics &8Ã— &fParticles'
+    go_back:
+      displayname: '&8â—„ &7Go back'
+      lore: []
+    disable:
+      displayname: '&8â–º &cDisable particles'
+      lore: []
+    heart_particles:
+      displayname: '&bHearts'
+      lore: []
+    music_particles:
+      displayname: '&bMusic'
+      lore: []
+    flames_particles:
+      displayname: '&bFlames'
+      lore: []
+    villager_particles:
+      displayname: '&bVillager'
+      lore: []
+    rainbow_particles:
+      displayname: '&bRainbow'
+      lore: []
+
+  #Cosmetics balloons inventory
+  cosmetics_balloons:
+    title: '&dCosmetics &8Ã— &fBalloons'
+    go_back:
+      displayname: '&8â—„ &7Go back'
+      lore: []
+    disable:
+      displayname: '&8â–º &cDisable balloon'
+      lore: []
+    yellow_balloon:
+      displayname: '&bYellow balloon'
+      lore: []
+    red_balloon:
+      displayname: '&bRed balloon'
+      lore: []
+    green_balloon:
+      displayname: '&bGreen balloon'
+      lore: []
+    blue_balloon:
+      displayname: '&bBlue balloon'
+      lore: []
+    hay_block_balloon:
+      displayname: '&bHay Block balloon'
+      lore: []
+    sea_lantern_balloon:
+      displayname: '&bSea Lantern balloon'
+      lore: []
+    bookshelf_balloon:
+      displayname: '&bBookshelf balloon'
+      lore: []
+    note_block_balloon:
+      displayname: '&bNote Block balloon'
+      lore: []
+
+  #Cosmetics gadgets inventory
+  cosmetics_gadgets:
+    title: '&dCosmetics &8Ã— &fGadgets'
+    go_back:
+      displayname: '&8â—„ &7Go back'
+      lore: []
+    disable:
+      displayname: '&8â–º &cDisable gadget'
+      lore: []
+    grappling_hook_gadget:
+      displayname: '&bGrappling hook'
+      lore: []
+    rocket_jump_gadget:
+      displayname: '&bRocket jump'
+      lore: []
