@@ -7,9 +7,3 @@
 [submodule "TAS-Lobby/zNPC"]
 	path = TAS-Lobby/zNPC
 	url = https://github.com/MCPfannkuchenYT/znpc-servers.git
-[submodule "TAS-Bedwars/SBA"]
-	path = TAS-Bedwars/SBA
-	url = https://github.com/MCPfannkuchenYT/SBA.git
-[submodule "TAS-Bedwars/ScreamingBedWars"]
-	path = TAS-Bedwars/ScreamingBedWars
-	url = https://github.com/MCPfannkuchenYT/BedWars.git
