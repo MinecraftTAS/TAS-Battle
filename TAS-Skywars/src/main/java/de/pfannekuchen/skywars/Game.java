@@ -296,7 +296,7 @@ public class Game {
 		addEntry(new ItemStack(Material.DIAMOND_CHESTPLATE), 10.0);
 		addEntry(new ItemStack(Material.DIAMOND_LEGGINGS), 10.0);
 		addEntry(new ItemStack(Material.DIAMOND_BOOTS), 10.0);
-		addEntry(new ItemStack(Material.ENDER_PEARL, 3), 10.0);
+		addEntry(new ItemStack(Material.ENDER_PEARL, 3), 35.0);
 		
 		addEntry(new ItemStack(Material.STONE, 64), 20.0);
 		addEntry(new ItemStack(Material.OAK_LOG, 64), 20.0);
