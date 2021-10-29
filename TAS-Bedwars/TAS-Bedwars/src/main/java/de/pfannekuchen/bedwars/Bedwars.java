@@ -1,7 +1,10 @@
 package de.pfannekuchen.bedwars;
 
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,12 +23,17 @@ public class Bedwars extends JavaPlugin implements Listener {
 	
 	/**
 	 * Ran when the server starts.
-	 * Registers listeners, loads configurations
+	 * Registers listeners, loads configurations.
 	 */
 	@Override
 	public void onEnable() {
 		PRIMARYWORLD = Bukkit.getWorlds().get(0);
 		Bukkit.getPluginManager().registerEvents(this, this);
+		try {
+			Spawners.loadConfig(getDataFolder());
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

@@ -1,10 +1,22 @@
 package de.pfannekuchen.bedwars.data;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import de.pfannekuchen.bedwars.Bedwars;
+import de.pfannekuchen.bedwars.exceptions.ParseException;
+import de.pfannekuchen.bedwars.utils.LocationUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -35,10 +47,10 @@ public class Spawners {
 	private static Location[] emeraldSpawnLocations;
 	private static Location[] diamondSpawnLocations;
 	
-	private static int ticksUntilGold;
-	private static int ticksUntilIron;
-	private static int ticksUntilEmeralds;
-	private static int ticksUntilDiamonds;
+	private static int ticksUntilGold = 1;
+	private static int ticksUntilIron = 1;
+	private static int ticksUntilEmeralds = 1;
+	private static int ticksUntilDiamonds = 1;
 	
 	private static int defaultTicksUntilGold = 3 * 20;
 	private static int defaultTicksUntilIron = 1 * 20;
@@ -46,24 +58,85 @@ public class Spawners {
 	private static int defaultTicksUntilDiamonds = 40 * 20;
 	
 	/**
+	 * Loads a configuration file, or creates one if it is empty
+	 * @param configFile Configuration File
+	 * @throws InvalidConfigurationException Throws whenever the configuration is incorrect
+	 * @throws IOException Throws whenever the file can't be read
+	 * @throws FileNotFoundException Throws whenever the file doesn't exist
+	 */
+	public static final void loadConfig(File configFolder) throws FileNotFoundException, IOException, InvalidConfigurationException {
+		YamlConfiguration config = new YamlConfiguration();
+		config.load(new File(configFolder, "locations.yml"));
+		
+		try {
+			@NotNull List<String> configGoldLocations = config.getStringList("goldspawners");
+			goldSpawnLocations = new Location[configGoldLocations.size()];
+			World w = Bukkit.getWorlds().get(0);
+			for (int i = 0; i < goldSpawnLocations.length; i++) {
+				goldSpawnLocations[i] = LocationUtils.parseLocation(w, configGoldLocations.get(i));
+			}
+		} catch (ParseException e) {
+			throw new IOException("Unable to read gold spawn locations from configuration", e);
+		}
+		
+		try {
+			@NotNull List<String> configIronLocations = config.getStringList("ironspawners");
+			ironSpawnLocations = new Location[configIronLocations.size()];
+			World w = Bukkit.getWorlds().get(0);
+			for (int i = 0; i < ironSpawnLocations.length; i++) {
+				ironSpawnLocations[i] = LocationUtils.parseLocation(w, configIronLocations.get(i));
+			}
+		} catch (ParseException e) {
+			throw new IOException("Unable to read iron spawn locations from configuration", e);
+		}
+		
+		try {
+			@NotNull List<String> configEmeraldLocations = config.getStringList("emeraldspawners");
+			emeraldSpawnLocations = new Location[configEmeraldLocations.size()];
+			World w = Bukkit.getWorlds().get(0);
+			for (int i = 0; i < emeraldSpawnLocations.length; i++) {
+				emeraldSpawnLocations[i] = LocationUtils.parseLocation(w, configEmeraldLocations.get(i));
+			}
+		} catch (ParseException e) {
+			throw new IOException("Unable to read emerald spawn locations from configuration", e);
+		}
+		
+		try {
+			@NotNull List<String> configDiamondLocations = config.getStringList("diamondspawners");
+			diamondSpawnLocations = new Location[configDiamondLocations.size()];
+			World w = Bukkit.getWorlds().get(0);
+			for (int i = 0; i < diamondSpawnLocations.length; i++) {
+				diamondSpawnLocations[i] = LocationUtils.parseLocation(w, configDiamondLocations.get(i));
+			}
+		} catch (ParseException e) {
+			throw new IOException("Unable to read diamond spawn locations from configuration", e);
+		}
+		
+		defaultTicksUntilGold = config.getInt("goldticks", defaultTicksUntilGold);
+		defaultTicksUntilIron = config.getInt("ironticks", defaultTicksUntilIron);
+		defaultTicksUntilEmeralds = config.getInt("emeraldticks", defaultTicksUntilEmeralds);
+		defaultTicksUntilDiamonds = config.getInt("diamondticks", defaultTicksUntilDiamonds);
+	}
+	
+	/**
 	 * Ticks the spawner causing items to spawn once the spawner tick counter reaches 0
 	 */
 	public static synchronized final void tick() {
 		/* Tick through all spawner types and spawn items if required */
 		decreaseTimer();
-		if (untilGold() == 0) {
+		if (untilGold() <= 0) {
 			ticksUntilGold = defaultTicksUntilGold;
 			spawn(goldSpawnLocations, GOLD_ITEM);
 		}
-		if (untilIron() == 0) {
+		if (untilIron() <= 0) {
 			ticksUntilIron = defaultTicksUntilIron;
 			spawn(ironSpawnLocations, IRON_ITEM);
 		}
-		if (untilEmeralds() == 0) {
+		if (untilEmeralds() <= 0) {
 			ticksUntilEmeralds = defaultTicksUntilEmeralds;
 			spawn(emeraldSpawnLocations, EMERALD_ITEM);
 		}
-		if (untilDiamonds() == 0) {
+		if (untilDiamonds() <= 0) {
 			ticksUntilDiamonds = defaultTicksUntilDiamonds;
 			spawn(diamondSpawnLocations, DIAMOND_ITEM);
 		}
