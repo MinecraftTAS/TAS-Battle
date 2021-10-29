@@ -17,19 +17,21 @@ public class LocationUtils {
 	 */
 	public static Location parseLocation(@Nullable World w, String locationString) throws ParseException {
 		// 1-3 numbers required and last two are optional
-		String num1;
-		String num2;
-		String num3;
-		String num4;
-		String num5;
+		String num1 = null;
+		String num2 = null;
+		String num3 = null;
+		String num4 = null;
+		String num5 = null;
 		/* Try to split the locationString into the number variables */
 		try {
 			String[] numbers = locationString.split(" ");
 			num1 = numbers[0];
 			num2 = numbers[1];
 			num3 = numbers[2];
-			num4 = numbers[3];
-			num5 = numbers[4];
+			if (numbers.length > 3) {
+				num4 = numbers[3];
+				num5 = numbers[4];
+			}
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new ParseException("Unable to split positions from location string: " + locationString, e);
 		}
