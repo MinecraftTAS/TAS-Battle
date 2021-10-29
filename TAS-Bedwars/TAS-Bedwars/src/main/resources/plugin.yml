@@ -1,0 +1,14 @@
+# Plugin Info
+name: Bedwars-Plugin
+version: 1.0.0-SNAPSHOT
+description: Adds Bedwars to a Bungeecord Server
+author: Pancake(MCPfannkuchenYT)
+
+# Code Info
+main: de.pfannekuchen.bedwars.Bedwars
+load: POSTWORLD
+api-version: 1.17
+
+# Additional Stuff
+website: mgnet.work
+prefix: Bedwars
