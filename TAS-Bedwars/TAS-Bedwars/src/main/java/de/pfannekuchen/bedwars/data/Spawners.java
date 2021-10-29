@@ -3,7 +3,9 @@ package de.pfannekuchen.bedwars.data;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,14 +13,18 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import de.pfannekuchen.bedwars.Bedwars;
 import de.pfannekuchen.bedwars.exceptions.ParseException;
 import de.pfannekuchen.bedwars.utils.LocationUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 /**
  * Contains data for all spawners and when they will spawn
@@ -33,13 +39,13 @@ public class Spawners {
 	
 	static {
 		GOLD_ITEM = new ItemStack(Material.GOLD_INGOT);
-		GOLD_ITEM.editMeta(e -> {  e.displayName(Component.text("§eGold")); });
+		GOLD_ITEM.editMeta(e -> {  e.displayName(Component.text("\u00A7eGold")); });
 		IRON_ITEM = new ItemStack(Material.IRON_INGOT);
-		IRON_ITEM.editMeta(e -> { e.displayName(Component.text("§fIron")); });
+		IRON_ITEM.editMeta(e -> { e.displayName(Component.text("\u00A7fIron")); });
 		EMERALD_ITEM = new ItemStack(Material.EMERALD);
-		EMERALD_ITEM.editMeta(e -> { e.displayName(Component.text("§2Emerald")); });
+		EMERALD_ITEM.editMeta(e -> { e.displayName(Component.text("\u00A72Emerald")); });
 		DIAMOND_ITEM = new ItemStack(Material.DIAMOND);
-		DIAMOND_ITEM.editMeta(e -> { e.displayName(Component.text("§bDiamond")); });
+		DIAMOND_ITEM.editMeta(e -> { e.displayName(Component.text("\u00A7bDiamond")); });
 	}
 	
 	private static Location[] goldSpawnLocations;
@@ -52,10 +58,15 @@ public class Spawners {
 	private static int ticksUntilEmeralds = 1;
 	private static int ticksUntilDiamonds = 1;
 	
+	private static int tierEmerald = 0;
+	private static int tierDiamond = 0;
+	
 	private static int defaultTicksUntilGold = 3 * 20;
 	private static int defaultTicksUntilIron = 1 * 20;
 	private static int defaultTicksUntilEmeralds = 60 * 20;
 	private static int defaultTicksUntilDiamonds = 40 * 20;
+	
+	private static ArrayList<Runnable> armorStands = new ArrayList<>();
 	
 	/**
 	 * Loads a configuration file, or creates one if it is empty
@@ -116,8 +127,59 @@ public class Spawners {
 		defaultTicksUntilIron = config.getInt("ironticks", defaultTicksUntilIron);
 		defaultTicksUntilEmeralds = config.getInt("emeraldticks", defaultTicksUntilEmeralds);
 		defaultTicksUntilDiamonds = config.getInt("diamondticks", defaultTicksUntilDiamonds);
+		
+		spawnArmorStands();
 	}
 	
+	/**
+	 * Spawns armor stands for every spawner location
+	 */
+	private static void spawnArmorStands() {
+		for (Location location : emeraldSpawnLocations) {
+			getArmorStand(location.add(0, .7, 0), "\u00A72Emerald", null, null);
+			getArmorStand(location.add(0, .3, 0), null, e -> {
+				e.customName(Component.text("\u00A7eTier \u00A7c" + tierEmerald));
+			}, null);
+			getArmorStand(location.add(0, -.6, 0), null, e -> {
+				e.customName(Component.text("\u00A7eSpawns in \u00A7c" + ((int) (ticksUntilEmeralds / 20)) + " \u00A7eseconds"));
+				e.setRotation(e.getLocation().getYaw() + 1, e.getLocation().getPitch());
+			}, Material.EMERALD_BLOCK);
+		}
+		for (Location location : diamondSpawnLocations) {
+			getArmorStand(location.add(0, .7, 0), "\u00A7bDiamond", null, null);
+			getArmorStand(location.add(0, .3, 0), null, e -> {
+				e.customName(Component.text("\u00A7eTier \u00A7c" + tierDiamond));
+			}, null);
+			getArmorStand(location.add(0, -.6, 0), null, e -> {
+				e.customName(Component.text("\u00A7eSpawns in \u00A7c" + ((int) (ticksUntilDiamonds / 20)) + " \u00A7eseconds"));
+				e.setRotation(e.getLocation().getYaw() + 1, e.getLocation().getPitch());
+			},  Material.DIAMOND_BLOCK);
+		}
+	}
+	
+	/**
+	 * Obtains an automatically updating armor stand
+	 * @param loc Location of the armor stand
+	 * @param startString Name of the Armor Stand
+	 * @param update Update thread that updates every tick
+	 */
+	private static void getArmorStand(Location loc, String startString, Consumer<ArmorStand> update, Material materialOnHead) {
+		ArmorStand stand = (ArmorStand) Bedwars.PRIMARYWORLD.spawnEntity(loc.clone().add(.5, 0, .5), EntityType.ARMOR_STAND);
+		stand.setInvisible(true);
+		stand.setInvulnerable(true);
+		stand.setGravity(false);
+		stand.setAI(false);
+		if (materialOnHead != null) stand.getEquipment().setHelmet(new ItemStack(materialOnHead), true);
+		stand.setCustomNameVisible(true);
+		if (startString != null) stand.customName(Component.text(startString));
+		if (update != null) {
+			update.accept(stand);
+			armorStands.add(() -> {
+				update.accept(stand);
+			});
+		}
+	}
+
 	/**
 	 * Ticks the spawner causing items to spawn once the spawner tick counter reaches 0
 	 */
@@ -140,6 +202,10 @@ public class Spawners {
 			ticksUntilDiamonds = defaultTicksUntilDiamonds;
 			spawn(diamondSpawnLocations, DIAMOND_ITEM);
 		}
+		/* Update the armor stands */
+		for (Runnable consumer : armorStands) {
+			consumer.run();
+		}
 	}
 	
 	/**
@@ -158,7 +224,7 @@ public class Spawners {
 	 * @param spawn Item to spawn
 	 */
 	private static synchronized final void spawn(Location[] locs, ItemStack spawn) {
-		for (Location location : locs) Bedwars.PRIMARYWORLD.dropItem(location, spawn.clone());
+		for (Location location : locs)  Bedwars.PRIMARYWORLD.spawnEntity(location.clone().add(.5, 0, .5), EntityType.DROPPED_ITEM, SpawnReason.CUSTOM, e -> { ((Item) e).setItemStack(spawn.clone()); e.setVelocity(new Vector(0, 0, 0)); } );		
 	}
 	
 	// Getters and Setters here
@@ -206,17 +272,21 @@ public class Spawners {
 	}
 
 	/**
+	 * Updates the Tier
 	 * @param defaultTicksUntilEmeralds the defaultTicksUntilEmeralds to set
 	 */
 	public static synchronized final void setDefaultTicksUntilEmeralds(int defaultTicksUntilEmeralds) {
 		Spawners.defaultTicksUntilEmeralds = defaultTicksUntilEmeralds;
+		Spawners.tierEmerald++;
 	}
 
 	/**
+	 * Updates the Tier
 	 * @param defaultTicksUntilDiamonds the defaultTicksUntilDiamonds to set
 	 */
 	public static synchronized final void setDefaultTicksUntilDiamonds(int defaultTicksUntilDiamonds) {
 		Spawners.defaultTicksUntilDiamonds = defaultTicksUntilDiamonds;
+		Spawners.tierDiamond++;
 	}
 
 	/**
@@ -245,6 +315,20 @@ public class Spawners {
 	 */
 	public static synchronized final Location[] getDiamondSpawnLocations() {
 		return diamondSpawnLocations;
+	}
+
+	/**
+	 * @return the tierEmerald
+	 */
+	public static synchronized final int getTierEmerald() {
+		return tierEmerald;
+	}
+
+	/**
+	 * @return the tierDiamond
+	 */
+	public static synchronized final int getTierDiamond() {
+		return tierDiamond;
 	}
 	
 }
