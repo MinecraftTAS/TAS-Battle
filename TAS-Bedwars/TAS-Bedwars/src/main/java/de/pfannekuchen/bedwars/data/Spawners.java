@@ -33,13 +33,13 @@ public class Spawners {
 	
 	static {
 		GOLD_ITEM = new ItemStack(Material.GOLD_INGOT);
-		GOLD_ITEM.editMeta(e -> { e.displayName(Component.text("Gold", NamedTextColor.YELLOW)); });
+		GOLD_ITEM.editMeta(e -> {  e.displayName(Component.text("§eGold")); });
 		IRON_ITEM = new ItemStack(Material.IRON_INGOT);
-		IRON_ITEM.editMeta(e -> { e.displayName(Component.text("Iron", NamedTextColor.WHITE)); });
+		IRON_ITEM.editMeta(e -> { e.displayName(Component.text("§fIron")); });
 		EMERALD_ITEM = new ItemStack(Material.EMERALD);
-		EMERALD_ITEM.editMeta(e -> { e.displayName(Component.text("Emerald", NamedTextColor.DARK_GREEN)); });
+		EMERALD_ITEM.editMeta(e -> { e.displayName(Component.text("§2Emerald")); });
 		DIAMOND_ITEM = new ItemStack(Material.DIAMOND);
-		DIAMOND_ITEM.editMeta(e -> { e.displayName(Component.text("Diamond", NamedTextColor.AQUA)); });
+		DIAMOND_ITEM.editMeta(e -> { e.displayName(Component.text("§bDiamond")); });
 	}
 	
 	private static Location[] goldSpawnLocations;
