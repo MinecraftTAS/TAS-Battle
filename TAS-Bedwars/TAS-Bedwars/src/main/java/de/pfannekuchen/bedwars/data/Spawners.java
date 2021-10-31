@@ -39,7 +39,7 @@ public class Spawners {
 	
 	static {
 		GOLD_ITEM = new ItemStack(Material.GOLD_INGOT);
-		GOLD_ITEM.editMeta(e -> {  e.displayName(Component.text("\u00A7eGold")); });
+		GOLD_ITEM.editMeta(e -> {  e.displayName(Component.text("\u00A7aGold")); });
 		IRON_ITEM = new ItemStack(Material.IRON_INGOT);
 		IRON_ITEM.editMeta(e -> { e.displayName(Component.text("\u00A7fIron")); });
 		EMERALD_ITEM = new ItemStack(Material.EMERALD);
@@ -87,8 +87,8 @@ public class Spawners {
 			ticksUntilIron = new int[configSpawnLocations.size()];
 			World w = Bukkit.getWorlds().get(0);
 			for (int i = 0; i < teamSpawnerLocations.length; i++) {
-				defaultTicksUntilGold[i] = 20;
-				defaultTicksUntilIron[i] = 60;
+				defaultTicksUntilIron[i] = 20;
+				defaultTicksUntilGold[i] = 100;
 				teamSpawnerLocations[i] = LocationUtils.parseLocation(w, configSpawnLocations.get(i));
 			}
 		} catch (ParseException e) {
