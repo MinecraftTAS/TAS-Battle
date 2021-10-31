@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 
+import de.pfannekuchen.bedwars.data.Shop;
 import de.pfannekuchen.bedwars.data.Spawners;
 
 /**
@@ -29,8 +30,10 @@ public class Bedwars extends JavaPlugin implements Listener {
 	public void onEnable() {
 		PRIMARYWORLD = Bukkit.getWorlds().get(0);
 		Bukkit.getPluginManager().registerEvents(this, this);
+		Bukkit.getPluginManager().registerEvents(new Shop(), this);
 		try {
 			Spawners.loadConfig(getDataFolder());
+			Shop.loadConfig(getDataFolder());
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
