@@ -48,21 +48,20 @@ public class Spawners {
 		DIAMOND_ITEM.editMeta(e -> { e.displayName(Component.text("\u00A7bDiamond")); });
 	}
 	
-	private static Location[] goldSpawnLocations;
-	private static Location[] ironSpawnLocations;
+	private static Location[] teamSpawnerLocations; // index is the team-index
 	private static Location[] emeraldSpawnLocations;
 	private static Location[] diamondSpawnLocations;
 	
-	private static int ticksUntilGold = 1;
-	private static int ticksUntilIron = 1;
+	private static int[] ticksUntilGold;
+	private static int[] ticksUntilIron;
 	private static int ticksUntilEmeralds = 1;
 	private static int ticksUntilDiamonds = 1;
 	
 	private static int tierEmerald = 0;
 	private static int tierDiamond = 0;
 	
-	private static int defaultTicksUntilGold = 3 * 20;
-	private static int defaultTicksUntilIron = 1 * 20;
+	private static int[] defaultTicksUntilGold;
+	private static int[] defaultTicksUntilIron;
 	private static int defaultTicksUntilEmeralds = 60 * 20;
 	private static int defaultTicksUntilDiamonds = 40 * 20;
 	
@@ -80,25 +79,20 @@ public class Spawners {
 		config.load(new File(configFolder, "locations.yml"));
 		
 		try {
-			@NotNull List<String> configGoldLocations = config.getStringList("goldspawners");
-			goldSpawnLocations = new Location[configGoldLocations.size()];
+			@NotNull List<String> configSpawnLocations = config.getStringList("spawners");
+			teamSpawnerLocations = new Location[configSpawnLocations.size()];
+			defaultTicksUntilGold = new int[configSpawnLocations.size()];
+			defaultTicksUntilIron = new int[configSpawnLocations.size()];
+			ticksUntilGold = new int[configSpawnLocations.size()];
+			ticksUntilIron = new int[configSpawnLocations.size()];
 			World w = Bukkit.getWorlds().get(0);
-			for (int i = 0; i < goldSpawnLocations.length; i++) {
-				goldSpawnLocations[i] = LocationUtils.parseLocation(w, configGoldLocations.get(i));
+			for (int i = 0; i < teamSpawnerLocations.length; i++) {
+				defaultTicksUntilGold[i] = 20;
+				defaultTicksUntilIron[i] = 60;
+				teamSpawnerLocations[i] = LocationUtils.parseLocation(w, configSpawnLocations.get(i));
 			}
 		} catch (ParseException e) {
-			throw new IOException("Unable to read gold spawn locations from configuration", e);
-		}
-		
-		try {
-			@NotNull List<String> configIronLocations = config.getStringList("ironspawners");
-			ironSpawnLocations = new Location[configIronLocations.size()];
-			World w = Bukkit.getWorlds().get(0);
-			for (int i = 0; i < ironSpawnLocations.length; i++) {
-				ironSpawnLocations[i] = LocationUtils.parseLocation(w, configIronLocations.get(i));
-			}
-		} catch (ParseException e) {
-			throw new IOException("Unable to read iron spawn locations from configuration", e);
+			throw new IOException("Unable to read spawner locations from configuration", e);
 		}
 		
 		try {
@@ -123,14 +117,9 @@ public class Spawners {
 			throw new IOException("Unable to read diamond spawn locations from configuration", e);
 		}
 		
-		defaultTicksUntilGold = config.getInt("goldticks", defaultTicksUntilGold);
-		defaultTicksUntilIron = config.getInt("ironticks", defaultTicksUntilIron);
-		defaultTicksUntilEmeralds = config.getInt("emeraldticks", defaultTicksUntilEmeralds);
-		defaultTicksUntilDiamonds = config.getInt("diamondticks", defaultTicksUntilDiamonds);
-		
 		spawnArmorStands();
 	}
-	
+
 	/**
 	 * Spawns armor stands for every spawner location
 	 */
@@ -186,13 +175,15 @@ public class Spawners {
 	public static synchronized final void tick() {
 		/* Tick through all spawner types and spawn items if required */
 		decreaseTimer();
-		if (untilGold() <= 0) {
-			ticksUntilGold = defaultTicksUntilGold;
-			spawn(goldSpawnLocations, GOLD_ITEM);
-		}
-		if (untilIron() <= 0) {
-			ticksUntilIron = defaultTicksUntilIron;
-			spawn(ironSpawnLocations, IRON_ITEM);
+		for (int team = 0; team < defaultTicksUntilGold.length; team++) {
+			if (untilGold(team) <= 0) {
+				ticksUntilGold[team] = defaultTicksUntilGold[team];
+				spawn(teamSpawnerLocations[team], GOLD_ITEM);
+			}
+			if (untilIron(team) <= 0) {
+				ticksUntilIron[team] = defaultTicksUntilIron[team];
+				spawn(teamSpawnerLocations[team], IRON_ITEM);
+			}
 		}
 		if (untilEmeralds() <= 0) {
 			ticksUntilEmeralds = defaultTicksUntilEmeralds;
@@ -212,10 +203,21 @@ public class Spawners {
 	 * Decreases all timers for the spawners
 	 */
 	private static synchronized final void decreaseTimer() {
-		ticksUntilGold--;
-		ticksUntilIron--;
+		for (int i = 0; i < defaultTicksUntilGold.length; i++) {
+			ticksUntilGold[i]--;
+			ticksUntilIron[i]--;	
+		}
 		ticksUntilEmeralds--;
 		ticksUntilDiamonds--;
+	}
+	
+	/**
+	 * Spawns items at the given locations
+	 * @param locs Location to spawn at
+	 * @param spawn Item to spawn
+	 */
+	private static synchronized final void spawn(Location location, ItemStack spawn) {
+		Bedwars.PRIMARYWORLD.spawnEntity(location.clone().add(.5, 0, .5), EntityType.DROPPED_ITEM, SpawnReason.CUSTOM, e -> { ((Item) e).setItemStack(spawn.clone()); e.setVelocity(new Vector(0, 0, 0)); } );		
 	}
 	
 	/**
@@ -232,15 +234,15 @@ public class Spawners {
 	/**
 	 * @return the ticksUntilGold
 	 */
-	public static synchronized final int untilGold() {
-		return ticksUntilGold;
+	public static synchronized final int untilGold(int team) {
+		return ticksUntilGold[team];
 	}
 	
 	/**
 	 * @return the ticksUntilIron
 	 */
-	public static synchronized final int untilIron() {
-		return ticksUntilIron;
+	public static synchronized final int untilIron(int team) {
+		return ticksUntilIron[team];
 	}
 	
 	/**
@@ -260,15 +262,15 @@ public class Spawners {
 	/**
 	 * @param defaultTicksUntilGold the defaultTicksUntilGold to set
 	 */
-	public static synchronized final void setDefaultTicksUntilGold(int defaultTicksUntilGold) {
-		Spawners.defaultTicksUntilGold = defaultTicksUntilGold;
+	public static synchronized final void setDefaultTicksUntilGold(int defaultTicksUntilGold, int team) {
+		Spawners.defaultTicksUntilGold[team] = defaultTicksUntilGold;
 	}
 
 	/**
 	 * @param defaultTicksUntilIron the defaultTicksUntilIron to set
 	 */
-	public static synchronized final void setDefaultTicksUntilIron(int defaultTicksUntilIron) {
-		Spawners.defaultTicksUntilIron = defaultTicksUntilIron;
+	public static synchronized final void setDefaultTicksUntilIron(int defaultTicksUntilIron, int team) {
+		Spawners.defaultTicksUntilIron[team] = defaultTicksUntilIron;
 	}
 
 	/**
@@ -290,17 +292,10 @@ public class Spawners {
 	}
 
 	/**
-	 * @return the goldSpawnLocations
+	 * @return the teamSpawnerLocations
 	 */
-	public static synchronized final Location[] getGoldSpawnLocations() {
-		return goldSpawnLocations;
-	}
-
-	/**
-	 * @return the ironSpawnLocations
-	 */
-	public static synchronized final Location[] getIronSpawnLocations() {
-		return ironSpawnLocations;
+	public static synchronized final Location[] getSpawnLocations() {
+		return teamSpawnerLocations;
 	}
 
 	/**
