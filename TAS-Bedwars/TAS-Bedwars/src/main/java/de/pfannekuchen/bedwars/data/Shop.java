@@ -60,6 +60,27 @@ public class Shop implements Listener {
 	}
 	
 	/**
+	 * Ticks all villagers and makes then face another player
+	 */
+	public static void tick() {
+		faceAt(itemShopLocations);
+		faceAt(upgradeShopLocations);
+	}
+	
+	public static void faceAt(Villager[] v) {
+		for (Villager villager : v) {
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (villager.getLocation().distance(p.getLocation()) < 10) {
+					Location vec = villager.getLocation().subtract(p.getLocation());
+					Location loc = villager.getEyeLocation().setDirection(vec.toVector());
+					villager.setRotation(180.0f + loc.getYaw(), -loc.getPitch());
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Opens an Upgrade Shop for a player
 	 * @param player Player to open for
 	 */

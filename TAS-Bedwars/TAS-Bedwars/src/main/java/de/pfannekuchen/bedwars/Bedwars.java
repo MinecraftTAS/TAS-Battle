@@ -45,6 +45,7 @@ public class Bedwars extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onServerTick(ServerTickStartEvent e) {
 		Spawners.tick();
+		Shop.tick();
 	}
 	
 }
