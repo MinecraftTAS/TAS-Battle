@@ -246,14 +246,20 @@ public class Shop implements Listener {
 	public static void tick() {
 		faceAt(itemShopLocations);
 		faceAt(upgradeShopLocations);
-		checkArmor(Bukkit.getOnlinePlayers());
+		checkArmorAndSword(Bukkit.getOnlinePlayers());
 	}
 	
 	/**
 	 * @param onlinePlayers
 	 */
-	private static void checkArmor(@NotNull Collection<? extends Player> onlinePlayers) {
+	private static void checkArmorAndSword(@NotNull Collection<? extends Player> onlinePlayers) {
 		for (Player p : onlinePlayers) {
+			int swordCheck1 = p.getInventory().first(Material.WOODEN_SWORD);
+			int swordCheck2 = p.getInventory().first(Material.IRON_SWORD);
+			int swordCheck3 = p.getInventory().first(Material.DIAMOND_SWORD);
+			if (swordCheck1 == -1 && swordCheck2 == -1 && swordCheck3 == -1) {
+				p.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
+			}
 			ItemStack armor = p.getInventory().getLeggings();
 			if (armor == null) {
 				p.getInventory().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
