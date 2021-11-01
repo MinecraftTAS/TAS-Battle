@@ -150,7 +150,11 @@ public class Shop implements Listener {
 		faceAt(itemShopLocations);
 		faceAt(upgradeShopLocations);
 	}
-	
+
+	/**
+	 * Makes a Villager face the nearest Player
+	 * @param v
+	 */
 	public static void faceAt(Villager[] v) {
 		for (Villager villager : v) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
@@ -201,63 +205,63 @@ public class Shop implements Listener {
 		for (int j = 0; j < (4*9); j++) inventory.setItem(j+18, null);
 		switch (i) {
 			case 0:
-				inventory.setItem(18+1, getItemStack(Material.WHITE_WOOL, "Wool", 16, "§7Cost: §f4 Iron"));
-				inventory.setItem(18+2, getItemStack(Material.STONE_SWORD, "Stone Sword", 1, "§7Cost: §f10 Iron"));
-				inventory.setItem(18+3, getItemStack(Material.CHAINMAIL_BOOTS, "Chainmail Armor", 1, "§7Cost: §f40 Iron"));
-				inventory.setItem(18+4, getItemStack(Material.DIAMOND_BOOTS, "Diamond Armor", 1, "§7Cost: §26 Emeralds"));
-				inventory.setItem(18+5, getItemStack(Material.BOW, "Bow", 1, "§7Cost: §612 Gold"));
-				inventory.setItem(18+6, getItemStack(new PotionEffect(PotionEffectType.SPEED, 45*20, 4), Color.fromRGB(0xFFBF00), "Speed Potion V", 1, "§7Cost: §21 Emerald"));
-				inventory.setItem(18+7, getItemStack(Material.TNT, "TNT", 1, "§7Cost: §64 Gold"));
-				inventory.setItem(18+1+9, getItemStack(Material.OAK_PLANKS, "Wood", 16, "§7Cost: §64 Gold"));
-				inventory.setItem(18+2+9, getItemStack(Material.IRON_SWORD, "Iron Sword", 1, "§7Cost: §67 Gold"));
-				inventory.setItem(18+3+9, getItemStack(Material.IRON_BOOTS, "Iron Armor", 1, "§7Cost: §612 Gold"));
-				inventory.setItem(18+4+9, getItemStack(Material.SHEARS, "Shears", 1, "§7Cost: §f20 Iron"));
-				inventory.setItem(18+5+9, getItemStack(Material.ARROW, "Arrow", 8, "§7Cost: §62 Gold"));
-				inventory.setItem(18+6+9, getItemStack(new PotionEffect(PotionEffectType.JUMP, 45*20, 4), Color.fromRGB(0xE6E6FA), "Jump Boost Potion V", 1, "§7Cost: §21 Emerald"));
-				inventory.setItem(18+7+9, getItemStack(Material.WATER_BUCKET, "Water Bucket", 1, "§7Cost: §63 Gold"));
+				inventory.setItem(18+1, getItemStack(Material.WHITE_WOOL, "Wool", 16, "ï¿½7Cost: ï¿½f4 Iron"));
+				inventory.setItem(18+2, getItemStack(Material.STONE_SWORD, "Stone Sword", 1, "ï¿½7Cost: ï¿½f10 Iron"));
+				inventory.setItem(18+3, getItemStack(Material.CHAINMAIL_BOOTS, "Chainmail Armor", 1, "ï¿½7Cost: ï¿½f40 Iron"));
+				inventory.setItem(18+4, getItemStack(Material.DIAMOND_BOOTS, "Diamond Armor", 1, "ï¿½7Cost: ï¿½26 Emeralds"));
+				inventory.setItem(18+5, getItemStack(Material.BOW, "Bow", 1, "ï¿½7Cost: ï¿½612 Gold"));
+				inventory.setItem(18+6, getItemStack(new PotionEffect(PotionEffectType.SPEED, 45*20, 4), Color.fromRGB(0xFFBF00), "Speed Potion V", 1, "ï¿½7Cost: ï¿½21 Emerald"));
+				inventory.setItem(18+7, getItemStack(Material.TNT, "TNT", 1, "ï¿½7Cost: ï¿½64 Gold"));
+				inventory.setItem(18+1+9, getItemStack(Material.OAK_PLANKS, "Wood", 16, "ï¿½7Cost: ï¿½64 Gold"));
+				inventory.setItem(18+2+9, getItemStack(Material.IRON_SWORD, "Iron Sword", 1, "ï¿½7Cost: ï¿½67 Gold"));
+				inventory.setItem(18+3+9, getItemStack(Material.IRON_BOOTS, "Iron Armor", 1, "ï¿½7Cost: ï¿½612 Gold"));
+				inventory.setItem(18+4+9, getItemStack(Material.SHEARS, "Shears", 1, "ï¿½7Cost: ï¿½f20 Iron"));
+				inventory.setItem(18+5+9, getItemStack(Material.ARROW, "Arrow", 8, "ï¿½7Cost: ï¿½62 Gold"));
+				inventory.setItem(18+6+9, getItemStack(new PotionEffect(PotionEffectType.JUMP, 45*20, 4), Color.fromRGB(0xE6E6FA), "Jump Boost Potion V", 1, "ï¿½7Cost: ï¿½21 Emerald"));
+				inventory.setItem(18+7+9, getItemStack(Material.WATER_BUCKET, "Water Bucket", 1, "ï¿½7Cost: ï¿½63 Gold"));
 				return;
 			case 1:
-				inventory.setItem(18+1, getItemStack(Material.WHITE_WOOL, "Wool", 16, "§7Cost: §f4 Iron"));
-				inventory.setItem(18+2, getItemStack(Material.TERRACOTTA, "Terracotta", 16, "§7Cost: §f8 Iron"));
-				inventory.setItem(18+3, getItemStack(Material.GLASS, "Glass", 4, "§7Cost: §f12 Iron"));
-				inventory.setItem(18+4, getItemStack(Material.END_STONE, "End Stone", 12, "§7Cost: §f24 Iron"));
-				inventory.setItem(18+5, getItemStack(Material.LADDER, "Ladder", 8, "§7Cost: §f3 Iron"));
-				inventory.setItem(18+6, getItemStack(Material.OAK_PLANKS, "Wood", 16, "§7Cost: §64 Gold"));
-				inventory.setItem(18+7, getItemStack(Material.OBSIDIAN, "Obsidian", 4, "§7Cost: §24 Emeralds"));
+				inventory.setItem(18+1, getItemStack(Material.WHITE_WOOL, "Wool", 16, "ï¿½7Cost: ï¿½f4 Iron"));
+				inventory.setItem(18+2, getItemStack(Material.TERRACOTTA, "Terracotta", 16, "ï¿½7Cost: ï¿½f8 Iron"));
+				inventory.setItem(18+3, getItemStack(Material.GLASS, "Glass", 4, "ï¿½7Cost: ï¿½f12 Iron"));
+				inventory.setItem(18+4, getItemStack(Material.END_STONE, "End Stone", 12, "ï¿½7Cost: ï¿½f24 Iron"));
+				inventory.setItem(18+5, getItemStack(Material.LADDER, "Ladder", 8, "ï¿½7Cost: ï¿½f3 Iron"));
+				inventory.setItem(18+6, getItemStack(Material.OAK_PLANKS, "Wood", 16, "ï¿½7Cost: ï¿½64 Gold"));
+				inventory.setItem(18+7, getItemStack(Material.OBSIDIAN, "Obsidian", 4, "ï¿½7Cost: ï¿½24 Emeralds"));
 				return;
 			case 2:
-				inventory.setItem(18+1, getItemStack(Material.STONE_SWORD, "Stone Sword", 1, "§7Cost: §f10 Iron"));
-				inventory.setItem(18+2, getItemStack(Material.IRON_SWORD, "Iron Sword", 1, "§7Cost: §67 Gold"));
-				inventory.setItem(18+3, getItemStack(Material.DIAMOND_SWORD, "Diamond Sword", 1, "§7Cost: §24 Emeralds"));
-				inventory.setItem(18+4, getItemStack(Material.STICK, "Knockback Stick", 1, "§7Cost: §65 Gold", "§7Knockback II"));
+				inventory.setItem(18+1, getItemStack(Material.STONE_SWORD, "Stone Sword", 1, "ï¿½7Cost: ï¿½f10 Iron"));
+				inventory.setItem(18+2, getItemStack(Material.IRON_SWORD, "Iron Sword", 1, "ï¿½7Cost: ï¿½67 Gold"));
+				inventory.setItem(18+3, getItemStack(Material.DIAMOND_SWORD, "Diamond Sword", 1, "ï¿½7Cost: ï¿½24 Emeralds"));
+				inventory.setItem(18+4, getItemStack(Material.STICK, "Knockback Stick", 1, "ï¿½7Cost: ï¿½65 Gold", "ï¿½7Knockback II"));
 				return;
 			case 3:
-				inventory.setItem(18+1, getItemStack(Material.CHAINMAIL_BOOTS, "Chainmail Armor", 1, "§7Cost: §f40 Iron"));
-				inventory.setItem(18+2, getItemStack(Material.IRON_BOOTS, "Iron Armor", 1, "§7Cost: §612 Gold"));
-				inventory.setItem(18+3, getItemStack(Material.DIAMOND_BOOTS, "Diamond Armor", 1, "§7Cost: §26 Emeralds"));
+				inventory.setItem(18+1, getItemStack(Material.CHAINMAIL_BOOTS, "Chainmail Armor", 1, "ï¿½7Cost: ï¿½f40 Iron"));
+				inventory.setItem(18+2, getItemStack(Material.IRON_BOOTS, "Iron Armor", 1, "ï¿½7Cost: ï¿½612 Gold"));
+				inventory.setItem(18+3, getItemStack(Material.DIAMOND_BOOTS, "Diamond Armor", 1, "ï¿½7Cost: ï¿½26 Emeralds"));
 				return;
 			case 4:
-				inventory.setItem(18+1, getItemStack(Material.SHEARS, "Shears", 1, "§7Cost: §f20 Iron"));
-				inventory.setItem(18+2, getItemStack(Material.WOODEN_PICKAXE, "Pickaxe I", 1, "§7Cost: §f10 Iron", "§7Tier: §6I"));
-				inventory.setItem(18+3, getItemStack(Material.WOODEN_AXE, "Axe I", 1, "§7Cost: §f10 Iron", "§7Tier: §6I"));
+				inventory.setItem(18+1, getItemStack(Material.SHEARS, "Shears", 1, "ï¿½7Cost: ï¿½f20 Iron"));
+				inventory.setItem(18+2, getItemStack(Material.WOODEN_PICKAXE, "Pickaxe I", 1, "ï¿½7Cost: ï¿½f10 Iron", "ï¿½7Tier: ï¿½6I"));
+				inventory.setItem(18+3, getItemStack(Material.WOODEN_AXE, "Axe I", 1, "ï¿½7Cost: ï¿½f10 Iron", "ï¿½7Tier: ï¿½6I"));
 				return;
 			case 5:
-				inventory.setItem(18+1, getItemStack(Material.ARROW, "Arrow", 8, "§7Cost: §62 Gold"));
-				inventory.setItem(18+2, getItemStack(Material.BOW, "Bow", 1, "§7Cost: §612 Gold"));
-				inventory.setItem(18+3, getItemStack(Material.BOW, "Bow II", 1, "§7Cost: §624 Gold", "§7Power I"));
-				inventory.setItem(18+4, getItemStack(Material.BOW, "Bow III", 1, "§7Cost: §26 Emeralds", "§7Power I", "§7Punch I"));
+				inventory.setItem(18+1, getItemStack(Material.ARROW, "Arrow", 8, "ï¿½7Cost: ï¿½62 Gold"));
+				inventory.setItem(18+2, getItemStack(Material.BOW, "Bow", 1, "ï¿½7Cost: ï¿½612 Gold"));
+				inventory.setItem(18+3, getItemStack(Material.BOW, "Bow II", 1, "ï¿½7Cost: ï¿½624 Gold", "ï¿½7Power I"));
+				inventory.setItem(18+4, getItemStack(Material.BOW, "Bow III", 1, "ï¿½7Cost: ï¿½26 Emeralds", "ï¿½7Power I", "ï¿½7Punch I"));
 				return;
 			case 6:
-				inventory.setItem(18+1, getItemStack(new PotionEffect(PotionEffectType.SPEED, 45*20, 4), Color.fromRGB(0xFFBF00), "Speed V Potion", 1, "§7Cost: §21 Emerald"));
-				inventory.setItem(18+2, getItemStack(new PotionEffect(PotionEffectType.JUMP, 45*20, 4), Color.fromRGB(0xE6E6FA), "Jump Boost V Potion", 1, "§7Cost: §21 Emerald"));
-				inventory.setItem(18+3, getItemStack(new PotionEffect(PotionEffectType.INVISIBILITY, 30*20, 0), Color.fromRGB(0x9c9d97), "Invisibility Potion", 1, "§7Cost: §22 Emerald"));
+				inventory.setItem(18+1, getItemStack(new PotionEffect(PotionEffectType.SPEED, 45*20, 4), Color.fromRGB(0xFFBF00), "Speed V Potion", 1, "ï¿½7Cost: ï¿½21 Emerald"));
+				inventory.setItem(18+2, getItemStack(new PotionEffect(PotionEffectType.JUMP, 45*20, 4), Color.fromRGB(0xE6E6FA), "Jump Boost V Potion", 1, "ï¿½7Cost: ï¿½21 Emerald"));
+				inventory.setItem(18+3, getItemStack(new PotionEffect(PotionEffectType.INVISIBILITY, 30*20, 0), Color.fromRGB(0x9c9d97), "Invisibility Potion", 1, "ï¿½7Cost: ï¿½22 Emerald"));
 				return;
 			case 7:
-				inventory.setItem(18+1, getItemStack(Material.GOLDEN_APPLE, "Golden Apple", 1, "§7Cost: §63 Gold"));
-				inventory.setItem(18+2, getItemStack(Material.FIRE_CHARGE, "Fireball", 1, "§7Cost: §f40 Iron"));
-				inventory.setItem(18+3, getItemStack(Material.TNT, "TNT", 1, "§7Cost: §64 Gold"));
-				inventory.setItem(18+4, getItemStack(Material.ENDER_PEARL, "Ender Pearl", 1, "§7Cost: §24 Emerald"));
-				inventory.setItem(18+5, getItemStack(Material.WATER_BUCKET, "Water Bucket", 1, "§7Cost: §63 Gold"));
+				inventory.setItem(18+1, getItemStack(Material.GOLDEN_APPLE, "Golden Apple", 1, "ï¿½7Cost: ï¿½63 Gold"));
+				inventory.setItem(18+2, getItemStack(Material.FIRE_CHARGE, "Fireball", 1, "ï¿½7Cost: ï¿½f40 Iron"));
+				inventory.setItem(18+3, getItemStack(Material.TNT, "TNT", 1, "ï¿½7Cost: ï¿½64 Gold"));
+				inventory.setItem(18+4, getItemStack(Material.ENDER_PEARL, "Ender Pearl", 1, "ï¿½7Cost: ï¿½24 Emerald"));
+				inventory.setItem(18+5, getItemStack(Material.WATER_BUCKET, "Water Bucket", 1, "ï¿½7Cost: ï¿½63 Gold"));
 				return;
 		}
 	}
@@ -276,10 +280,10 @@ public class Shop implements Listener {
 		meta.setColor(color);
 		item.setItemMeta(meta);
 		item.editMeta(e -> {
-			e.displayName(Component.text("\u00A7f" + name.replace('§', '\u00A7')));
+			e.displayName(Component.text("\u00A7f" + name.replace('ï¿½', '\u00A7')));
 			if (lore != null) {
 				List<Component> l = new ArrayList<>();
-				for (String string : lore) l.add(Component.text("\u00A7f" + string.replace('§', '\u00A7')));
+				for (String string : lore) l.add(Component.text("\u00A7f" + string.replace('ï¿½', '\u00A7')));
 				e.lore(l);
 			}
 		});
@@ -296,10 +300,10 @@ public class Shop implements Listener {
 	private ItemStack getItemStack(Material mat, String name, int amount, String... lore) {
 		ItemStack item = new ItemStack(mat, amount);
 		item.editMeta(e -> {
-			e.displayName(Component.text("\u00A7f" + name.replace('§', '\u00A7')));
+			e.displayName(Component.text("\u00A7f" + name.replace('ï¿½', '\u00A7')));
 			if (lore != null) {
 				List<Component> l = new ArrayList<>();
-				for (String string : lore) l.add(Component.text("\u00A7f" + string.replace('§', '\u00A7')));
+				for (String string : lore) l.add(Component.text("\u00A7f" + string.replace('ï¿½', '\u00A7')));
 				e.lore(l);
 			}
 		});
