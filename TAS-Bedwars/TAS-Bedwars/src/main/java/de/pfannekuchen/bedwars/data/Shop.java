@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -30,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import de.pfannekuchen.bedwars.Bedwars;
 import de.pfannekuchen.bedwars.exceptions.ParseException;
 import de.pfannekuchen.bedwars.utils.LocationUtils;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -39,6 +45,10 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
  */
 public class Shop implements Listener {
 
+	/**
+	 * Shopping in the Shop Guis
+	 * @param e
+	 */
 	@EventHandler
 	public void onShopInvInteract(InventoryClickEvent e) {
 		Inventory inv = e.getInventory();
@@ -50,8 +60,66 @@ public class Shop implements Listener {
 				selectItemPage((Player) e.getWhoClicked(), inv, slot);
 			} else if (slot == 8) {
 				e.getWhoClicked().closeInventory();
+			} else if (e.getCurrentItem() != null) {
+				// try to figure out price of Item
+				ItemStack i = e.getCurrentItem();
+				List<Component> lore = i.lore();
+				if (lore != null) {
+					for (Component component : lore) {
+						String lore1 = PlainTextComponentSerializer.plainText().serialize(component);
+						if (lore1.contains("Cost: ")) {
+							String[] parts = lore1.split(" ");
+							String type = parts[2];
+							int cost = Integer.parseInt(parts[1].substring(2));
+							Material mat = null;
+							if ("Iron".equals(type)) 
+								mat = Material.IRON_INGOT;
+							else if ("Gold".equals(type)) 
+								mat = Material.GOLD_INGOT;
+							else if (type.contains("Emerald")) 
+								mat = Material.EMERALD;
+							if (mat != null) {
+								HashMap<Integer, ? extends ItemStack> map = e.getWhoClicked().getInventory().all(mat);
+								int count = 0;
+								for (Entry<Integer, ? extends ItemStack> component2 : map.entrySet()) {
+									count += component2.getValue().getAmount();
+								}
+								List<ItemStack> stacks = new ArrayList<>(map.values());
+								Collections.sort(stacks, new Comparator<ItemStack>() {
+									@Override
+									public int compare(ItemStack o1, ItemStack o2) {
+										return o2.getAmount() - o1.getAmount();
+									}
+								});
+								Collections.reverse(stacks);
+								if (count >= cost) {
+									for (ItemStack stack : stacks) {
+										if (cost >= stack.getAmount()) {
+											cost -= stack.getAmount();
+											e.getWhoClicked().getInventory().removeItem(stack);
+										} else {
+											stack.setAmount(stack.getAmount() - cost);
+											cost = 0;
+										}
+										if (cost <= 0) break;
+									}
+									e.getWhoClicked().getInventory().addItem(buyItem((Player) e.getWhoClicked(), e.getCurrentItem()));
+									e.getWhoClicked().playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.BLOCK, 1f, 2f));
+								} else {
+									e.getWhoClicked().playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_LAND, Source.BLOCK, 1f, 1f));
+								}
+							}
+						}
+					}
+				}
 			}
 		}
+	}
+	
+	public ItemStack buyItem(Player p, ItemStack i) {
+		ItemStack buying = i.clone();
+		buying.lore(null);
+		return buying;
 	}
 	
 	/**
