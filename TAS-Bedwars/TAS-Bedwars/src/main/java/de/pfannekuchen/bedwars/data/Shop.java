@@ -18,11 +18,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +31,7 @@ import de.pfannekuchen.bedwars.Bedwars;
 import de.pfannekuchen.bedwars.exceptions.ParseException;
 import de.pfannekuchen.bedwars.utils.LocationUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 /**
  * Summons shops and handles their GUIs
@@ -38,6 +39,21 @@ import net.kyori.adventure.text.Component;
  */
 public class Shop implements Listener {
 
+	@EventHandler
+	public void onShopInvInteract(InventoryClickEvent e) {
+		Inventory inv = e.getInventory();
+		if (inv == null || e.getClickedInventory() == null) return;
+		if (PlainTextComponentSerializer.plainText().serialize(e.getView().title()).contains("Item Shop") && e.getClickedInventory().equals(inv)) {
+			e.setCancelled(true);
+			int slot = e.getSlot();
+			if (slot < 8) {
+				selectItemPage((Player) e.getWhoClicked(), inv, slot);
+			} else if (slot == 8) {
+				e.getWhoClicked().closeInventory();
+			}
+		}
+	}
+	
 	/**
 	 * Opens a shop gui when a player interacts with a shop
 	 * @param e
@@ -144,7 +160,7 @@ public class Shop implements Listener {
 			case 2:
 				inventory.setItem(18+1, getItemStack(Material.STONE_SWORD, "Stone Sword", 1, "§7Cost: §f10 Iron"));
 				inventory.setItem(18+2, getItemStack(Material.IRON_SWORD, "Iron Sword", 1, "§7Cost: §67 Gold"));
-				inventory.setItem(18+3, getItemStack(Material.DIAMOND_SWORD, "Diamond Sword", 1, "§7Cost: §2 Emeralds"));
+				inventory.setItem(18+3, getItemStack(Material.DIAMOND_SWORD, "Diamond Sword", 1, "§7Cost: §24 Emeralds"));
 				inventory.setItem(18+4, getItemStack(Material.STICK, "Knockback Stick", 1, "§7Cost: §65 Gold", "§7Knockback II"));
 				return;
 			case 3:
