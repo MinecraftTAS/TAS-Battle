@@ -19,6 +19,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
@@ -55,81 +56,135 @@ public class Shop implements Listener {
 	public void onShopInvInteract(InventoryClickEvent e) {
 		Inventory inv = e.getInventory();
 		if (inv == null || e.getClickedInventory() == null) return;
+		/* Disallow Armor Slots */
 		if (inv instanceof CraftingInventory && e.getSlot() >= 36 && e.getSlot() <= 39) {
 			e.setCancelled(true);
 		}
 		if (PlainTextComponentSerializer.plainText().serialize(e.getView().title()).contains("Item Shop") && e.getClickedInventory().equals(inv)) {
 			e.setCancelled(true);
 			int slot = e.getSlot();
+			/* Check Slot Action */
 			if (slot < 8) {
 				selectItemPage((Player) e.getWhoClicked(), inv, slot);
-			} else if (slot == 8) {
+			} else if (slot == 8) { // Close Inventory button
 				e.getWhoClicked().closeInventory();
 			} else if (e.getCurrentItem() != null) {
-				// try to figure out price of Item
-				ItemStack i = e.getCurrentItem();
-				List<Component> lore = i.lore();
-				if (lore != null) {
-					for (Component component : lore) {
-						String lore1 = PlainTextComponentSerializer.plainText().serialize(component);
-						if (lore1.contains("Cost: ")) {
-							String[] parts = lore1.split(" ");
-							String type = parts[2];
-							int cost = Integer.parseInt(parts[1].substring(2));
-							Material mat = null;
-							if ("Iron".equals(type)) 
-								mat = Material.IRON_INGOT;
-							else if ("Gold".equals(type)) 
-								mat = Material.GOLD_INGOT;
-							else if (type.contains("Emerald")) 
-								mat = Material.EMERALD;
-							if (mat != null) {
-								HashMap<Integer, ? extends ItemStack> map = e.getWhoClicked().getInventory().all(mat);
-								int count = 0;
-								for (Entry<Integer, ? extends ItemStack> component2 : map.entrySet()) {
-									count += component2.getValue().getAmount();
-								}
-								List<ItemStack> stacks = new ArrayList<>(map.values());
-								Collections.sort(stacks, new Comparator<ItemStack>() {
-									@Override
-									public int compare(ItemStack o1, ItemStack o2) {
-										return o2.getAmount() - o1.getAmount();
-									}
-								});
-								Collections.reverse(stacks);
-								if (count >= cost) {
-									for (ItemStack stack : stacks) {
-										if (cost >= stack.getAmount()) {
-											cost -= stack.getAmount();
-											e.getWhoClicked().getInventory().removeItem(stack);
-										} else {
-											stack.setAmount(stack.getAmount() - cost);
-											cost = 0;
-										}
-										if (cost <= 0) break;
-									}
-									try {
-										e.getWhoClicked().getInventory().addItem(buyItem((Player) e.getWhoClicked(), e.getCurrentItem()));
-									} catch (Exception e3) {
-										
-									}
-									e.getWhoClicked().playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.BLOCK, 1f, 2f));
-								} else {
-									e.getWhoClicked().playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_LAND, Source.BLOCK, 1f, 1f));
-								}
-							}
-						}
-					}
+				buy(e.getCurrentItem(), (Player) e.getWhoClicked());
+			}
+		}
+	}
+	
+	/**
+	 * Obtains the price of an Item
+	 * @param i Item to obtain price of
+	 * @return Price of Item in the shop
+ 	 */
+	public static int getPrice(ItemStack i) {
+		List<Component> lore = i.lore();
+		if (lore != null) {
+			for (Component component : lore) {
+				String lore1 = PlainTextComponentSerializer.plainText().serialize(component);
+				if (lore1.contains("Cost: ")) {
+					return Integer.parseInt(lore1.split(" ")[1].substring(2));
 				}
 			}
 		}
+		return -1;
+	}
+	
+	/**
+	 * Gets the Currency of an Item in the Shop Menu
+	 * @param i Item to obtain currency of
+	 * @return Currency in Material Form
+	 */
+	public static Material getCurrency(ItemStack i) {
+		List<Component> lore = i.lore();
+		if (lore != null) {
+			for (Component component : lore) {
+				String lore1 = PlainTextComponentSerializer.plainText().serialize(component);
+				if (lore1.contains("Cost: ")) {
+					String type = lore1.split(" ")[2];
+					if ("Iron".equals(type)) 
+						return Material.IRON_INGOT;
+					else if ("Gold".equals(type)) 
+						return Material.GOLD_INGOT;
+					else if (type.contains("Emerald")) 
+						return Material.EMERALD;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Buy an Item
+	 * @param i Item to buy
+	 * @param p Player to buy for
+	 */
+	public static void buy(ItemStack i, Player p) {
+		int cost = getPrice(i);
+		Material mat = getCurrency(i);
+		if (mat != null && cost != -1) {
+			HashMap<Integer, ? extends ItemStack> map = p.getInventory().all(mat);
+			int count = 0;
+			for (Entry<Integer, ? extends ItemStack> citem : map.entrySet()) {
+				count += citem.getValue().getAmount();
+			}
+			List<ItemStack> stacks = new ArrayList<>(map.values());
+			sortByLowestCount(stacks);
+			if (count >= cost) {
+				// Enough money, buy here
+				pay(p, stacks, cost);
+				ItemStack toBuy = buyItem(p, i);
+				if (toBuy != null) p.getInventory().addItem();
+				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.BLOCK, 1f, 2f));
+			} else {
+				// Not enough Money
+				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_LAND, Source.BLOCK, 1f, 1f));
+			}
+		}
+	}
+	
+	/**
+	 * Pays an amount of a list of Items
+	 * @param p Player that buys
+	 * @param stacks Items to pay with
+	 * @param cost Cost to pay
+	 */
+	public static void pay(HumanEntity p, List<ItemStack> stacks, int cost) {
+		for (ItemStack stack : stacks) {
+			if (cost >= stack.getAmount()) {
+				cost -= stack.getAmount();
+				p.getInventory().removeItem(stack);
+			} else {
+				stack.setAmount(stack.getAmount() - cost);
+				cost = 0;
+			}
+			if (cost <= 0) break;
+		}
+	}
+	
+	public static void sortByLowestCount(List<ItemStack> stacks) {
+		Collections.sort(stacks, new Comparator<ItemStack>() {
+			@Override
+			public int compare(ItemStack o1, ItemStack o2) {
+				return o2.getAmount() - o1.getAmount();
+			}
+		});
+		Collections.reverse(stacks);
 	}
 	
 	public static ArrayList<Player> chainmailArmor = new ArrayList<>();
 	public static ArrayList<Player> ironArmor = new ArrayList<>();
 	public static ArrayList<Player> diamondArmor = new ArrayList<>();
 	
-	public ItemStack buyItem(Player p, ItemStack i) {
+	/**
+	 * Obtains an Item Stack with modified lore, itemname and item if necessary
+	 * @param p Player to buy for
+	 * @param i Item Stack clicked on
+	 * @return An Item Stack to buy
+	 */
+	public static ItemStack buyItem(Player p, ItemStack i) {
 		ItemStack buying = i.clone();
 		buying.lore(null);
 		String itemname = PlainTextComponentSerializer.plainText().serialize(buying.getItemMeta().displayName());
