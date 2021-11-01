@@ -136,7 +136,7 @@ public class Shop implements Listener {
 				// Enough money, buy here
 				pay(p, stacks, cost);
 				ItemStack toBuy = buyItem(p, i);
-				if (toBuy != null) p.getInventory().addItem();
+				if (toBuy != null) p.getInventory().addItem(toBuy);
 				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.BLOCK, 1f, 2f));
 			} else {
 				// Not enough Money
@@ -188,7 +188,6 @@ public class Shop implements Listener {
 		ItemStack buying = i.clone();
 		buying.lore(null);
 		String itemname = PlainTextComponentSerializer.plainText().serialize(buying.getItemMeta().displayName());
-		System.out.println(itemname);
 		if (itemname.contains("Pickaxe")) {
 			buying.editMeta(e -> {
 				e.displayName(Component.text(itemname.split(" ")[0]));
@@ -215,6 +214,8 @@ public class Shop implements Listener {
 			if (diamondArmor.contains(p)) diamondArmor.remove(p);
 			diamondArmor.add(p);
 			return null;
+		} else if (itemname.contains("Sword")) {
+			p.getInventory().remove(Material.WOODEN_SWORD);
 		}
 		return buying;
 	}
