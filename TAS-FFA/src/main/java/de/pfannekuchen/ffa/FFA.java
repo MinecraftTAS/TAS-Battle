@@ -34,11 +34,16 @@ public class FFA extends JavaPlugin implements PluginMessageListener {
 	public void onEnable() {
 		try {
 			Bukkit.getMessenger().registerOutgoingPluginChannel(this, "tickratechanger:data");
+			Bukkit.getMessenger().registerOutgoingPluginChannel(this, "tickratechanger:data2");
 			Bukkit.getMessenger().registerIncomingPluginChannel(this, "tickratechanger:data", this);
 			instance = this;
 			if (!getDataFolder().exists()) getDataFolder().mkdir();
 			Bukkit.getPluginManager().registerEvents(new Events(), this);
 			Game.onStartup();
+			new Thread(() -> {
+				
+				player.sendPluginMessage(FFA.instance, "tickratechanger:data", ByteBuffer.allocate(4).putFloat(tickrate).array());
+			}).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

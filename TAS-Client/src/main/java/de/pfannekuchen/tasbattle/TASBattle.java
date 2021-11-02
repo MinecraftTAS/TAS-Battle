@@ -67,7 +67,7 @@ public class TASBattle implements ModInitializer {
 			}
 		});
 		ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation("tickratechanger", "data2"), (player, handler, data, d) -> {
-			gamemode = data.readComponent().getString();
+			gamemode = data.readInt() == 0 ? "Skywars" : "FFA";
 			count = data.readInt();
 			max = data.readInt();
 			time = data.readLong();
