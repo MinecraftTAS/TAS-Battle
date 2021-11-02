@@ -65,17 +65,17 @@ public abstract class MixinTitleScreen extends Screen {
 	
 	@Inject(at = @At("TAIL"), method = "init")
 	public void afterInit(CallbackInfo ci) throws MalformedURLException, IOException {
-//		File f = new File("mods/tasbattle.jar");
-//		if (f.exists()) {
-//			long size1 = f.length();
-//			File temp = File.createTempFile("jar", "file");
-//			temp.deleteOnExit();
-//			Files.copy(new URL("https://data.mgnet.work/tasbattle/update.jar").openStream(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-//			long size2 = temp.length();
-//			if (size1 == size2) return;
-//			((Button) children().get(children().size() - 2)).setMessage(new TextComponent("Update and Quit"));
-//			((Button) children().get(children().size() - 6)).active = false;
-//		}
+		File f = new File("mods/tasbattle.jar");
+		if (f.exists()) {
+			long size1 = f.length();
+			File temp = File.createTempFile("jar", "file");
+			temp.deleteOnExit();
+			Files.copy(new URL("https://data.mgnet.work/tasbattle/update.jar").openStream(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			long size2 = temp.length();
+			if (size1 == size2) return;
+			((Button) children().get(children().size() - 2)).setMessage(new TextComponent("Update and Quit"));
+			((Button) children().get(children().size() - 6)).active = false;
+		}
 	}
 	
 }
