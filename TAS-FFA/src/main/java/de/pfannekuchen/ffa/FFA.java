@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,8 +42,16 @@ public class FFA extends JavaPlugin implements PluginMessageListener {
 			Bukkit.getPluginManager().registerEvents(new Events(), this);
 			Game.onStartup();
 			new Thread(() -> {
-				
-				player.sendPluginMessage(FFA.instance, "tickratechanger:data", ByteBuffer.allocate(4).putFloat(tickrate).array());
+				while (true) {
+					try {
+						Thread.sleep(12000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						p.sendPluginMessage(FFA.instance, "tickratechanger:data2", ByteBuffer.allocate(20).putInt(1).putInt(Game.alivePlayers.size()).putInt(12).putLong(Instant.now().toEpochMilli()).array());	
+					}
+				}
 			}).start();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -90,7 +90,7 @@ public class TASBattle implements ModInitializer {
 				activity.setDetails(" ");
 			} else {
 				activity.setState("Playing " + gamemode);
-				activity.setDetails(" ");
+				activity.setDetails("   ");
 				activity.timestamps().setStart(Instant.ofEpochMilli(time));
 				activity.party().setID("hello");
 				activity.party().size().setCurrentSize(count);

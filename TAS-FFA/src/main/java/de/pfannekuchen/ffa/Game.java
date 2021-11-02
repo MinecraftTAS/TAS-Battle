@@ -45,7 +45,7 @@ public class Game {
 	/** Allow voting */
 	public static boolean shouldAllowVoting = true;
 	/** Alive players of the game */
-	private static List<Player> alivePlayers = new LinkedList<>();
+	public static List<Player> alivePlayers = new LinkedList<>();
 	/** The currently selected kit */
 	public static byte[][] serializedSelectedKit;
 	/** All available kits */
