@@ -24,6 +24,7 @@ dependencies {
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	
+	include group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 	implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 	
 	apiModules.forEach {

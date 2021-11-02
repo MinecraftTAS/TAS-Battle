@@ -7,7 +7,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-import org.jline.utils.OSUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,6 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.pfannekuchen.tasbattle.gui.TASBattleScreen;
 import de.pfannekuchen.tasbattle.gui.VideoUpspeederScreen;
+import de.pfannekuchen.tasbattle.util.OSUtils;
+import de.pfannekuchen.tasbattle.util.OSUtils.OS;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -55,8 +56,8 @@ public abstract class MixinTitleScreen extends Screen {
 		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48 + 48, 200, 20, new TextComponent("Speed up Videos"), (buttonWidget) -> {
 			minecraft.setScreen(new VideoUpspeederScreen());
 		}, (buttonWidget, matrixStack, i, j) -> {
-			if (buttonWidget.isMouseOver(i, j)) this.renderTooltip(matrixStack, this.minecraft.font.split(new TextComponent(OSUtils.IS_WINDOWS ? "The Video Upspeeder is a small Mod that can speed up your Videos without the need of any Editing Software! \u00A74Download might trigger Anti-Virus" : "This feature is only available for Windows Users"), Math.max(this.width / 2 - 43, 170)), i, j);
-		})).active = OSUtils.IS_WINDOWS;
+			if (buttonWidget.isMouseOver(i, j)) this.renderTooltip(matrixStack, this.minecraft.font.split(new TextComponent((OSUtils.getOS() == OS.WINDOWS) ? "The Video Upspeeder is a small Mod that can speed up your Videos without the need of any Editing Software! \u00A74Download might trigger Anti-Virus" : "This feature is only available for Windows Users"), Math.max(this.width / 2 - 43, 170)), i, j);
+		})).active = (OSUtils.getOS() == OS.WINDOWS);
 	}
 	
 	@Inject(at = @At("TAIL"), method = "init")
