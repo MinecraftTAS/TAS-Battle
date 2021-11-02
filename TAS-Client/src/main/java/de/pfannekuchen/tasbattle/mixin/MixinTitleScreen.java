@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import org.jline.utils.OSUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.pfannekuchen.tasbattle.gui.TASBattleScreen;
+import de.pfannekuchen.tasbattle.gui.VideoUpspeederScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -39,18 +41,22 @@ public abstract class MixinTitleScreen extends Screen {
 	 */
 	@Overwrite
 	private void createNormalMenuOptions(int height, int distanceBtn) {
-		addRenderableWidget(new Button(this.width / 2 - 100, height, 200, 20, new TextComponent("Join TAS Battle"), b -> {
+		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48, 200, 20, new TextComponent("Play TAS Challenges Offline"), (buttonWidget) -> { // TODO: Put this into a .lang file
+			
+		}, (buttonWidget, matrixStack, i, j) -> {
+			if (buttonWidget.isMouseOver(i, j)) this.renderTooltip(matrixStack, this.minecraft.font.split(new TextComponent("Sorry, this feature isn't implemented yet."), Math.max(this.width / 2 - 43, 170)), i, j);
+		})).active = false; // TODO: Implement Singleplayer Training Maps
+		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48 + 24, 200, 20, new TextComponent("Join TAS Battle"), b -> {
 			minecraft.setScreen(new TASBattleScreen(this));
 		}, (b, stack, mouseX, mouseY) -> {
 			if (mouseX >= (double)b.x && mouseY >= (double)b.y && mouseX < (double)(b.x + b.getWidth()) && mouseY < (double)(b.y + b.getHeight()) && !b.active) 
 				this.renderTooltip(stack, this.minecraft.font.split(new TextComponent("Please update TAS Battle."), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
 		}));
-		addRenderableWidget(new Button(this.width / 2 - 100, height + distanceBtn, 200, 20, new TextComponent("Speed up Videos"), b -> {
-			throw new RuntimeException("How did you..");
-		}, (b, stack, mouseX, mouseY) -> {
-			if (mouseX >= (double)b.x && mouseY >= (double)b.y && mouseX < (double)(b.x + b.getWidth()) && mouseY < (double)(b.y + b.getHeight())) 
-				this.renderTooltip(stack, this.minecraft.font.split(new TextComponent("This feature does not exist yet. Please use LoTAS or your favourite editing software to speed up videos."), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
-		})).active = false;
+		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48 + 48, 200, 20, new TextComponent("Speed up Videos"), (buttonWidget) -> {
+			minecraft.setScreen(new VideoUpspeederScreen());
+		}, (buttonWidget, matrixStack, i, j) -> {
+			if (buttonWidget.isMouseOver(i, j)) this.renderTooltip(matrixStack, this.minecraft.font.split(new TextComponent(OSUtils.IS_WINDOWS ? "The Video Upspeeder is a small Mod that can speed up your Videos without the need of any Editing Software! \u00A74Download might trigger Anti-Virus" : "This feature is only available for Windows Users"), Math.max(this.width / 2 - 43, 170)), i, j);
+		})).active = OSUtils.IS_WINDOWS;
 	}
 	
 	@Inject(at = @At("TAIL"), method = "init")

@@ -1,3 +1,4 @@
+
 plugins {
 	id 'fabric-loom' version '0.8-SNAPSHOT'
 }
@@ -14,10 +15,17 @@ Set<String> apiModules = [
     "fabric-networking-api-v1"
 ]
 
+repositories {
+	maven { url = 'https://maven.mgnet.work' }
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	
+	implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
+	
 	apiModules.forEach {
 	    include(modImplementation(fabricApi.module(it, "0.37.0+1.17")))
 	}
