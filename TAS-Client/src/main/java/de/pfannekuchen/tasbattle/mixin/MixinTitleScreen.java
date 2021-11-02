@@ -11,8 +11,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import de.pfannekuchen.tasbattle.TASBattle;
 import de.pfannekuchen.tasbattle.gui.TASBattleScreen;
 import de.pfannekuchen.tasbattle.gui.VideoUpspeederScreen;
 import de.pfannekuchen.tasbattle.util.OSUtils;
@@ -22,6 +24,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
 @Mixin(TitleScreen.class)
 public abstract class MixinTitleScreen extends Screen {
@@ -31,10 +34,10 @@ public abstract class MixinTitleScreen extends Screen {
 	/**
 	 * Modifies the Texture that is being rendered below the Title, aka "Java Edition"
 	 */
-//	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/resources/ResourceLocation;)V", ordinal = 2), index = 1)
-//	private ResourceLocation modifyJavaEditionLabel(ResourceLocation original) {
-//		return TASBattle.CUSTOM_EDITION_RESOURCE_LOCATION;
-//	}
+	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/resources/ResourceLocation;)V", ordinal = 2), index = 1)
+	private ResourceLocation modifyJavaEditionLabel(ResourceLocation original) {
+		return TASBattle.CUSTOM_EDITION_RESOURCE_LOCATION;
+	}
 	
 	/**
 	 * Removes Singleplayer, Multiplayer and Realms Button.
