@@ -53,6 +53,7 @@ public class TASBattle implements ModInitializer {
 	public static Core core;
 	public static String gamemode = "";
 	public static int max = 0;
+	public static int count = 0;
 	public static int playerCountPrev = 0;
 	public static long time = 0;
 	
@@ -67,6 +68,7 @@ public class TASBattle implements ModInitializer {
 		});
 		ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation("tickratechanger", "data2"), (player, handler, data, d) -> {
 			gamemode = data.readComponent().getString();
+			count = data.readInt();
 			max = data.readInt();
 			time = data.readLong();
 			onUpdateActivity();
@@ -80,19 +82,18 @@ public class TASBattle implements ModInitializer {
 		});
 	}
 	
-	@SuppressWarnings("resource")
 	public static void onUpdateActivity() {
 		try {
 			Activity activity = new Activity();
 			if (gamemode.isEmpty()) {
 				activity.setState("Main Menu");
 				activity.setDetails(" ");
-			} else if (Minecraft.getInstance().level != null) {
+			} else {
 				activity.setState("Playing " + gamemode);
 				activity.setDetails(" ");
 				activity.timestamps().setStart(Instant.ofEpochMilli(time));
 				activity.party().setID("hello");
-				activity.party().size().setCurrentSize(Minecraft.getInstance().level.players().size());
+				activity.party().size().setCurrentSize(count);
 				activity.party().size().setMaxSize(max);
 			}
 			activity.assets().setLargeImage("tasbattle-potion");
@@ -124,15 +125,20 @@ public class TASBattle implements ModInitializer {
 			activity.setState("Main Menu");
 			activity.assets().setLargeImage("tasbattle-potion");
 			activity.assets().setSmallImage("tbbg");
-			activity.setDetails(" ");
+			activity.setDetails("   ");
 			core.activityManager().updateActivity(activity);
 			new Thread(() -> {
+				int i = 0;
 				while (true) {
-					core.runCallbacks();
 					try {
-						Thread.sleep(4000);
-						onUpdateActivity();
-					} catch (InterruptedException e1) {
+						core.runCallbacks();
+						Thread.sleep(16);
+						i++;
+						if (i == 1200) {
+							i = 0;
+							onUpdateActivity();
+						}
+					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 				}
