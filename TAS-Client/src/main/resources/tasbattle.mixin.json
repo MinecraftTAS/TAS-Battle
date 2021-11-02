@@ -10,7 +10,6 @@
     "MixinTitleScreen",
     "MixinLaunchArgs",
     "MixinCustomCape",
-    "tickratechanger.MixinTickrateChangerAchievement",
     "tickratechanger.MixinTickrateChangerAudioPitch",
     "tickratechanger.MixinTickrateChangerEnchantmentGlimm",
     "tickratechanger.MixinTickrateChangerWorldborder",
