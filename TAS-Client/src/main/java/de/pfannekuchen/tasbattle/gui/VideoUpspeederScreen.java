@@ -2,7 +2,6 @@ package de.pfannekuchen.tasbattle.gui;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.TextField;
 import java.io.File;
 import java.nio.file.Files;
 import java.time.Duration;
@@ -26,6 +25,10 @@ import net.minecraft.util.Mth;
 public class VideoUpspeederScreen extends Screen {
 
 	String[] PROGRESS_BAR_STAGES = new String[]{"oooooo", "Oooooo", "oOoooo", "ooOooo", "oooOoo", "ooooOo", "oooooO"};
+	private EditBox filebox;
+	private Checkbox hqbox;
+	private EditBox tickrateBox;
+	private Button spbox;
 	public static Duration est = Duration.ZERO;
 	public static String installingProgress = "Idle";
 	public static String codecFFmpeg = null;
@@ -58,7 +61,7 @@ public class VideoUpspeederScreen extends Screen {
 	public boolean charTyped(char chr, int modifiers) {
 		super.charTyped(chr, modifiers);
 		try {
-			tickrate = Integer.parseInt(((TextField) children().get(children().size() - 1)).getText());
+			tickrate = Integer.parseInt(tickrateBox.getMessage().getString());
 		} catch (Exception e) {
 			
 		}
@@ -78,7 +81,8 @@ public class VideoUpspeederScreen extends Screen {
 			return;
 		}
 		
-		addRenderableWidget(new EditBox(minecraft.font, (width / 12) * 1 - (width / 24), (height / 8), (width / 12) * 9, 20, new TextComponent(""))).setMaxLength(999);
+		filebox = addRenderableWidget(new EditBox(minecraft.font, (width / 12) * 1 - (width / 24), (height / 8), (width / 12) * 9, 20, new TextComponent("")));
+		filebox.setMaxLength(999);
 		addRenderableWidget(new Button((width / 12) * 10 + 5 - (width / 24), (height / 8), (width / 12) * 2, 20, new TextComponent("Select File"), (b) -> {
 			if (minecraft.getWindow().isFullscreen()) minecraft.getWindow().toggleFullScreen();
 			new Thread(new Runnable() {
@@ -91,7 +95,7 @@ public class VideoUpspeederScreen extends Screen {
 				    dialog.setVisible(true);
 				    try {
 				    	selectedFile = dialog.getFiles()[0];
-				    	((TextField) children().get(0)).setText(selectedFile.getAbsolutePath());
+				    	filebox.setValue(selectedFile.getAbsolutePath());
 				    	FFmpegProbeResult result = VideoUpspeeder.ffprobe(selectedFile);
 						
 						videoFormat = result.format.format_name.split(",")[0];
@@ -101,7 +105,7 @@ public class VideoUpspeederScreen extends Screen {
 						filesize = (Files.size(selectedFile.toPath()) / 1024 / 1024) + " MB";
 						lengthInMilliseconds = (long) (result.format.duration * 1000);
 						
-						((Button) children().get(4)).active = true;
+						spbox.active = true;
 				    } catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -110,19 +114,21 @@ public class VideoUpspeederScreen extends Screen {
 		}));
 		addRenderableWidget(new Button((width / 2) - 70, (height / 8) * 2 + 20, 20, 20, new TextComponent("-"), (b) -> {
 			if (tickrate != 1) tickrate--;
-			((TextField) children().get(children().size() - 1)).setText(tickrate + "");
+			tickrateBox.setValue(tickrate + "");
 		}));
 		addRenderableWidget(new Button((width / 2) + 50, (height / 8) * 2 + 20, 20, 20, new TextComponent("+"), (b) -> {
 			tickrate++;
-			((TextField) children().get(children().size() - 1)).setText(tickrate + "");
+			tickrateBox.setValue(tickrate + "");	
 		}));
-		addRenderableWidget(new Button((width / 2) - 98, this.height - (this.height / 10) - 15 - 20 - 5, 204, 20, new TextComponent("Speed up video"), (b) -> {
+		spbox = addRenderableWidget(new Button((width / 2) - 98, this.height - (this.height / 10) - 15 - 20 - 5, 204, 20, new TextComponent("Speed up video"), (b) -> {
 			b.active = false;
 			isEncoding = true;
 			VideoUpspeeder.speedup(tickrate, bitrate(), codecFFmpeg, (long) ((lengthInMilliseconds / 16L) * (tickrate / 20F)));
-		})).active = selectedFile == null ? false : selectedFile.exists();
-		addRenderableWidget(new Checkbox(2, this.height - 22, 20, 20, new TextComponent("High Quality"), false, true));
-		addRenderableWidget(new EditBox(minecraft.font, (width / 2) - 45, (height / 8) * 2 + 23, 90, 14, new TextComponent("20"))).setMessage(new TextComponent("20"));
+		}));
+		spbox.active = selectedFile == null ? false : selectedFile.exists();
+		hqbox = addRenderableWidget(new Checkbox(2, this.height - 22, 20, 20, new TextComponent("High Quality"), false, true));
+		tickrateBox = addRenderableWidget(new EditBox(minecraft.font, (width / 2) - 45, (height / 8) * 2 + 23, 90, 14, new TextComponent("20")));
+		tickrateBox.setValue("20");
 		super.init();
 	}
 	
@@ -165,7 +171,7 @@ public class VideoUpspeederScreen extends Screen {
 		
 		drawCenteredString(matrices, minecraft.font, "Tickrate", (width / 2), (height / 8) * 2, 0xFFFFFF);
 		
-		if (selectedFile != null) drawCenteredString(matrices, minecraft.font, selectedFile.getAbsolutePath(), (width / 12) * 1 - (width / 24) + 4, (height / 8) + 6, 0xFFFFFF);
+		if (selectedFile != null) drawString(matrices, minecraft.font, selectedFile.getAbsolutePath(), (width / 12) * 1 - (width / 24) + 4, (height / 8) + 6, 0xFFFFFF);
 		
 		drawString(matrices, minecraft.font, "Input File", (width / 4), (height / 8) * 3 + 10, 0x808080);
 		drawString(matrices, minecraft.font, "Output File", (width / 4) * 3, (height / 8) * 3 + 10, 0x808080);
@@ -193,7 +199,7 @@ public class VideoUpspeederScreen extends Screen {
 	
 	/* Gets the Bitrate from the button */
 	private int bitrate() {
-		return ((Checkbox) children().get(5)).isFocused() ? 20000000 : 8000000;
+		return hqbox.selected() ? 20000000 : 8000000;
 	}
 	
 	/* Calculates the Size if the Video with a max bitrate: bitrate * frames */
