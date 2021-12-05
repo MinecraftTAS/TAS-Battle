@@ -32,9 +32,3 @@ commands:
     loadjkit:
         usage: /loadjkit <kit>
         description: Loads the specified juggernaut Kit into the Inventory.
-    jkit:
-        usage: /jkit <kit>
-        description: Changes the active juggernaut kit.
-    deljkit:
-        usage: /deljkit <kit>
-        description: Deletes a juggernaut kit

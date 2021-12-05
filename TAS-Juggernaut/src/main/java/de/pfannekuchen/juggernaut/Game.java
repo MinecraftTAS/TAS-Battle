@@ -17,6 +17,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -184,7 +185,7 @@ public class Game {
 		if (kits.containsKey(p.getUniqueId())) kits.remove(p.getUniqueId());
 		if (startingTask != null) {
 			int playersLeft = Bukkit.getOnlinePlayers().size() - 1;
-			if (playersLeft < 2) {
+			if (playersLeft < 3) {
 				/* Cancel the game starting */
 				startingTask.cancel();
 				startingTask = null;
@@ -203,7 +204,7 @@ public class Game {
 	public static void onPlayerVoteKitEvent(Player p, String kitToVote) throws IOException {
 		if (kits.containsKey(p.getUniqueId())) kits.remove(p.getUniqueId()); // Undo Vote
 		kits.put(p.getUniqueId(), kitToVote);
-		if (kits.size() >= Bukkit.getOnlinePlayers().size() && Bukkit.getOnlinePlayers().size() >= 2) {
+		if (kits.size() >= Bukkit.getOnlinePlayers().size() && Bukkit.getOnlinePlayers().size() >= 3) {
 			/* Find most voted kit */
 			int mostVotes = -1;
 			List<String> votedKits = new ArrayList<>();
@@ -225,9 +226,9 @@ public class Game {
 			items[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 			serializedSelectedKit = items;
 			byte[][] jitems = new byte[4][];
-			jitems[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
-			jitems[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
-			jitems[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+			jitems[0] = Files.readAllBytes(new File(kit, "inv-jug.dat").toPath());
+			jitems[1] = Files.readAllBytes(new File(kit, "extra-jug.dat").toPath());
+			jitems[2] = Files.readAllBytes(new File(kit, "armor-jug.dat").toPath());
 			jitems[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 			serializedSelectedJkit = jitems;
 			selectedKitName = kit.getName();
@@ -250,21 +251,26 @@ public class Game {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 was slain by \u00A7a" + killer.getName()));
 			killer.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
 		}
-		if (alivePlayers.size() <= 1) {
+		boolean isJuggerAlive = juggernaut == null ? false : alivePlayers.contains(juggernaut);
+		if (!isJuggerAlive || alivePlayers.size() == 1) {
 			try {
 				Juggernaut.updateTickrate(20.0f);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Player winner = alivePlayers.get(0);
 			for (Player player2 : Bukkit.getOnlinePlayers()) {
 				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
 				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
 				player2.playSound(Sound.sound(org.bukkit.Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, Source.BLOCK, 1f, (float) (Math.random() * 0.5f + 1f)), Sound.Emitter.self());
 			}
-			if (winner != null) {
-				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + winner.getName() + "\u00A77 won the game!"));
-				winner.showTitle(Title.title(Component.text("\u00A7cYou won!"), Component.empty()));
+			if (!isJuggerAlive) {
+				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7aThe Juggernaut\u00A77 has been defeated!"));
+				for (Player p : alivePlayers) 
+					if (!p.equals(juggernaut)) 
+						p.showTitle(Title.title(Component.text("\u00A7cYou won!"), Component.empty()));
+			} else if (alivePlayers.size() == 1) {
+				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7aThe Juggernaut\u00A77 won the game!"));
+				juggernaut.showTitle(Title.title(Component.text("\u00A7cYou won!"), Component.empty()));
 			}
 			new BukkitRunnable() {
 				@Override
@@ -279,7 +285,7 @@ public class Game {
 	 * Whenever a kit gets selected, a countdown of 10 seconds will start, after which the players will be spread across the map.
 	 */
 	public static boolean onKitSelectedEvent() {
-		if (Bukkit.getOnlinePlayers().size() >= 2 /* Check if the game is startable */)  {
+		if (Bukkit.getOnlinePlayers().size() >= 3 /* Check if the game is startable */)  {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The selected kit is: \u00A7b" + selectedKitName + "\u00A77."));
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game will start in 10 seconds."));
 			for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_LAND, Source.BLOCK, .6f, 1.2f), Sound.Emitter.self());
@@ -301,12 +307,12 @@ public class Game {
 						for (Player p : Bukkit.getOnlinePlayers()) {
 							// load kit
 							if (ci == index)
-								Serialization.deserializeInventory(p, serializedSelectedJkit);
+								Serialization.deserializeInventory(juggernaut = p, serializedSelectedJkit);
 							else 
 								Serialization.deserializeInventory(p, serializedSelectedKit);
 							p.setGameMode(GameMode.SURVIVAL);
 							p.setLevel(0);
-							p.getWorld().setDifficulty(Difficulty.HARD);
+							p.getWorld().setDifficulty(Difficulty.EASY);
 							p.setExp(0.0f);
 							alivePlayers.add(p);
 							/* Teleport the player */
@@ -322,6 +328,10 @@ public class Game {
 							}
 							ci++;
 						}
+						int health = Bukkit.getOnlinePlayers().size()*15;
+						juggernaut.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health*2);
+						juggernaut.setHealth(health*2);
+						Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The juggernaut is \u00A7a" + juggernaut.getName() + "\u00A77. The Juggernaut has \u00A7a" + health + "\u00A77 hearts."));
 					} catch (Exception e) {
 						Bukkit.broadcast(Component.text("\u00A7b\u00bb	 \u00A7cAn error occured whilst trying to start the game!"));
 						e.printStackTrace();
