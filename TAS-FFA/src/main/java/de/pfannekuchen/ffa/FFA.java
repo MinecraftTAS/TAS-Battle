@@ -19,6 +19,8 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import de.pfannekuchen.ffa.stats.PlayerStats;
+
 /**
  * Main and basically everything of the FFA Plugin
  * @author Pancake
@@ -41,6 +43,7 @@ public class FFA extends JavaPlugin implements PluginMessageListener {
 			if (!getDataFolder().exists()) getDataFolder().mkdir();
 			Bukkit.getPluginManager().registerEvents(new Events(), this);
 			Game.onStartup();
+			PlayerStats.load();
 			new Thread(() -> {
 				while (true) {
 					try {

@@ -28,6 +28,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import de.pfannekuchen.ffa.stats.PlayerStats;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
@@ -64,7 +65,7 @@ public class Game {
 	public static HashMap<String, byte[][]> availableKits = new HashMap<>();
 	/** The currently selected kit name */
 	public static String selectedKitName;
-
+	
 	/**
 	 * Whether Interactions such as block breaking, damage and interactions should be cancelled
 	 * @param entity Player to interact
@@ -105,6 +106,7 @@ public class Game {
 	 */
 	public static void onJoin(Player p) {
 		p.setFallDistance(0.0f);
+		PlayerStats.printStats(p);
 		p.teleport(p.getWorld().getSpawnLocation());
 		if (isRunning) {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
@@ -371,12 +373,15 @@ public class Game {
 	 */
 	public static void onPlayerOut(Player player) {
 		alivePlayers.remove(player);
+		PlayerStats.addDeath(player);
+		PlayerStats.addLoss(player);
 		player.setGameMode(GameMode.SPECTATOR);
 		Player killer = player.getKiller();
 		if (killer == null)
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 died"));
 		else {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 was slain by \u00A7a" + killer.getName()));
+			PlayerStats.addKill(killer);
 			killer.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
 		}
 		if (alivePlayers.size() <= 1) {
@@ -394,6 +399,7 @@ public class Game {
 			if (winner != null) {
 				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + winner.getName() + "\u00A77 won the game!"));
 				winner.showTitle(Title.title(Component.text("\u00A7cYou won!"), Component.empty()));
+				PlayerStats.addWin(winner);
 			}
 			new BukkitRunnable() {
 				@Override
