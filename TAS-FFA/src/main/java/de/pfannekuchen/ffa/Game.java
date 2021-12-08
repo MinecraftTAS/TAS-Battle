@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
@@ -21,6 +23,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -38,6 +42,12 @@ public class Game {
 
 	/** Map that holds all players kit votes */
 	public static HashMap<UUID, String> kits = new HashMap<>();
+	/** Map that holds all players tickrate votes */
+	public static HashMap<UUID, Integer> tickrates = new HashMap<>();
+	/** List of ready players */
+	public static ArrayList<Player> readyplayers = new ArrayList<>();
+	/** List of players on interact cooldown */
+	public static ArrayList<Player> cooldownplayers = new ArrayList<>();
 	/** Task when the game is starting */
 	private static BukkitRunnable startingTask;
 	/** Whether the game is actually running */
@@ -48,6 +58,8 @@ public class Game {
 	public static List<Player> alivePlayers = new LinkedList<>();
 	/** The currently selected kit */
 	public static byte[][] serializedSelectedKit;
+	/** The selected tickrate */
+	public static int tickrate = 4;
 	/** All available kits */
 	public static HashMap<String, byte[][]> availableKits = new HashMap<>();
 	/** The currently selected kit name */
@@ -104,29 +116,42 @@ public class Game {
 			p.sendMessage(Component.text("\u00A7b\u00bb \u00A7aThe game will start soon!"));
 		}
 		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
-		int index = 0;
-		for (String map : availableKits.keySet()) {
-			Material mat = Material.getMaterial(Serialization.getIcon(availableKits.get(map)).replaceAll("\r", "").replaceAll("\n", ""));
-			if (mat == null) mat = Material.RED_STAINED_GLASS_PANE;
-			ItemStack item = new ItemStack(mat);
-			item.editMeta(c -> {
-				c.displayName(Component.text("\u00A7f" + map));
-				List<Component> itemlist = new LinkedList<>();
-				byte[][] items = availableKits.get(map);
-				try {
-					Serialization.getItemStacks(items).forEach(i -> { 
-						if (i != null) itemlist.add(Component.text("\u00A7f" + i.getAmount() + "x" + i.getI18NDisplayName()));
-					});
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				c.lore(itemlist);
-			});
-			p.getInventory().setItem(index, item); 
-			index++;
-			if (index == 9) index = 27 + 9;
-			if (index > 9) index -= 2;
-		}
+		// prepare the ready/unready item
+		ItemStack ready = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+		ready.editMeta(meta -> {
+			meta.displayName(Component.text("\u00A7cYou are not ready!"));
+			meta.lore(Arrays.asList(
+				Component.text().build(),
+				Component.text("\u00A75Click this item to change your ready status."),
+				Component.text("\u00A75Once all players are ready, the game will begin."),
+				Component.text().build()
+			));
+		});
+		p.getInventory().setItem(8, ready);
+		// prepare the kit selector item
+		ItemStack kit = new ItemStack(Material.CHEST);
+		kit.editMeta(meta -> {
+			meta.displayName(Component.text("\u00A7aSelect a kit"));
+			meta.lore(Arrays.asList(
+				Component.text().build(),
+				Component.text("\u00A75This item will open a menu where the player can vote for a kit."),
+				Component.text("\u00A75The kit with the most votes will be selected for the game."),
+				Component.text().build()
+			));
+		});
+		p.getInventory().setItem(0, kit);
+		// prepare the tickrate changer item
+		ItemStack tickrate = new ItemStack(Material.CLOCK);
+		tickrate.editMeta(meta -> {
+			meta.displayName(Component.text("\u00A7aSelect a tickrate"));
+			meta.lore(Arrays.asList(
+				Component.text().build(),
+				Component.text("\u00A75This item will open a menu where the player can vote for a tickrate."),
+				Component.text("\u00A75The tickrate with the most votes will be selected for the game."),
+				Component.text().build()
+			));
+		});
+		p.getInventory().setItem(1, tickrate);
 		p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 	}
 
@@ -140,28 +165,122 @@ public class Game {
 	public static void onInteract(Player p, ItemStack item, Action action) throws Exception {
 		if (isRunning || startingTask != null || item == null) return;
 		if (item.getItemMeta().hasDisplayName()) {
-			String name = PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName()).replaceAll("\u00A7f", "");
-			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+			switch (item.getType()) {
+				case CHEST:
+					Inventory inv = Bukkit.createInventory(null, 18, Component.text("\u00A7aKit Selector"));
+					for (String map : availableKits.keySet()) {
+						Material mat = Material.getMaterial(Serialization.getIcon(availableKits.get(map)).replaceAll("\r", "").replaceAll("\n", ""));
+						if (mat == null) mat = Material.RED_STAINED_GLASS_PANE;
+						ItemStack kit = new ItemStack(mat);
+						kit.editMeta(c -> {
+							c.displayName(Component.text("\u00A7f" + map));
+						});
+						inv.addItem(kit); 
+					}
+					p.openInventory(inv);
+					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHEST_OPEN, Source.MASTER, 1.0f, 2.0f));
+					break;
+				case CLOCK:
+					Inventory tinv = Bukkit.createInventory(null, 9, Component.text("\u00A7aTickrate Changer"));
+					ItemStack kit = new ItemStack(Material.LIME_WOOL);
+					kit.editMeta(c -> {
+						c.displayName(Component.text("\u00A7aTickrate 2"));
+					});
+					tinv.setItem(0, kit);
+					kit = new ItemStack(Material.CLOCK);
+					kit.editMeta(c -> {
+						c.displayName(Component.text("\u00A7eTickrate 4"));
+					});
+					tinv.setItem(4, kit);
+					kit = new ItemStack(Material.RED_WOOL);
+					kit.editMeta(c -> {
+						c.displayName(Component.text("\u00A7cTickrate 10"));
+					});
+					tinv.setItem(8, kit);
+					p.openInventory(tinv);
+					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_PLACE, Source.MASTER, 1.0f, 10f));
+					break;
+				case RED_STAINED_GLASS_PANE:
+					ItemStack ready = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+					ready.editMeta(meta -> {
+						meta.displayName(Component.text("\u00A72You are ready"));
+						meta.lore(Arrays.asList(
+							Component.text().build(),
+							Component.text("\u00A75Click this item to change your ready status."),
+							Component.text("\u00A75Once all players are ready, the game will begin."),
+							Component.text().build()
+						));
+					});
+					p.getInventory().setItem(8, ready);
+					p.playSound(Sound.sound(org.bukkit.Sound.ENTITY_ENDER_DRAGON_HURT, Source.MASTER, 1.0f, 2.0f));
+					onPlayerReady(p, true);
+					break;
+				case LIME_STAINED_GLASS_PANE:
+					ItemStack unready = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+					unready.editMeta(meta -> {
+						meta.displayName(Component.text("\u00A7cYou are not ready!"));
+						meta.lore(Arrays.asList(
+							Component.text().build(),
+							Component.text("\u00A75Click this item to change your ready status."),
+							Component.text("\u00A75Once all players are ready, the game will begin."),
+							Component.text().build()
+						));
+					});
+					p.getInventory().setItem(8, unready);
+					p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.MASTER, 1.0f, 2.0f));
+					onPlayerReady(p, false);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	
+
+	/**
+	 * Runs on inventory interaction
+	 * @param whoClicked Player that clicked
+	 * @param action Action that occured
+	 * @param currentItem Item clicked
+	 * @param cursor Item below cursor
+	 * @param inventory Inventory opened
+	 * @param clickedInventory Inventory of click
+	 * @param slot Slot of click
+	 */
+	public static void onInventory(Player p, InventoryAction action, ItemStack currentItem, ItemStack cursor, Inventory inventory, Inventory clickedInventory, int slot) {
+		if (isRunning || startingTask != null || currentItem == null) return;
+		if (currentItem.getItemMeta().hasDisplayName()) {
+			String name = PlainTextComponentSerializer.plainText().serialize(currentItem.getItemMeta().displayName()).replaceAll("\u00A7f", "");
+			if (availableKits.containsKey(name) && !cooldownplayers.contains(p)) try {
 				byte[][] inventorySave = Serialization.serializeInventory(p.getInventory());
 				Serialization.deserializeInventory(p, availableKits.get(name));
+				cooldownplayers.add(p);
 				new BukkitRunnable() {
-
 					@Override
 					public void run() {
 						try {
 							if (isRunning) return;
 							Serialization.deserializeInventory(p, inventorySave); // Revert back Inventory
+							cooldownplayers.remove(p);
 							p.playSound(Sound.sound(org.bukkit.Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 						} catch (IllegalStateException | IOException e) {
 							e.printStackTrace();
 						}
 					}
 				}.runTaskLater(FFA.instance(), 20L * 6L);
-				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHORUS_FLOWER_GROW, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
-			} else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
 				p.sendMessage(Component.text("\u00A7b\u00bb \u00A77You selected kit " + name));
-				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_SCAFFOLDING_BREAK, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
-				onPlayerVoteKitEvent(p, name);
+				if (kits.containsKey(p.getUniqueId())) kits.remove(p.getUniqueId());
+				kits.put(p.getUniqueId(), name);
+				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHORUS_FLOWER_GROW, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
+			} catch (IllegalStateException | IllegalArgumentException | IOException e) {
+				e.printStackTrace();
+			}
+			if (name.toLowerCase().contains("tickrate ")) {
+				Integer tickrate = Integer.parseInt(name.toLowerCase().split("tickrate ")[1]);
+				if (tickrates.containsKey(p.getUniqueId())) tickrates.remove(p.getUniqueId());
+				tickrates.put(p.getUniqueId(), tickrate);
+				p.sendMessage(Component.text("\u00A7b\u00bb \u00A77You selected tickrate " + tickrate));
+				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHORUS_FLOWER_GROW, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
 			}
 		}
 	}
@@ -172,6 +291,9 @@ public class Game {
 	 */
 	public static void onQuit(Player p) {
 		if (kits.containsKey(p.getUniqueId())) kits.remove(p.getUniqueId());
+		if (tickrates.containsKey(p.getUniqueId())) tickrates.remove(p.getUniqueId());
+		if (readyplayers.contains(p)) readyplayers.remove(p);
+		if (cooldownplayers.contains(p)) cooldownplayers.remove(p);
 		if (startingTask != null) {
 			int playersLeft = Bukkit.getOnlinePlayers().size() - 1;
 			if (playersLeft < 2) {
@@ -190,36 +312,59 @@ public class Game {
 	 * Whenever a player selects a kit with RC
 	 * @throws IOException Uhh, cry?
 	 */
-	public static void onPlayerVoteKitEvent(Player p, String kitToVote) throws IOException {
-		if (kits.containsKey(p.getUniqueId())) kits.remove(p.getUniqueId()); // Undo Vote
-		kits.put(p.getUniqueId(), kitToVote);
-		if (kits.size() >= Bukkit.getOnlinePlayers().size() && Bukkit.getOnlinePlayers().size() >= 2) {
+	public static void onPlayerReady(Player p, boolean status) throws IOException {
+		if (readyplayers.contains(p) && !status) readyplayers.remove(p);
+		if (status && !readyplayers.contains(p)) readyplayers.add(p);
+		if (readyplayers.size() >= Bukkit.getOnlinePlayers().size() && Bukkit.getOnlinePlayers().size() >= 2) {
 			/* Find most voted kit */
-			int mostVotes = -1;
-			List<String> votedKits = new ArrayList<>();
-			for (Map.Entry<UUID, String> entry : kits.entrySet()) {
-				int votes = Collections.frequency(kits.values(), entry.getValue());
-				if (votes > mostVotes) {
-					votedKits.clear();
-					votedKits.add(entry.getValue());
-				} else if (votes == mostVotes) {
-					votedKits.add(entry.getValue());
-				}
-			}
-			int finalKitIndex = new Random().nextInt(votedKits.size());
-			File kit = new File(FFA.instance().getDataFolder(), votedKits.get(finalKitIndex));
-			byte[][] items = new byte[4][];
-			items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
-			items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
-			items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
-			items[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
-			serializedSelectedKit = items;
-			selectedKitName = kit.getName();
-			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77Kit \uu00A7a" + kit.getName() + "\u00A77 was selected"));
-			onKitSelectedEvent();
+			checkKit();
+			checkTickrate();
+			startGame();
 		}
 	}
 
+
+	private static void checkTickrate() {
+		int mostVotes = -1;
+		List<Integer> votedTickrates = new ArrayList<>();
+		for (Entry<UUID, Integer> entry : tickrates.entrySet()) {
+			int votes = Collections.frequency(tickrates.values(), entry.getValue());
+			if (votes > mostVotes) {
+				votedTickrates.clear();
+				votedTickrates.add(entry.getValue());
+			} else if (votes == mostVotes) {
+				votedTickrates.add(entry.getValue());
+			}
+		}
+		int finalKitIndex = votedTickrates.size() == 0 ? 4 : new Random().nextInt(votedTickrates.size());
+		tickrate = votedTickrates.size() == 0 ? 4 : votedTickrates.get(finalKitIndex);
+		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77Tickrate \uu00A7a" + tickrate + "\u00A77 was selected"));
+	}
+	
+	private static void checkKit() throws IOException {
+		int mostVotes = -1;
+		List<String> votedKits = new ArrayList<>();
+		for (Map.Entry<UUID, String> entry : kits.entrySet()) {
+			int votes = Collections.frequency(kits.values(), entry.getValue());
+			if (votes > mostVotes) {
+				votedKits.clear();
+				votedKits.add(entry.getValue());
+			} else if (votes == mostVotes) {
+				votedKits.add(entry.getValue());
+			}
+		}
+		int finalKitIndex = new Random().nextInt(votedKits.size());
+		File kit = new File(FFA.instance().getDataFolder(), votedKits.get(finalKitIndex));
+		byte[][] items = new byte[4][];
+		items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
+		items[1] = Files.readAllBytes(new File(kit, "extra.dat").toPath());
+		items[2] = Files.readAllBytes(new File(kit, "armor.dat").toPath());
+		items[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
+		serializedSelectedKit = items;
+		selectedKitName = kit.getName();
+		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77Kit \uu00A7a" + kit.getName() + "\u00A77 was selected"));
+	}
+	
 	/**
 	 * Whenever a player dies or quits the server
 	 * @param player The Player that died
@@ -236,7 +381,7 @@ public class Game {
 		}
 		if (alivePlayers.size() <= 1) {
 			try {
-				FFA.updateTickrate(20.0f);
+				FFA.updateTickrate(1.0f);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -253,25 +398,35 @@ public class Game {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
+					try {
+						FFA.updateTickrate(20.0f);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}.runTaskLater(FFA.instance(), 8L);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					
 					Bukkit.shutdown();
 				}
-			}.runTaskLater(FFA.instance(), 20L * 5L);
+			}.runTaskLater(FFA.instance(), 6L+8L);
 		}
 	}
 
 	/**
 	 * Whenever a kit gets selected, a countdown of 10 seconds will start, after which the players will be spread across the map.
 	 */
-	public static boolean onKitSelectedEvent() {
+	public static boolean startGame() {
 		if (Bukkit.getOnlinePlayers().size() >= 2 /* Check if the game is startable */)  {
-			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The selected kit is: \u00A7b" + selectedKitName + "\u00A77."));
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The game will start in 10 seconds."));
 			for (Player player : Bukkit.getOnlinePlayers()) player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_LAND, Source.BLOCK, .6f, 1.2f), Sound.Emitter.self());
 			startingTask = new BukkitRunnable() {
 				@Override public void run() {
 					/* Start the game */
 					try {
-						FFA.updateTickrate(4f);
+						FFA.updateTickrate(tickrate);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

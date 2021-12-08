@@ -105,7 +105,7 @@ public class FFA extends JavaPlugin implements PluginMessageListener {
 				items[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 				Game.serializedSelectedKit = items;
 				Game.selectedKitName = kit.getName();
-				if (Game.onKitSelectedEvent()) {
+				if (Game.startGame()) {
 					Game.shouldAllowVoting = false;
 					sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully selected for the this game");
 				} else {
