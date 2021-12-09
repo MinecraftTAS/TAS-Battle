@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,6 +27,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -53,6 +56,14 @@ public class Game {
 	public static ArrayList<Player> readyplayers = new ArrayList<>();
 	/** List of players on interact cooldown */
 	public static ArrayList<Player> cooldownplayers = new ArrayList<>();
+	/** List of players that want player drops */
+	public static ArrayList<Player> pdrops = new ArrayList<>();
+	/** List of players that want block drops */
+	public static ArrayList<Player> bdrops = new ArrayList<>();
+	/** List of players that vote for shown hp */
+	public static ArrayList<Player> hpshow = new ArrayList<>();
+	/** List of votes for time limits */
+	public static ArrayList<Player> timelimit = new ArrayList<>();
 	/** Task when the game is starting */
 	private static BukkitRunnable startingTask;
 	/** Whether the game is actually running */
@@ -69,6 +80,7 @@ public class Game {
 	public static HashMap<String, byte[][]> availableKits = new HashMap<>();
 	/** The currently selected kit name */
 	public static String selectedKitName;
+	private static boolean isTimelimitOn;
 	
 	/**
 	 * Whether Interactions such as block breaking, damage and interactions should be cancelled
@@ -173,6 +185,52 @@ public class Game {
 			));
 		});
 		p.getInventory().setItem(1, tickrate);
+		// prepare the gamerule items
+		ItemStack hp = new ItemStack(Material.REDSTONE_BLOCK);
+		hp.editMeta(meta -> {
+			meta.displayName(Component.text("\u00A7aShow Health of other players: off"));
+			meta.lore(Arrays.asList(
+				Component.text().build(),
+				Component.text("\u00A75This item will decide whether the health of other people should be"),
+				Component.text("\u00A75shown during the battle."),
+				Component.text().build()
+			));
+		});
+		p.getInventory().setItem(2, hp);
+
+		ItemStack drops = new ItemStack(Material.STICK);
+		drops.editMeta(meta -> {
+			meta.displayName(Component.text("\u00A7aDrop Items from Players: off"));
+			meta.lore(Arrays.asList(
+				Component.text().build(),
+				Component.text("\u00A75This item will decide whether players should drop their items on death"),
+				Component.text().build()
+			));
+		});
+		p.getInventory().setItem(3, drops);
+		
+		ItemStack bdrops = new ItemStack(Material.GRASS_BLOCK);
+		bdrops.editMeta(meta -> {
+			meta.displayName(Component.text("\u00A7aDrop Items from Blocks: off"));
+			meta.lore(Arrays.asList(
+				Component.text().build(),
+				Component.text("\u00A75This item will decide whether blocks should drop their items"),
+				Component.text().build()
+			));
+		});
+		p.getInventory().setItem(4, bdrops);
+		p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
+		
+		ItemStack limit = new ItemStack(Material.COMPASS);
+		limit.editMeta(meta -> {
+			meta.displayName(Component.text("\u00A7aTime Limit: off"));
+			meta.lore(Arrays.asList(
+				Component.text().build(),
+				Component.text("\u00A75This item will decide whether a worldborder will close after 45 minutes"),
+				Component.text().build()
+			));
+		});
+		p.getInventory().setItem(5, limit);
 		p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
 	}
 
@@ -186,6 +244,7 @@ public class Game {
 	public static void onInteract(Player p, ItemStack item, Action action) throws Exception {
 		if (isRunning || startingTask != null || item == null) return;
 		if (item.getItemMeta().hasDisplayName()) {
+			String name = PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName());
 			switch (item.getType()) {
 				case CHEST:
 					Inventory inv = Bukkit.createInventory(null, 18, Component.text("\u00A7aKit Selector"));
@@ -251,6 +310,54 @@ public class Game {
 					p.playSound(Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK, Source.MASTER, 1.0f, 2.0f));
 					onPlayerReady(p, false);
 					break;
+				case REDSTONE_BLOCK:
+					boolean isOn = !name.contains(" off");
+					if (isOn) {
+						// turn off
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" on", " off"))));
+						if (hpshow.contains(p)) hpshow.remove(p);
+					} else {
+						// turn on
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
+						if (!hpshow.contains(p)) hpshow.add(p);
+					}
+					break;
+				case STICK:
+					isOn = !name.contains(" off");
+					if (isOn) {
+						// turn off
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" on", " off"))));
+						if (pdrops.contains(p)) pdrops.remove(p);
+					} else {
+						// turn on
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
+						if (!pdrops.contains(p)) pdrops.add(p);
+					}
+					break;
+				case GRASS_BLOCK:
+					isOn = !name.contains(" off");
+					if (isOn) {
+						// turn off
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" on", " off"))));
+						if (bdrops.contains(p)) bdrops.remove(p);
+					} else {
+						// turn on
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
+						if (!bdrops.contains(p)) bdrops.add(p);
+					}
+					break;
+				case COMPASS:
+					isOn = !name.contains(" off");
+					if (isOn) {
+						// turn off
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" on", " off"))));
+						if (timelimit.contains(p)) timelimit.remove(p);
+					} else {
+						// turn on
+						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
+						if (!timelimit.contains(p)) timelimit.add(p);
+					}
+					break;
 				default:
 					break;
 			}
@@ -315,6 +422,11 @@ public class Game {
 		if (tickrates.containsKey(p.getUniqueId())) tickrates.remove(p.getUniqueId());
 		if (readyplayers.contains(p)) readyplayers.remove(p);
 		if (cooldownplayers.contains(p)) cooldownplayers.remove(p);
+		if (bdrops.contains(p)) bdrops.remove(p);
+		if (pdrops.contains(p)) pdrops.remove(p);
+		if (hpshow.contains(p)) hpshow.remove(p);
+		if (timelimit.contains(p)) timelimit.remove(p);
+		
 		if (startingTask != null) {
 			int playersLeft = Bukkit.getOnlinePlayers().size() - 1;
 			if (playersLeft < 2) {
@@ -340,6 +452,7 @@ public class Game {
 			/* Find most voted kit */
 			checkKit();
 			checkTickrate();
+			checkMoreStuff();
 			startGame();
 		}
 	}
@@ -360,6 +473,34 @@ public class Game {
 		int finalKitIndex = votedTickrates.size() == 0 ? 4 : new Random().nextInt(votedTickrates.size());
 		tickrate = votedTickrates.size() == 0 ? 4 : votedTickrates.get(finalKitIndex);
 		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77Tickrate \uu00A7a" + tickrate + "\u00A77 was selected"));
+	}
+	
+	private static void checkMoreStuff() {
+		boolean isHpOn = hpshow.size() >= (Bukkit.getOnlinePlayers().size()/2.0);
+		isTimelimitOn = timelimit.size() >= (Bukkit.getOnlinePlayers().size()/2.0);
+		boolean isPlayerDropsOn = pdrops.size() >= (Bukkit.getOnlinePlayers().size()/2.0);
+		boolean isBlockDropsOn = bdrops.size() >= (Bukkit.getOnlinePlayers().size()/2.0);
+		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77Health will \uu00A7a" + (isHpOn ? "" : "not ") + "\u00A77be shown"));
+		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The Game will \uu00A7a" + (isTimelimitOn ? "" : "not ") + "\u00A77end after 45 minutes"));
+		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77Players will \uu00A7a" + (isPlayerDropsOn ? "" : "not ") + "\u00A77drop items after death"));
+		Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77Blocks will \uu00A7a" + (isBlockDropsOn ? "" : "not ") + "\u00A77drop"));
+		// Health Scoreboard
+		if (isHpOn) for (Player p : Bukkit.getOnlinePlayers()) {
+			Scoreboard s = p.getScoreboard();
+			Objective o = s.registerNewObjective("hp", "health", Component.text("HP"), RenderType.HEARTS);
+			o.setDisplaySlot(DisplaySlot.BELOW_NAME);
+			for (Player player : alivePlayers) {
+				o.getScore(player.getName()).setScore((int) player.getHealth());
+			}
+			o = s.registerNewObjective("hp2", "health", Component.text("HP"), RenderType.HEARTS);
+			o.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+			for (Player player : alivePlayers) {
+				o.getScore(player.getName()).setScore((int) player.getHealth());
+			}
+		}
+		// Block Drops
+		if (isBlockDropsOn) Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.DO_TILE_DROPS, false));
+		if (!isPlayerDropsOn) Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.KEEP_INVENTORY, true));
 	}
 	
 	private static void checkKit() throws IOException {
@@ -399,9 +540,13 @@ public class Game {
 		if (killer == null)
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 died"));
 		else {
-			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 was slain by \u00A7a" + killer.getName()));
-			PlayerStats.addKill(killer);
-			killer.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
+			if (killer == player) {
+				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 died"));
+			} else {
+				Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + player.getName() + "\u00A77 was slain by \u00A7a" + killer.getName()));
+				PlayerStats.addKill(killer);
+				killer.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
+			}
 		}
 		if (alivePlayers.size() <= 1) {
 			try {
@@ -479,6 +624,16 @@ public class Game {
 									break;
 								}
 							}
+						}
+						if (isTimelimitOn) {
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									for (Player p : alivePlayers) {
+										p.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 300, 5));
+									}
+								}
+							}.runTaskTimer(FFA.instance(), (45*60*20)/tickrate, 2L);
 						}
 					} catch (Exception e) {
 						Bukkit.broadcast(Component.text("\u00A7b\u00bb	 \u00A7cAn error occured whilst trying to start the game!"));

@@ -9,8 +9,6 @@ import java.io.ObjectOutputStream;
 
 import org.bukkit.entity.Player;
 
-import net.kyori.adventure.text.Component;
-
 /**
  * Holds all players stats
  * @author Pancake
