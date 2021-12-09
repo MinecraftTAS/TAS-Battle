@@ -27,6 +27,10 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.RenderType;
+import org.bukkit.scoreboard.Scoreboard;
 
 import de.pfannekuchen.ffa.stats.PlayerStats;
 import net.kyori.adventure.sound.Sound;
@@ -106,8 +110,23 @@ public class Game {
 	 */
 	public static void onJoin(Player p) {
 		p.setFallDistance(0.0f);
-		PlayerStats.printStats(p);
 		p.teleport(p.getWorld().getSpawnLocation());
+		// prepare scoreboard
+		Scoreboard s = Bukkit.getScoreboardManager().getNewScoreboard();
+		Objective o = s.registerNewObjective(p.getName(), "dummy", Component.text("FFA"), RenderType.INTEGER);
+		o.setDisplaySlot(DisplaySlot.SIDEBAR);
+		o.getScore("discord.gg/hUcYSFnJsW").setScore(0);
+		o.getScore(" ").setScore(1);
+		o.getScore("\u00A7aKDR: \u00A7f" + String.format("%.2f", PlayerStats.getKills(p) / ((double) PlayerStats.getDeaths(p)))).setScore(2);
+		o.getScore("\u00A7bDeaths: \u00A7f" + PlayerStats.getDeaths(p)).setScore(3);
+		o.getScore("\u00A7bKills: \u00A7f" + PlayerStats.getKills(p)).setScore(4);
+		o.getScore("  ").setScore(5);
+		o.getScore("\u00A7aWLR: \u00A7f" + String.format("%.2f", PlayerStats.getWins(p) / ((double) PlayerStats.getLosses(p)))).setScore(6);
+		o.getScore("\u00A7bLosses: \u00A7f" + PlayerStats.getLosses(p)).setScore(7);
+		o.getScore("\u00A7bWins: \u00A7f" + PlayerStats.getWins(p)).setScore(8);
+		o.getScore("   ").setScore(9);
+		o.getScore("\u00A7bYour Stats").setScore(10);
+		p.setScoreboard(s);
 		if (isRunning) {
 			Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A7a" + p.getName() + "\u00A77 has joined the game."));
 			p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEACON_ACTIVATE, Source.BLOCK, .4f, 2f), Sound.Emitter.self());
@@ -410,14 +429,14 @@ public class Game {
 						e.printStackTrace();
 					}
 				}
-			}.runTaskLater(FFA.instance(), 8L);
+			}.runTaskLater(FFA.instance(), 16L);
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					
 					Bukkit.shutdown();
 				}
-			}.runTaskLater(FFA.instance(), 6L+8L);
+			}.runTaskLater(FFA.instance(), 6L+16L);
 		}
 	}
 
@@ -445,6 +464,7 @@ public class Game {
 							Serialization.deserializeInventory(p, serializedSelectedKit); // load kit
 							p.setGameMode(GameMode.SURVIVAL);
 							p.setLevel(0);
+							p.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 							p.getWorld().setDifficulty(Difficulty.HARD);
 							p.setExp(0.0f);
 							alivePlayers.add(p);

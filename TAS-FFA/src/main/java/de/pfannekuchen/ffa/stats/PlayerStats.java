@@ -22,23 +22,28 @@ public class PlayerStats {
 	
 	private static Data data;
 	
-	public static void printStats(Player p) {
+	public static int getDeaths(Player p) {
 		int deaths = 0;
-		int kills = 0;
-		int wins = 0;
-		int losses = 0;
 		if (data.deaths.containsKey(p.getUniqueId())) deaths = data.deaths.get(p.getUniqueId());
+		return deaths;
+	}
+	
+	public static int getKills(Player p) {
+		int kills = 0;
 		if (data.kills.containsKey(p.getUniqueId())) kills = data.kills.get(p.getUniqueId());
+		return kills;
+	}
+	
+	public static int getWins(Player p) {
+		int wins = 0;
 		if (data.wins.containsKey(p.getUniqueId())) wins = data.wins.get(p.getUniqueId());
+		return wins;
+	}
+	
+	public static int getLosses(Player p) {
+		int losses = 0;
 		if (data.losses.containsKey(p.getUniqueId())) losses = data.losses.get(p.getUniqueId());
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77=== Showing stats for " + p.getName() + " ==="));
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77"));
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77Kills: " + kills));
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77Deaths: " + deaths));
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77Wins: " + wins));
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77Losses: " + losses));
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77"));
-		p.sendMessage(Component.text("\u00A73\u00BB \u00A77"));
+		return losses;
 	}
 	
 	public static void addDeath(Player p) {
