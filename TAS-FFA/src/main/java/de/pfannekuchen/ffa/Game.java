@@ -502,9 +502,12 @@ public class Game {
 				o.getScore(player.getName()).setScore((int) player.getHealth());
 			}
 		}
+		isHpOn = false; // Avoid above piece to be ran twice
 		// Block Drops
-		if (isBlockDropsOn) Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.DO_TILE_DROPS, false));
-		if (!isPlayerDropsOn) Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.KEEP_INVENTORY, true));
+		if (isBlockDropsOn) Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.DO_TILE_DROPS, true));
+		else Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.DO_TILE_DROPS, false));
+		if (isPlayerDropsOn) Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.KEEP_INVENTORY, false));
+		else Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.KEEP_INVENTORY, true));
 	}
 	
 	private static void checkKit() throws IOException {
