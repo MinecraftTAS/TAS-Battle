@@ -19,6 +19,8 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import de.pfannekuchen.juggernaut.stats.PlayerStats;
+
 /**
  * Main and basically everything of the Juggernaut FFA Plugin
  * @author Pancake
@@ -41,6 +43,7 @@ public class Juggernaut extends JavaPlugin implements PluginMessageListener {
 			if (!getDataFolder().exists()) getDataFolder().mkdir();
 			Bukkit.getPluginManager().registerEvents(new Events(), this);
 			Game.onStartup();
+			PlayerStats.load();
 			new Thread(() -> {
 				while (true) {
 					try {
@@ -111,7 +114,7 @@ public class Juggernaut extends JavaPlugin implements PluginMessageListener {
 				jitems[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 				Game.serializedSelectedJkit = jitems;
 				Game.selectedKitName = kit.getName();
-				if (Game.onKitSelectedEvent()) {
+				if (Game.startGame()) {
 					Game.shouldAllowVoting = false;
 					sender.sendMessage("\u00A7b\u00bb \u00A77The kit \u00A7a\"" + kit.getName() + "\"\u00A77 was successfully selected for the this game");
 				} else {

@@ -1,6 +1,7 @@
 package de.pfannekuchen.juggernaut;
 
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -8,8 +9,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -36,6 +38,7 @@ public class Events implements Listener {
 	@EventHandler public void onPlayerConsume(PlayerItemConsumeEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getPlayer())); }
 	@EventHandler public void onInteractEvent(PlayerInteractEvent e) throws Exception { Game.onInteract(e.getPlayer(), e.getItem(), e.getAction()); }
 	@EventHandler public void onInteractEvent2(PlayerInteractEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getPlayer())); }
+	@EventHandler public void onInteractEvent3(InventoryClickEvent e) { e.setCancelled(Game.shouldAllowInteraction(e.getWhoClicked())); }
 	@EventHandler public void onRegenerateEvent(EntityRegainHealthEvent e) { 
 		if (e.getRegainReason() == RegainReason.SATIATED || e.getRegainReason() == RegainReason.EATING || e.getRegainReason() == RegainReason.MAGIC_REGEN && e.getEntityType() == EntityType.PLAYER && Game.juggernaut != null) {
 			if (e.getEntity().getName().equals(Game.juggernaut.getName())) e.setCancelled(true);
@@ -56,7 +59,10 @@ public class Events implements Listener {
 		e.deathMessage(null);
 		Game.onDeath(e.getEntity());
 	}
-
+	@EventHandler 
+	public void onInventoryClickEvent(InventoryClickEvent e) {
+		Game.onInventory((Player) e.getWhoClicked(), e.getAction(), e.getCurrentItem(), e.getCursor(), e.getInventory(), e.getClickedInventory(), e.getSlot());
+	}
 	@EventHandler
 	public void onLateJoin(PlayerJoinEvent e) {
 		Juggernaut.queuedPlayers.add(e.getPlayer().getUniqueId());
