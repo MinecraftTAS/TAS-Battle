@@ -278,7 +278,7 @@ public class Game {
 					});
 					tinv.setItem(8, kit);
 					p.openInventory(tinv);
-					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_ANVIL_PLACE, Source.MASTER, 1.0f, 10f));
+					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHEST_OPEN, Source.MASTER, 1.0f, 2.0f));
 					break;
 				case RED_STAINED_GLASS_PANE:
 					ItemStack ready = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
@@ -321,6 +321,7 @@ public class Game {
 						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
 						if (!hpshow.contains(p)) hpshow.add(p);
 					}
+					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BASALT_BREAK, Source.MASTER, 1.0f, 2.0f));
 					break;
 				case STICK:
 					isOn = !name.contains(" off");
@@ -333,6 +334,7 @@ public class Game {
 						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
 						if (!pdrops.contains(p)) pdrops.add(p);
 					}
+					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BASALT_BREAK, Source.MASTER, 1.0f, 2.0f));
 					break;
 				case GRASS_BLOCK:
 					isOn = !name.contains(" off");
@@ -345,6 +347,7 @@ public class Game {
 						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
 						if (!bdrops.contains(p)) bdrops.add(p);
 					}
+					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BASALT_BREAK, Source.MASTER, 1.0f, 2.0f));
 					break;
 				case COMPASS:
 					isOn = !name.contains(" off");
@@ -357,6 +360,7 @@ public class Game {
 						item.editMeta(m -> m.displayName(Component.text("\u00A7a" + name.replaceFirst(" off", " on"))));
 						if (!timelimit.contains(p)) timelimit.add(p);
 					}
+					p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BASALT_BREAK, Source.MASTER, 1.0f, 2.0f));
 					break;
 				default:
 					break;
@@ -399,7 +403,7 @@ public class Game {
 				p.sendMessage(Component.text("\u00A7b\u00bb \u00A77You selected kit " + name));
 				if (kits.containsKey(p.getUniqueId())) kits.remove(p.getUniqueId());
 				kits.put(p.getUniqueId(), name);
-				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHORUS_FLOWER_GROW, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
+				p.playSound(Sound.sound(org.bukkit.Sound.ENTITY_VILLAGER_WORK_FLETCHER, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
 			} catch (IllegalStateException | IllegalArgumentException | IOException e) {
 				e.printStackTrace();
 			}
@@ -408,7 +412,7 @@ public class Game {
 				if (tickrates.containsKey(p.getUniqueId())) tickrates.remove(p.getUniqueId());
 				tickrates.put(p.getUniqueId(), tickrate);
 				p.sendMessage(Component.text("\u00A7b\u00bb \u00A77You selected tickrate " + tickrate));
-				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_CHORUS_FLOWER_GROW, Source.BLOCK, .6f, 1f), Sound.Emitter.self());
+				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BREWING_STAND_BREW, Source.BLOCK, 1f, 1f), Sound.Emitter.self());
 			}
 		}
 	}
