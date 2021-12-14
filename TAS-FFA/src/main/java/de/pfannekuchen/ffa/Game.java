@@ -524,11 +524,11 @@ public class Game {
 		}
 		File kit;
 		if (votedKits.size() == 0) {
-			kit = new File(FFA.instance().getDataFolder(), votedKits.get(new Random().nextInt(votedKits.size())));
-		} else {
 			ArrayList<String> kits = new ArrayList<String>(availableKits.keySet());
 			Collections.shuffle(kits);
 			kit = new File(FFA.instance().getDataFolder(), kits.iterator().next());
+		} else {
+			kit = new File(FFA.instance().getDataFolder(), votedKits.get(new Random().nextInt(votedKits.size())));
 		}
 		byte[][] items = new byte[4][];
 		items[0] = Files.readAllBytes(new File(kit, "inv.dat").toPath());
