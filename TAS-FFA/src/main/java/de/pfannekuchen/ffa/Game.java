@@ -628,8 +628,8 @@ public class Game {
 							alivePlayers.add(p);
 							/* Teleport the player */
 							while (true) {
-								int x = rng.nextInt(801) - 400;
-								int z = rng.nextInt(801) - 400;
+								int x = rng.nextInt(401) - 200;
+								int z = rng.nextInt(401) - 200;
 								Block b = p.getWorld().getHighestBlockAt(x, z);
 								if (b != null && b.getType() != Material.WATER && b.getType() != Material.AIR && b.getY() > 1) {
 									p.setFallDistance(0.0f);
