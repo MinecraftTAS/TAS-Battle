@@ -136,7 +136,7 @@ public class Game {
 		p.teleport(p.getWorld().getSpawnLocation());
 		// prepare scoreboard
 		Scoreboard s = Bukkit.getScoreboardManager().getNewScoreboard();
-		Objective o = s.registerNewObjective(p.getName(), "dummy", Component.text("FFA"), RenderType.INTEGER);
+		Objective o = s.registerNewObjective(p.getName(), "dummy", Component.text("Juggernaut"), RenderType.INTEGER);
 		o.setDisplaySlot(DisplaySlot.SIDEBAR);
 		o.getScore("discord.gg/hUcYSFnJsW").setScore(0);
 		o.getScore(" ").setScore(1);
