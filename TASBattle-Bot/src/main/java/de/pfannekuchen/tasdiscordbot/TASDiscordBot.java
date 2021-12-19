@@ -126,7 +126,7 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 			userstring += " <@" + user + ">";
 		}
 		
-		b.addField("Available Players", "On this list you will find all players that can play right now. Add yourself using /play" + ("** **\n\n".equals(userstring) ? "\n\n*This list is empty* (\u256F°\u25A1°\uFF09\u256F\uFE35\u253B\u2501\u253B" : userstring), false);
+		b.addField("Available Players", "On this list you will find all players that can play right now. Add yourself using /play" + ("** **\n\n".equals(userstring) ? "\n\n*This list is empty* (\u256F\u00B0\u25A1\u00B0\uFF09\u256F\uFE35\u253B\u2501\u253B" : userstring), false);
 		jda.getTextChannelById(CID).editMessageById(ID, new MessageBuilder().setEmbeds(b.build()).build()).queue();
 	}
 	
