@@ -39,7 +39,7 @@ public class Main extends Plugin implements Listener {
 				break;
 			}
 			if (ch != null) {
-				bot.jda.getTextChannelById(ch).sendMessage("<" + name + "> " + e.getMessage()).complete();
+				bot.jda.getTextChannelById(ch).sendMessage("<" + name + "> " + e.getMessage()).queue();
 			}
 		}
 	}

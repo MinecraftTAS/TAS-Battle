@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -63,28 +64,33 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 	
 	@Override
 	public void onGenericMessage(GenericMessageEvent event) {
-		if (event.getTextChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor().isBot()) return;
-		server = null;
-		switch (event.getTextChannel().getId()) {
-		case "911358374275342357":
-			server = "ffa";
-			break;
-		case "911358339231911947":
-			server = "skywars";
-			break;
-		case "917191353274875954":
-			server = "juggernaut";
-			break;
-		default: 
-			break;
-		}
-		if (server != null) {
-			ProxyServer.getInstance().getPlayers().forEach(p -> {
-				if (p.getServer().getInfo().getName().equals(server)) {
-					p.sendMessage(new TextComponent("<" + event.getTextChannel().retrieveMessageById(event.getMessageId()).complete().getMember().getEffectiveName() + " #" + server + "> " + event.getTextChannel().retrieveMessageById(event.getMessageId()).complete().getContentDisplay()));
-				}
-			});
-		}
+		TextChannel c = event.getTextChannel();
+		c.retrieveMessageById(event.getMessageId()).queue(msg -> {
+			if (msg.getAuthor().isBot()) return;
+			server = null;
+			switch (c.getId()) {
+			case "911358374275342357":
+				server = "ffa";
+				break;
+			case "911358339231911947":
+				server = "skywars";
+				break;
+			case "917191353274875954":
+				server = "juggernaut";
+				break;
+			default: 
+				break;
+			}
+			if (server != null) {
+				String name = msg.getMember().getEffectiveName();
+				String content = msg.getContentDisplay();
+				ProxyServer.getInstance().getPlayers().forEach(p -> {
+					if (p.getServer().getInfo().getName().equals(server)) {
+						p.sendMessage(new TextComponent("<" + name + " #" + server + "> " + content));
+					}
+				});
+			}
+		});
 	}
 	
 	private String allPings(long exclude) {
