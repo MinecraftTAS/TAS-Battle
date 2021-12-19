@@ -468,6 +468,7 @@ public class Game {
 		for (Entry<UUID, Integer> entry : tickrates.entrySet()) {
 			int votes = Collections.frequency(tickrates.values(), entry.getValue());
 			if (votes > mostVotes) {
+				mostVotes = votes;
 				votedTickrates.clear();
 				votedTickrates.add(entry.getValue());
 			} else if (votes == mostVotes) {
@@ -516,6 +517,7 @@ public class Game {
 		for (Map.Entry<UUID, String> entry : kits.entrySet()) {
 			int votes = Collections.frequency(kits.values(), entry.getValue());
 			if (votes > mostVotes) {
+				mostVotes = votes;
 				votedKits.clear();
 				votedKits.add(entry.getValue());
 			} else if (votes == mostVotes) {
