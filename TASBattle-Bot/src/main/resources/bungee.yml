@@ -1,0 +1,4 @@
+name: TASBattle-Bot
+main: de.pfannekuchen.tasdiscordbot.main.Main
+version: 1.0.0
+author: Pancake

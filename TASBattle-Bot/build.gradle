@@ -1,0 +1,19 @@
+// USE GRADLE 7
+
+plugins {
+    id 'java-library'
+    id("com.github.johnrengelman.shadow") version "5.1.0"
+}
+
+repositories {
+	mavenCentral()
+    maven { url 'https://m2.dv8tion.net/releases' }
+    maven { url "https://papermc.io/repo/repository/maven-public/" }
+}
+
+dependencies {
+	implementation group: 'net.dv8tion', name: 'JDA', version: '4.3.0_339'
+	compileOnly 'io.github.waterfallmc:waterfall-api:1.17-R0.1-SNAPSHOT'
+}
+
+build.dependsOn(shadowJar)
