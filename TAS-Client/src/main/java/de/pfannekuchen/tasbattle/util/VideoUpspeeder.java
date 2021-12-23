@@ -158,7 +158,7 @@ public class VideoUpspeeder {
 										VideoUpspeederScreen.framesDone = p.frame;
 										VideoUpspeederScreen.size = p.total_size / 1024F / 1024F;
 										VideoUpspeederScreen.est = Duration.ofSeconds((long) ((frames - p.frame) * p.speed / 60f));
-										VideoUpspeederScreen.bitrate = "Bitrate: " + p.bitrate / 1024 / 1024 + " Mbps" + ", File Size: " + String.format("%.2f", VideoUpspeederScreen.size);
+										VideoUpspeederScreen.bitrate = "Bitrate: " + p.bitrate / 1024 / 1024 + " Mbps" + ", File Size: " + String.format("%.2f MB", VideoUpspeederScreen.size);
 									}
 								});
 					// Done
@@ -169,7 +169,7 @@ public class VideoUpspeeder {
 					} catch (Exception e) {
 						
 					}
-					Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToastIds.WORLD_BACKUP, new TextComponent("Video Encoding is done."), new TextComponent("Video Size: " + String.format("%.2f MB", VideoUpspeederScreen.size) + " Mb")));
+					Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToastIds.WORLD_BACKUP, new TextComponent("Video Encoding is done."), new TextComponent("Video Size: " + String.format("%.2f MB", VideoUpspeederScreen.size))));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
