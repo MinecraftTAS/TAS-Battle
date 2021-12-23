@@ -27,8 +27,10 @@ dependencies {
 	
 	include group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 	include 'com.github.JnCrMx:discord-game-sdk4j:v0.5.4'
+	include group: 'net.lingala.zip4j', name: 'zip4j', version: '2.9.1'
 	implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 	implementation 'com.github.JnCrMx:discord-game-sdk4j:v0.5.4'
+	implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.9.1'
 	
 	apiModules.forEach {
 	    include(modImplementation(fabricApi.module(it, "0.37.0+1.17")))

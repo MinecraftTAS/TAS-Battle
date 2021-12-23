@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -64,6 +65,9 @@ public class MixinMinecraft {
 			ClientPlayNetworking.send(new ResourceLocation("tickratechanger", "data"), new FriendlyByteBuf(Unpooled.buffer(1)));
 		} else if (s instanceof JoinMultiplayerScreen) {
 			((Minecraft) (Object) this).setScreen(new TASBattleScreen(null));
+			ci.cancel();
+		} else if (s instanceof CreateWorldScreen) {
+			// no.
 			ci.cancel();
 		}
 	}

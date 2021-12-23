@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.pfannekuchen.tasbattle.TASBattle;
 import de.pfannekuchen.tasbattle.gui.TASBattleScreen;
+import de.pfannekuchen.tasbattle.gui.TASChallengesScreen;
 import de.pfannekuchen.tasbattle.gui.VideoUpspeederScreen;
 import de.pfannekuchen.tasbattle.util.OSUtils;
 import de.pfannekuchen.tasbattle.util.OSUtils.OS;
@@ -45,11 +46,9 @@ public abstract class MixinTitleScreen extends Screen {
 	 */
 	@Overwrite
 	private void createNormalMenuOptions(int height, int distanceBtn) {
-		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48, 200, 20, new TextComponent("Play TAS Challenges Offline"), (buttonWidget) -> { // TODO: Put this into a .lang file
-			
-		}, (buttonWidget, matrixStack, i, j) -> {
-			if (buttonWidget.isMouseOver(i, j)) this.renderTooltip(matrixStack, this.minecraft.font.split(new TextComponent("Sorry, this feature isn't implemented yet."), Math.max(this.width / 2 - 43, 170)), i, j);
-		})).active = false; // TODO: Implement Singleplayer Training Maps
+		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48, 200, 20, new TextComponent("Play TAS Maps"), (buttonWidget) -> { // TODO: Put this into a .lang file
+			minecraft.setScreen(new TASChallengesScreen());
+		}));
 		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48 + 24, 200, 20, new TextComponent("Join TAS Battle"), b -> {
 			minecraft.setScreen(new TASBattleScreen(this));
 		}, (b, stack, mouseX, mouseY) -> {
