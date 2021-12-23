@@ -51,6 +51,7 @@ public class TASBattle implements ModInitializer {
 		}
 	}
 	
+	public static HashMap<UUID, String> tags = new HashMap<>();
 	public static final ResourceLocation CUSTOM_EDITION_RESOURCE_LOCATION = new ResourceLocation("tasbattle", "custom_edition.png");
 	public static List<TASServer> servers = new ArrayList<>();
 	public static float tickrate = 20f;
@@ -198,6 +199,13 @@ public class TASBattle implements ModInitializer {
 				ResourceLocation loc = new ResourceLocation("tasbattle", "cape_" + uuid.toString());
 				Minecraft.getInstance().getTextureManager().register(loc, new DynamicTexture(NativeImage.read(new URL(reader.readLine()).openStream())));
 				TASBattle.capes.put(uuid, loc);
+			}
+			reader.readLine();
+			int tags = Integer.parseInt(reader.readLine().trim());
+			for (int i = 0; i < tags; i++) {
+				UUID uuid = UUID.fromString(reader.readLine());
+				String tag = reader.readLine().replaceAll("&&", "\u00A7");
+				TASBattle.tags.put(uuid, tag);
 			}
 			reader.close();
 		} catch (IOException e) {

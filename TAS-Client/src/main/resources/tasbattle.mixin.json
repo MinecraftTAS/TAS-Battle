@@ -11,6 +11,7 @@
     "MixinLaunchArgs",
     "MixinCustomCape",
     "MixinLevelStorageSource",
+    "MixinPlayerRenderer",
     "tickratechanger.MixinTickrateChangerAudioPitch",
     "tickratechanger.MixinTickrateChangerEnchantmentGlimm",
     "tickratechanger.MixinTickrateChangerWorldborder",
