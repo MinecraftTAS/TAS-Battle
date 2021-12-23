@@ -7,10 +7,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.io.FileUtils;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.pfannekuchen.tasbattle.mixin.accessor.SelectWorldScreenAccessor;
 import net.lingala.zip4j.ZipFile;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -37,8 +36,6 @@ public class TASChallengesScreen extends SelectWorldScreen {
 			try {
 				Thread.sleep(2000);
 				final File SAVES_DIR = new File(minecraft.gameDirectory, "tasbattle");
-				if (SAVES_DIR.exists())
-					FileUtils.deleteDirectory(SAVES_DIR);
 				SAVES_DIR.mkdir();
 				
 				Files.copy(new URL("https://data.mgnet.work/tasbattle/maps/maps.txt").openStream(), new File(minecraft.gameDirectory, "tasbattle_maps.txt").toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -54,7 +51,10 @@ public class TASChallengesScreen extends SelectWorldScreen {
 					_temp.delete();
 				}
 				isDownloading.set(false);
-				searchBox.setMaxLength(32);
+				
+				((SelectWorldScreenAccessor) this).getList().refreshList(() -> {
+					return "";
+				}, true);
 			} catch (Exception e) {
 				e.printStackTrace();
 				minecraft.stop();

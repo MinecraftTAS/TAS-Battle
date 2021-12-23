@@ -11,7 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 
 import de.jcm.discordgamesdk.Core;
 import de.jcm.discordgamesdk.CreateParams;
@@ -22,8 +25,10 @@ import de.pfannekuchen.tasbattle.util.DownloadNativeLibrary;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceLocation;
 
 public class TASBattle implements ModInitializer {
@@ -58,7 +63,15 @@ public class TASBattle implements ModInitializer {
 	public static long time = 0;
 	
 	@Override
-	public void onInitialize() { 	
+	public void onInitialize() {
+		try {
+			@SuppressWarnings("resource")
+			final File SAVES_DIR = new File(Minecraft.getInstance().gameDirectory, "tasbattle");
+			if (SAVES_DIR.exists())
+				FileUtils.deleteDirectory(SAVES_DIR);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation("tickratechanger", "data"), (player, handler, data, d) -> {
 			try {
 				onTickratePacket(data.readFloat());
@@ -79,6 +92,22 @@ public class TASBattle implements ModInitializer {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+			dispatcher.register(Commands.literal("tickrate").then(Commands.argument("ticks", FloatArgumentType.floatArg()).executes(c -> {
+				float tickrate = FloatArgumentType.getFloat(c, "ticks");
+				if (Minecraft.getInstance().isLocalServer()) {
+					try {
+						onTickratePacket(tickrate);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				return 1;
+			})).executes(c -> {
+				System.out.println("Enter a tickrate");
+				return 1;
+			}));
 		});
 	}
 	

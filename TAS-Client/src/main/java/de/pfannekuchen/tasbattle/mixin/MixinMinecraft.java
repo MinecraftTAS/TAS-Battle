@@ -20,6 +20,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.multiplayer.ServerData;
@@ -69,6 +70,12 @@ public class MixinMinecraft {
 		} else if (s instanceof CreateWorldScreen) {
 			// no.
 			ci.cancel();
+		} else if (s instanceof TitleScreen) {
+			try {
+				TASBattle.onTickratePacket(20.0f);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

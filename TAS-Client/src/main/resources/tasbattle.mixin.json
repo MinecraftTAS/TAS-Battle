@@ -14,8 +14,10 @@
     "tickratechanger.MixinTickrateChangerAudioPitch",
     "tickratechanger.MixinTickrateChangerEnchantmentGlimm",
     "tickratechanger.MixinTickrateChangerWorldborder",
+    "tickratechanger.MixinLocalServer",
     "accessor.MinecraftAccessor",
-    "accessor.TimerAccessor"
+    "accessor.TimerAccessor",
+    "accessor.SelectWorldScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
