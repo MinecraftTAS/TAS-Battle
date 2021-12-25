@@ -670,8 +670,11 @@ public class Game {
 							alivePlayers.add(p);
 							/* Teleport the player */
 							while (true) {
-								int x = rng.nextInt(301) - 150;
-								int z = rng.nextInt(301) - 150;
+								double size = Math.min(200, p.getWorld().getWorldBorder().getSize());
+								int x = (int) ((rng.nextInt((int) size)-(size/2.0f)) + p.getWorld().getWorldBorder().getCenter().getBlockX());
+								int z = (int) ((rng.nextInt((int) size)-(size/2.0f)) + p.getWorld().getWorldBorder().getCenter().getBlockZ());
+//								int x = rng.nextInt(301) - 150;
+//								int z = rng.nextInt(301) - 150;
 								Block b = p.getWorld().getHighestBlockAt(x, z);
 								if (b != null && b.getType() != Material.WATER && b.getType() != Material.AIR && b.getY() > 1) {
 									p.setFallDistance(0.0f);
@@ -691,7 +694,7 @@ public class Game {
 								}
 							}.runTaskTimer(Juggernaut.instance(), (45*60*20)/tickrate, 2L);
 						}
-						int health = Bukkit.getOnlinePlayers().size()*15;
+						int health = Bukkit.getOnlinePlayers().size()*25;
 						juggernaut.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health*2);
 						juggernaut.setHealth(health*2);
 						Bukkit.broadcast(Component.text("\u00A7b\u00bb \u00A77The juggernaut is \u00A7a" + juggernaut.getName() + "\u00A77. The Juggernaut has \u00A7a" + health + "\u00A77 hearts."));
