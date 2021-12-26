@@ -21,6 +21,7 @@ import de.pfannekuchen.bedwars.data.Spawners;
 public class Bedwars extends JavaPlugin implements Listener {
 
 	public static World PRIMARYWORLD;
+	public static Bedwars plugin;
 	
 	/**
 	 * Ran when the server starts.
@@ -28,6 +29,7 @@ public class Bedwars extends JavaPlugin implements Listener {
 	 */
 	@Override
 	public void onEnable() {
+		plugin = this;
 		PRIMARYWORLD = Bukkit.getWorlds().get(0);
 		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getPluginManager().registerEvents(new Shop(), this);

@@ -18,22 +18,38 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import de.pfannekuchen.bedwars.Bedwars;
@@ -75,14 +91,191 @@ public class Shop implements Listener {
 			}
 		}
 	}
+
+	private ArrayList<Entity> explosive = new ArrayList<>();
+	private ArrayList<Entity> explosive2 = new ArrayList<>();
 	
 	/**
-	 * Disallow dropping the sword
+	 * Increase Velocity taken from TNT
+	 * @param e
+	 */
+	@EventHandler
+	public void onVelocity(PlayerVelocityEvent e) {
+		if (explosive.contains(e.getPlayer())) {
+			explosive.remove(e.getPlayer());
+			e.setVelocity(e.getVelocity().multiply(2.25));
+		} else if (explosive2.contains(e.getPlayer())) {
+			explosive2.remove(e.getPlayer());
+			e.setVelocity(e.getVelocity().multiply(2));
+		}
+	}
+	
+	/**
+	 * Increase Velocity taken from TNT
+	 * @param e
+	 */
+	@EventHandler
+	public void onTNTPrime(ExplosionPrimeEvent event) {
+		if (event.getEntityType() == EntityType.PRIMED_TNT) {
+			double radius = event.getRadius();
+			for (Entity entity : event.getEntity().getNearbyEntities(radius, radius, radius)) {
+				explosive.add(entity);
+			}
+		}
+	}
+	
+	/**
+	 * Fuse TNT after it has been placed
+	 */
+	@EventHandler
+	public void onTnt(BlockPlaceEvent e) { 
+		placedBlocks.add(e.getBlock().getLocation()); // NOTE: ALSO ADD TO PLACED BLOCKS
+		if (e.getBlock().getType() == Material.TNT) {
+			e.getBlock().setType(Material.AIR);
+			TNTPrimed tnt = Bedwars.PRIMARYWORLD.spawn(e.getBlock().getLocation().add(0.5, 0.5, 0.5), TNTPrimed.class);
+			tnt.setFuseTicks(50);
+		}
+	}
+	
+	private static ArrayList<Location> placedBlocks = new ArrayList<>();
+	
+	/**
+	 * Allow breaking of placed blocks only
+	 */
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e) {
+		if (placedBlocks.contains(e.getBlock().getLocation())) placedBlocks.remove(e.getBlock().getLocation());
+		else e.setCancelled(true);
+	}
+	
+	private static final List<Material> TNT_MATERIALS = new ArrayList<>() {{
+		add(Material.BLACK_WOOL);
+		add(Material.BLUE_WOOL);
+		add(Material.BROWN_WOOL);
+		add(Material.CYAN_WOOL);
+		add(Material.GRAY_WOOL);
+		add(Material.GREEN_WOOL);
+		add(Material.LIGHT_BLUE_WOOL);
+		add(Material.LIGHT_GRAY_WOOL);
+		add(Material.LIME_WOOL);
+		add(Material.MAGENTA_WOOL);
+		add(Material.ORANGE_WOOL);
+		add(Material.PINK_WOOL);
+		add(Material.PURPLE_WOOL);
+		add(Material.RED_WOOL);
+		add(Material.WHITE_WOOL);
+		add(Material.YELLOW_WOOL);
+		
+		add(Material.OAK_PLANKS);
+		add(Material.END_STONE);
+		add(Material.TERRACOTTA);
+		add(Material.LADDER);
+	}};
+	
+	private static final List<Material> FIREBALL_MATERIALS = new ArrayList<>() {{
+		add(Material.BLACK_WOOL);
+		add(Material.BLUE_WOOL);
+		add(Material.BROWN_WOOL);
+		add(Material.CYAN_WOOL);
+		add(Material.GRAY_WOOL);
+		add(Material.GREEN_WOOL);
+		add(Material.LIGHT_BLUE_WOOL);
+		add(Material.LIGHT_GRAY_WOOL);
+		add(Material.LIME_WOOL);
+		add(Material.MAGENTA_WOOL);
+		add(Material.ORANGE_WOOL);
+		add(Material.PINK_WOOL);
+		add(Material.PURPLE_WOOL);
+		add(Material.RED_WOOL);
+		add(Material.WHITE_WOOL);
+		add(Material.YELLOW_WOOL);
+		
+		add(Material.OAK_PLANKS);
+		add(Material.TERRACOTTA);
+		add(Material.LADDER);
+	}};
+	
+	/**
+	 * Lower damage from TNT
+	 * @param e
+	 */
+	@EventHandler
+	public void onTntDamage(EntityDamageEvent e) {
+		if (e.getCause() == DamageCause.ENTITY_EXPLOSION || e.getCause() == DamageCause.BLOCK_EXPLOSION) {
+			e.setDamage(Math.min(e.getDamage(), 4));
+		}
+	}
+	
+	/**
+	 * Allow blowing up of some blocks only
+	 * @param e
+	 */
+	@EventHandler
+	public void onTntExplode(EntityExplodeEvent e) {
+		if (e.getEntityType() == EntityType.PRIMED_TNT) {
+			new ArrayList<>(e.blockList()).forEach(c -> {
+				if (!placedBlocks.contains(c.getLocation()))
+					e.blockList().remove(c);
+				if (!TNT_MATERIALS.contains(c.getType()))
+					e.blockList().remove(c);
+			});
+		} else { 
+			new ArrayList<>(e.blockList()).forEach(c -> {
+				if (!placedBlocks.contains(c.getLocation()))
+					e.blockList().remove(c);
+				if (!FIREBALL_MATERIALS.contains(c.getType()))
+					e.blockList().remove(c);
+			});
+		}
+	}
+	
+	/**
+	 * Remove pickaxe/axe tiers on death
+	 * @param e
+	 */
+	@EventHandler
+	public void onDeath(PlayerDeathEvent e) {
+		Player p = e.getEntity();
+		if (pickaxeTier2.contains(p)) {
+			pickaxeTier2.remove(p);
+			pickaxeTier1.add(p);
+		} else if (pickaxeTier3.contains(p)) {
+			pickaxeTier3.remove(p);
+			pickaxeTier2.add(p);
+		} else if (pickaxeTier4.contains(p)) {
+			pickaxeTier4.remove(p);
+			pickaxeTier3.add(p);
+		}
+		
+		if (axeTier2.contains(p)) {
+			axeTier2.remove(p);
+			axeTier1.add(p);
+		} else if (axeTier3.contains(p)) {
+			axeTier3.remove(p);
+			axeTier2.add(p);
+		} else if (axeTier4.contains(p)) {
+			axeTier4.remove(p);
+			axeTier3.add(p);
+		}
+	}
+	
+	/**
+	 * Disallow dropping the sword, pickaxe, axe and shears
 	 * @param e
 	 */
 	@EventHandler
 	public void onItemDrop(PlayerDropItemEvent e) {
+		// switch me up
 		if (e.getItemDrop().getItemStack().getType() == Material.WOODEN_SWORD) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.WOODEN_PICKAXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.STONE_PICKAXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.IRON_PICKAXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.DIAMOND_PICKAXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.WOODEN_AXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.STONE_AXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.IRON_AXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.DIAMOND_AXE) e.setCancelled(true);
+		if (e.getItemDrop().getItemStack().getType() == Material.SHEARS) e.setCancelled(true);
 	}
 	
 	/**
@@ -157,6 +350,35 @@ public class Shop implements Listener {
 	}
 	
 	/**
+	 * Makes fireballs shoot
+	 * @param e
+	 */
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (e.getItem().getType().equals(Material.FIRE_CHARGE)) {
+				e.setCancelled(true);
+				if (e.getItem().getAmount() == 1)
+					e.getPlayer().getInventory().remove(e.getItem());
+				else 
+					e.getItem().add(-1);
+				Fireball f = e.getPlayer().launchProjectile(Fireball.class, e.getPlayer().getLocation().getDirection());
+				f.setIsIncendiary(false);
+				f.setInvulnerable(true);
+				f.setYield(f.getYield()*2);
+			}
+		}
+	}
+	
+	/**
+	 * Makes fireball explode with added momentum
+	 */
+	@EventHandler
+	public void onProjectileLand(ProjectileHitEvent e) {
+		if (e.getEntityType() == EntityType.FIREBALL) explosive2.addAll(e.getEntity().getNearbyEntities(12, 12, 12));
+	}
+	
+	/**
 	 * Pays an amount of a list of Items
 	 * @param p Player that buys
 	 * @param stacks Items to pay with
@@ -188,6 +410,15 @@ public class Shop implements Listener {
 	public static ArrayList<Player> chainmailArmor = new ArrayList<>();
 	public static ArrayList<Player> ironArmor = new ArrayList<>();
 	public static ArrayList<Player> diamondArmor = new ArrayList<>();
+	public static ArrayList<Player> pickaxeTier1 = new ArrayList<>();
+	public static ArrayList<Player> pickaxeTier2 = new ArrayList<>();
+	public static ArrayList<Player> pickaxeTier3 = new ArrayList<>();
+	public static ArrayList<Player> pickaxeTier4 = new ArrayList<>();
+	public static ArrayList<Player> axeTier1 = new ArrayList<>();
+	public static ArrayList<Player> axeTier2 = new ArrayList<>();
+	public static ArrayList<Player> axeTier3 = new ArrayList<>();
+	public static ArrayList<Player> axeTier4 = new ArrayList<>();
+	public static ArrayList<Player> shears = new ArrayList<>();
 	
 	/**
 	 * Obtains an Item Stack with modified lore, itemname and item if necessary
@@ -200,13 +431,47 @@ public class Shop implements Listener {
 		buying.lore(null);
 		String itemname = PlainTextComponentSerializer.plainText().serialize(buying.getItemMeta().displayName());
 		if (itemname.contains("Pickaxe")) {
-			buying.editMeta(e -> {
-				e.displayName(Component.text(itemname.split(" ")[0]));
-			});
+			p.getInventory().remove(Material.WOODEN_PICKAXE);
+			p.getInventory().remove(Material.STONE_PICKAXE);
+			p.getInventory().remove(Material.IRON_PICKAXE);
+			if (pickaxeTier1.contains(p)) {
+				pickaxeTier1.remove(p);
+				pickaxeTier2.add(p);
+			} else if (pickaxeTier2.contains(p)) {
+				pickaxeTier2.remove(p);
+				pickaxeTier3.add(p);
+			} else if (pickaxeTier3.contains(p)) {
+				pickaxeTier3.remove(p);
+				pickaxeTier4.add(p);
+			} else if (pickaxeTier4.contains(p)) {
+				// just in case
+			} else {
+				pickaxeTier1.add(p);
+			}
+			openItemShop(p);
+			return null;
 		} else if (itemname.contains("Axe")) {
-			buying.editMeta(e -> {
-				e.displayName(Component.text(itemname.split(" ")[0]));
-			});
+			p.getInventory().remove(Material.WOODEN_AXE);
+			p.getInventory().remove(Material.STONE_AXE);
+			p.getInventory().remove(Material.IRON_AXE);
+			if (axeTier1.contains(p)) {
+				axeTier1.remove(p);
+				axeTier2.add(p);
+			} else if (axeTier2.contains(p)) {
+				axeTier2.remove(p);
+				axeTier3.add(p);
+			} else if (axeTier3.contains(p)) {
+				axeTier3.remove(p);
+				axeTier4.add(p);
+			} else if (axeTier4.contains(p)) {
+				// just in case
+			} else {
+				axeTier1.add(p);
+			}
+			return null;
+		} else if (itemname.contains("Shears")) {
+			shears.add(p);
+			return null;
 		} else if (itemname.contains("Chainmail Armor")) {
 			if (chainmailArmor.contains(p)) chainmailArmor.remove(p);
 			if (ironArmor.contains(p)) ironArmor.remove(p);
@@ -227,6 +492,13 @@ public class Shop implements Listener {
 			return null;
 		} else if (itemname.contains("Sword")) {
 			p.getInventory().remove(Material.WOODEN_SWORD);
+		} else if (itemname.contains("Knockback")) {
+			buying.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
+		} else if (itemname.contains("Bow III")) {
+			buying.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
+			buying.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
+		} else if (itemname.contains("Bow II")) { // BOW III also contains BOW II
+			buying.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
 		}
 		return buying;
 	}
@@ -268,9 +540,10 @@ public class Shop implements Listener {
 	private static void checkArmorAndSword(@NotNull Collection<? extends Player> onlinePlayers) {
 		for (Player p : onlinePlayers) {
 			int swordCheck1 = p.getInventory().first(Material.WOODEN_SWORD);
+			int swordCheck1point5 = p.getInventory().first(Material.STONE_SWORD);
 			int swordCheck2 = p.getInventory().first(Material.IRON_SWORD);
 			int swordCheck3 = p.getInventory().first(Material.DIAMOND_SWORD);
-			if (swordCheck1 == -1 && swordCheck2 == -1 && swordCheck3 == -1) {
+			if (swordCheck1 == -1 && swordCheck1point5 == -1 && swordCheck2 == -1 && swordCheck3 == -1) {
 				p.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
 			}
 			if (swordCheck1 != -1 && p.getInventory().all(Material.WOODEN_SWORD).size() > 1) {
@@ -281,6 +554,33 @@ public class Shop implements Listener {
 				p.getInventory().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
 				p.getInventory().setBoots(new ItemStack(Material.LEATHER_BOOTS));
 				continue;
+			}
+			if (pickaxeTier1.contains(p) && p.getInventory().first(Material.WOODEN_PICKAXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.WOODEN_PICKAXE));
+			}
+			if (pickaxeTier2.contains(p) && p.getInventory().first(Material.STONE_PICKAXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.STONE_PICKAXE));
+			}
+			if (pickaxeTier3.contains(p) && p.getInventory().first(Material.IRON_PICKAXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.IRON_PICKAXE));
+			}
+			if (pickaxeTier4.contains(p) && p.getInventory().first(Material.DIAMOND_PICKAXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.DIAMOND_PICKAXE));
+			}
+			if (axeTier1.contains(p) && p.getInventory().first(Material.WOODEN_AXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.WOODEN_AXE));
+			}
+			if (axeTier2.contains(p) && p.getInventory().first(Material.STONE_AXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.STONE_AXE));
+			}
+			if (axeTier3.contains(p) && p.getInventory().first(Material.IRON_AXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.IRON_AXE));
+			}
+			if (axeTier4.contains(p) && p.getInventory().first(Material.DIAMOND_AXE) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.DIAMOND_AXE));
+			}
+			if (shears.contains(p) && p.getInventory().first(Material.SHEARS) == -1) {
+				p.getInventory().addItem(new ItemStack(Material.SHEARS));
 			}
 			if (armor.getType() != Material.CHAINMAIL_LEGGINGS && chainmailArmor.contains(p)) {
 				p.getInventory().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
@@ -318,7 +618,7 @@ public class Shop implements Listener {
 	 * Opens an Upgrade Shop for a player
 	 * @param player Player to open for
 	 */
-	private void openUpgradeShop(Player player) {
+	private static void openUpgradeShop(Player player) {
 		
 	}
 
@@ -326,7 +626,7 @@ public class Shop implements Listener {
 	 * Opens an Item Shop for a player
 	 * @param player Player to open for
 	 */
-	private void openItemShop(Player player) {
+	private static void openItemShop(Player player) {
 		Inventory inventory = Bukkit.createInventory(null, 54, Component.text("\u00A78Item Shop"));
 		inventory.addItem(getItemStack(Material.NETHER_STAR, "Quick Buy", 1));
 		inventory.addItem(getItemStack(Material.TERRACOTTA, "Blocks", 1));
@@ -346,7 +646,7 @@ public class Shop implements Listener {
 	 * @param inventory
 	 * @param i
 	 */
-	private void selectItemPage(Player p, Inventory inventory, int i) {
+	private static void selectItemPage(Player p, Inventory inventory, int i) {
 		for (int j = 0; j < 9; j++) inventory.setItem(j + 9, getItemStack(i == j ? Material.GREEN_STAINED_GLASS_PANE : Material.BLACK_STAINED_GLASS_PANE, "", 1));
 		for (int j = 0; j < (4*9); j++) inventory.setItem(j+18, null);
 		switch (i) {
@@ -388,8 +688,28 @@ public class Shop implements Listener {
 				return;
 			case 4:
 				inventory.setItem(18+1, getItemStack(Material.SHEARS, "Shears", 1, "§7Cost: §f20 Iron"));
-				inventory.setItem(18+2, getItemStack(Material.WOODEN_PICKAXE, "Pickaxe I", 1, "§7Cost: §f10 Iron", "§7Tier: §6I"));
-				inventory.setItem(18+3, getItemStack(Material.WOODEN_AXE, "Axe I", 1, "§7Cost: §f10 Iron", "§7Tier: §6I"));
+				if (pickaxeTier1.contains(p)) {
+					inventory.setItem(18+2, getItemStack(Material.STONE_PICKAXE, "Pickaxe I", 1, "§7Cost: §f10 Iron", "§7Tier: §6I"));
+				} else if (pickaxeTier2.contains(p)) {
+					inventory.setItem(18+2, getItemStack(Material.IRON_PICKAXE, "Pickaxe I", 1, "§7Cost: §63 Gold", "§7Tier: §6I"));
+				} else if (pickaxeTier3.contains(p)) {
+					inventory.setItem(18+2, getItemStack(Material.DIAMOND_PICKAXE, "Pickaxe I", 1, "§7Cost: §66 Gold", "§7Tier: §6I"));
+				} else if (pickaxeTier4.contains(p)) {
+					inventory.setItem(18+2, getItemStack(Material.DIAMOND_PICKAXE, "Pickaxe I", 1, "§7Cost: §66 Gold", "§7Tier: §6I"));
+				} else {
+					inventory.setItem(18+2, getItemStack(Material.WOODEN_PICKAXE, "Pickaxe I", 1, "§7Cost: §f10 Iron", "§7Tier: §6I"));
+				}
+				if (axeTier1.contains(p)) {
+					inventory.setItem(18+3, getItemStack(Material.STONE_AXE, "Axe II", 1, "§7Cost: §f10 Iron", "§7Tier: §6II"));
+				} else if (axeTier2.contains(p)) {
+					inventory.setItem(18+3, getItemStack(Material.IRON_AXE, "Axe III", 1, "§7Cost: §63 Gold", "§7Tier: §6III"));
+				} else if (axeTier3.contains(p)) {
+					inventory.setItem(18+3, getItemStack(Material.DIAMOND_AXE, "Axe IV", 1, "§7Cost: §66 Gold", "§7Tier: §6IV"));
+				} else if (axeTier4.contains(p)) {
+					inventory.setItem(18+3, getItemStack(Material.DIAMOND_AXE, "Axe IV", 1, "§7Cost: §66 Gold", "§7Tier: §6IV"));
+				} else {
+					inventory.setItem(18+3, getItemStack(Material.WOODEN_AXE, "Axe I", 1, "§7Cost: §f10 Iron", "§7Tier: §6I"));
+				}
 				return;
 			case 5:
 				inventory.setItem(18+1, getItemStack(Material.ARROW, "Arrow", 8, "§7Cost: §62 Gold"));
@@ -419,7 +739,7 @@ public class Shop implements Listener {
 	 * @param amount Item Stack count
 	 * @return Item Stack
 	 */
-	private ItemStack getItemStack(PotionEffect potion, Color color, String name, int amount, String... lore) {
+	private static ItemStack getItemStack(PotionEffect potion, Color color, String name, int amount, String... lore) {
 		ItemStack item = new ItemStack(Material.POTION, amount);
 		PotionMeta meta = ((PotionMeta) item.getItemMeta());
 		meta.addCustomEffect(potion, true);
@@ -443,7 +763,7 @@ public class Shop implements Listener {
 	 * @param amount Item Stack count
 	 * @return Item Stack
 	 */
-	private ItemStack getItemStack(Material mat, String name, int amount, String... lore) {
+	private static ItemStack getItemStack(Material mat, String name, int amount, String... lore) {
 		ItemStack item = new ItemStack(mat, amount);
 		item.editMeta(e -> {
 			e.displayName(Component.text("\u00A7f" + name.replace('§', '\u00A7')));
