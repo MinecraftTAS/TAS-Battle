@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
@@ -72,6 +74,15 @@ public class Shop implements Listener {
 				buy(e.getCurrentItem(), (Player) e.getWhoClicked());
 			}
 		}
+	}
+	
+	/**
+	 * Disallow dropping the sword
+	 * @param e
+	 */
+	@EventHandler
+	public void onItemDrop(PlayerDropItemEvent e) {
+		if (e.getItemDrop().getItemStack().getType() == Material.WOODEN_SWORD) e.setCancelled(true);
 	}
 	
 	/**
@@ -251,7 +262,8 @@ public class Shop implements Listener {
 	}
 	
 	/**
-	 * @param onlinePlayers
+	 * Checks for a full set of armor and a sword in the player inventory at all times
+	 * @param onlinePlayers All players connected to the server
 	 */
 	private static void checkArmorAndSword(@NotNull Collection<? extends Player> onlinePlayers) {
 		for (Player p : onlinePlayers) {
@@ -260,6 +272,9 @@ public class Shop implements Listener {
 			int swordCheck3 = p.getInventory().first(Material.DIAMOND_SWORD);
 			if (swordCheck1 == -1 && swordCheck2 == -1 && swordCheck3 == -1) {
 				p.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
+			}
+			if (swordCheck1 != -1 && p.getInventory().all(Material.WOODEN_SWORD).size() > 1) {
+				p.getInventory().clear(swordCheck1);
 			}
 			ItemStack armor = p.getInventory().getLeggings();
 			if (armor == null) {
@@ -312,7 +327,7 @@ public class Shop implements Listener {
 	 * @param player Player to open for
 	 */
 	private void openItemShop(Player player) {
-		Inventory inventory = Bukkit.createInventory(null, 54, Component.text("\u00A7bItem Shop"));
+		Inventory inventory = Bukkit.createInventory(null, 54, Component.text("\u00A78Item Shop"));
 		inventory.addItem(getItemStack(Material.NETHER_STAR, "Quick Buy", 1));
 		inventory.addItem(getItemStack(Material.TERRACOTTA, "Blocks", 1));
 		inventory.addItem(getItemStack(Material.GOLDEN_SWORD, "Weapons", 1));
@@ -486,7 +501,8 @@ public class Shop implements Listener {
 	 */
 	private static Villager summonItemShop(Location loc) {
 		Villager villager = summonVillager(loc);
-		villager.customName(Component.text("\u00A7b\u00A7lItem Shop"));
+		villager.customName(Component.text("\u00A7e\u00A7lRIGHT CLICK"));
+		getArmorStand(loc.clone().add(0.0, 0.3, 0.0), "\u00A7bITEM SHOP");
 		return villager;
 	}
 	
@@ -497,7 +513,9 @@ public class Shop implements Listener {
 	 */
 	private static Villager summonUpgradeShop(Location loc) {
 		Villager villager = summonVillager(loc);
-		villager.customName(Component.text("\u00A7b\u00A7lTeam Upgrades"));
+		villager.customName(Component.text("\u00A7e\u00A7lRIGHT CLICK"));
+		getArmorStand(loc.clone().add(0.0, 0.6, 0.0), "\u00A7bSOLO");
+		getArmorStand(loc.clone().add(0.0, 0.3, 0.0), "\u00A7bUPGRADES");
 		return villager;
 	}
 
@@ -514,6 +532,21 @@ public class Shop implements Listener {
 		return villager;
 	}
 
+	/**
+	 * Obtains an armor stand
+	 * @param loc Location of the armor stand
+	 * @param customName Name of the Armor Stand
+	 */
+	private static void getArmorStand(Location loc, String customName) {
+		ArmorStand stand = (ArmorStand) Bedwars.PRIMARYWORLD.spawnEntity(loc.clone().add(.5, 0, .5), EntityType.ARMOR_STAND);
+		stand.setInvisible(true);
+		stand.setInvulnerable(true);
+		stand.setGravity(false);
+		stand.setAI(false);
+		stand.setCustomNameVisible(true);
+		stand.customName(Component.text(customName));
+	}
+	
 	/**
 	 * @return the upgradeShopLocations
 	 */
