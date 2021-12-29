@@ -9,3 +9,17 @@ repositories {
 dependencies {
     compileOnly 'io.github.waterfallmc:waterfall-api:1.17-R0.1-SNAPSHOT'
 }
+
+task upload(type: Exec) {
+	workingDir "${buildDir}/libs"
+	commandLine "cmd.exe /k echo put FallbackServer.jar | sftp tasbattle@mgnet.work:proxy/plugins".split(" ")
+}
+
+task restartServer(type: Exec) {
+	workingDir "${buildDir}/libs"
+	commandLine "ssh tasbattle@mgnet.work screen -S proxy -X stuff ^C".split(" ")
+}
+
+upload.dependsOn = ['build']
+upload.finalizedBy(restartServer)
+upload.group = 'tasbattle'
