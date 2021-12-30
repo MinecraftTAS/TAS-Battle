@@ -8,7 +8,6 @@
   "client": [
     "MixinMinecraft",
     "MixinTitleScreen",
-    "MixinLaunchArgs",
     "MixinCustomCape",
     "MixinLevelStorageSource",
     "MixinPlayerRenderer",
@@ -21,8 +20,7 @@
     "tickratechanger.MixinLocalServer",
     "accessor.MinecraftAccessor",
     "accessor.TimerAccessor",
-    "accessor.SelectWorldScreenAccessor",
-    "accessor.PlayerAccessor"
+    "accessor.SelectWorldScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
