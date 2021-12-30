@@ -8,16 +8,21 @@
   "client": [
     "MixinMinecraft",
     "MixinTitleScreen",
+    "MixinLaunchArgs",
     "MixinCustomCape",
     "MixinLevelStorageSource",
     "MixinPlayerRenderer",
+    "MixinMouseHandler",
+    "MixinPlayerMenu",
+    "MixinCamera",
     "tickratechanger.MixinTickrateChangerAudioPitch",
     "tickratechanger.MixinTickrateChangerEnchantmentGlimm",
     "tickratechanger.MixinTickrateChangerWorldborder",
     "tickratechanger.MixinLocalServer",
     "accessor.MinecraftAccessor",
     "accessor.TimerAccessor",
-    "accessor.SelectWorldScreenAccessor"
+    "accessor.SelectWorldScreenAccessor",
+    "accessor.PlayerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

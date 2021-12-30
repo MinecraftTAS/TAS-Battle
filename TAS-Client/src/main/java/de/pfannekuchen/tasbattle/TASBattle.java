@@ -51,6 +51,7 @@ public class TASBattle implements ModInitializer {
 		}
 	}
 	
+	public static double scroll = 7;
 	public static HashMap<UUID, String> tags = new HashMap<>();
 	public static final ResourceLocation CUSTOM_EDITION_RESOURCE_LOCATION = new ResourceLocation("tasbattle", "custom_edition.png");
 	public static List<TASServer> servers = new ArrayList<>();
