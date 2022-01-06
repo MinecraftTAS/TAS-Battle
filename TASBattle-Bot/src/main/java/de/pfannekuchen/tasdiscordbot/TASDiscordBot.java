@@ -4,7 +4,10 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.security.auth.login.LoginException;
 
@@ -32,6 +35,8 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 	private static final long ID = 922095551493836840L;
 	private static final long CID = 922094866341707806L;
 	private static ArrayList<Long> availableUsers = new ArrayList<>();
+	public static HashMap<String, String> link = new HashMap<>();
+	public static HashMap<String, String> connected = new HashMap<>();
 	
 	@Override
 	public void onSlashCommand(SlashCommandEvent event) {
@@ -56,6 +61,24 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 				if (p.isConnected()) users += "\n" + p.getName();
 			}
 			event.reply("Currently " + count + " player(s) are on the TAS Battle server" + (count == 0 ? "" : (":" + users))).complete();
+		} else if (event.getCommandString().startsWith("/link")) {
+			Random r = new Random();
+			String random = "";
+			for (int i = 0; i < 5; i++) {
+				random += (char) (r.nextInt(24) + 'A');
+			}
+			final String outrandom = random;
+			event.reply("To link your discord account to minecraft, type '" + outrandom + "' into the minecraft chat. This will expire in 60 seconds").setEphemeral(true).complete();
+			link.put(outrandom, event.getUser().getAsTag());
+			new Thread(() -> {
+				try {
+					Thread.sleep(60000);
+					if (link.containsValue(event.getUser().getAsTag()))
+						link.remove(outrandom);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}).start();
 		}
 		super.onSlashCommand(event);
 	}
@@ -83,10 +106,17 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 			}
 			if (server != null) {
 				String name = msg.getMember().getEffectiveName();
+				String tag = msg.getMember().getUser().getAsTag();
 				String content = msg.getContentDisplay();
 				ProxyServer.getInstance().getPlayers().forEach(p -> {
 					if (p.getServer().getInfo().getName().equals(server)) {
-						p.sendMessage(new TextComponent("<" + name + " #" + server + "> " + content));
+						for (Entry<String, String> entry : connected.entrySet()) {
+							if (entry.getValue().equals(tag)) {
+								p.sendMessage(new TextComponent("<" + entry.getKey() + "> " + content));
+								return;
+							}
+						}
+						p.sendMessage(new TextComponent("<" + name + " not-linked> " + content));
 					}
 				});
 			}
@@ -118,6 +148,7 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 			CommandListUpdateAction updater = g.updateCommands();
 			updater.addCommands(new CommandData("play", "Show other players that you are ready to play!"));
 			updater.addCommands(new CommandData("online", "Show all players that are online on the server"));
+			updater.addCommands(new CommandData("link", "Link your Discord account to your Minecraft Account"));
 			updater.queue();
 		}
 		recreateMessage();

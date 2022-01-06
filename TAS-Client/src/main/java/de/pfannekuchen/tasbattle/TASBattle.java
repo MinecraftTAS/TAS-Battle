@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +15,8 @@ import org.apache.commons.io.FileUtils;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 
-import de.jcm.discordgamesdk.Core;
-import de.jcm.discordgamesdk.CreateParams;
-import de.jcm.discordgamesdk.activity.Activity;
 import de.pfannekuchen.tasbattle.mixin.accessor.MinecraftAccessor;
 import de.pfannekuchen.tasbattle.mixin.accessor.TimerAccessor;
-import de.pfannekuchen.tasbattle.util.DownloadNativeLibrary;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -57,7 +52,6 @@ public class TASBattle implements ModInitializer {
 	public static List<TASServer> servers = new ArrayList<>();
 	public static float tickrate = 20f;
 	public static HashMap<UUID, ResourceLocation> capes = new HashMap<>();
-	public static Core core;
 	public static String gamemode = "";
 	public static int max = 0;
 	public static int count = 0;
@@ -86,7 +80,6 @@ public class TASBattle implements ModInitializer {
 			count = data.readInt();
 			max = data.readInt();
 			time = data.readLong();
-			onUpdateActivity();
 		});
 		ClientPlayConnectionEvents.DISCONNECT.register((a, b) -> {
 			try {
@@ -113,29 +106,6 @@ public class TASBattle implements ModInitializer {
 		});
 	}
 	
-	public static void onUpdateActivity() {
-		try {
-			Activity activity = new Activity();
-			if (gamemode.isEmpty()) {
-				activity.setState("Main Menu");
-				activity.setDetails(" ");
-			} else {
-				activity.setState("Playing " + gamemode);
-				activity.setDetails("   ");
-				activity.timestamps().setStart(Instant.ofEpochMilli(time));
-				activity.party().setID("hello");
-				activity.party().size().setCurrentSize(count);
-				activity.party().size().setMaxSize(max);
-			}
-			activity.assets().setLargeImage("tasbattle-potion");
-			activity.assets().setSmallImage("tbbg");
-			core.activityManager().updateActivity(activity);
-		} catch (Exception e) {
-			System.err.println("I swear, if anyone reads this message, then I have messed up");
-			e.printStackTrace();
-		}
- 	}
-	
 	public static void onTickratePacket(float tickrate) throws Exception {
 		((TimerAccessor) ((MinecraftAccessor) Minecraft.getInstance()).getTimer()).setMsPerTick(1000F / tickrate);
 		TASBattle.tickrate = tickrate;
@@ -143,45 +113,7 @@ public class TASBattle implements ModInitializer {
 	
 	public static void onGameInitialize() {
 		try {
-			File discordLibrary = DownloadNativeLibrary.downloadDiscordLibrary();
-			if(discordLibrary == null) {
-				System.err.println("Error downloading Discord SDK.");
-			}
-			Core.init(discordLibrary);
-			CreateParams params = new CreateParams();
-			params.setClientID(819318149920981033L);
-			params.setFlags(CreateParams.getDefaultFlags());
-			core = new Core(params);
-			Activity activity = new Activity();
-			activity.setState("Main Menu");
-			activity.assets().setLargeImage("tasbattle-potion");
-			activity.assets().setSmallImage("tbbg");
-			activity.setDetails("   ");
-			core.activityManager().updateActivity(activity);
-			new Thread(() -> {
-				int i = 0;
-				while (true) {
-					try {
-						core.runCallbacks();
-						Thread.sleep(16);
-						i++;
-						if (i == 1200) {
-							i = 0;
-							onUpdateActivity();
-						}
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
-			}).start();
-		} catch (Exception e) {
-			System.err.println("I swear, if anyone reads this message, then I have messed up");
-			e.printStackTrace();
-		}
-		try {
 			Minecraft.getInstance().getTextureManager().register(CUSTOM_EDITION_RESOURCE_LOCATION, new DynamicTexture(NativeImage.read(TASBattle.class.getResourceAsStream("edition.png"))));
-			/* Discord Rich Presence, lmao */
-			
 			/* Read the Supercool TAS Battle Config File from the server! */
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("https://data.mgnet.work/tasbattle/servers.dat").openStream()));
 			int comments = Integer.parseInt(reader.readLine().trim());
