@@ -112,11 +112,11 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 					if (p.getServer().getInfo().getName().equals(server)) {
 						for (Entry<String, String> entry : connected.entrySet()) {
 							if (entry.getValue().equals(tag)) {
-								p.sendMessage(new TextComponent("<" + entry.getKey() + "> " + content));
+								p.sendMessage(new TextComponent("\u00A7f<" + entry.getKey() + "\u00A7f> " + content));
 								return;
 							}
 						}
-						p.sendMessage(new TextComponent("<" + name + " not-linked> " + content));
+						p.sendMessage(new TextComponent("\u00A7f<" + name + " not-linked\u00A7f> " + content));
 					}
 				});
 			}
