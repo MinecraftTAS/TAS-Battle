@@ -213,30 +213,6 @@ public class PlayerJoinListener implements Listener {
             }
         }
 
-        if(p.hasPermission("advancedlobby.admin")) {
-            if (AdvancedLobby.updateAvailable) {
-                TextComponent message = new TextComponent("§8┃ §bAdvancedLobby §8┃ §7Download now §8▶ ");
-                TextComponent extra = new TextComponent("§8*§aclick§8*");
-
-                extra.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§8» §7Redirect to §bhttps://spigotmc.org/")));
-                extra.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://spigotmc.org/resources/35799/"));
-
-                message.addExtra(extra);
-
-
-                p.sendMessage("");
-                p.sendMessage("§8┃ §bAdvancedLobby §8┃ §7A §anew update §7for §bAdvancedLobby §7was found§8.");
-                p.spigot().sendMessage(message);
-                p.sendMessage("");
-            }
-            if(!AdvancedLobby.errors.isEmpty()) {
-                p.sendMessage("");
-                p.sendMessage("§8┃ §4AdvancedLobby §8┃ §c" + AdvancedLobby.errors.size() + " errors §7were found.");
-                p.sendMessage("§8┃ §4AdvancedLobby §8┃ §7You can see them by typing §8/§fal errors");
-                p.sendMessage("");
-            }
-        }
-
 
     }
 
