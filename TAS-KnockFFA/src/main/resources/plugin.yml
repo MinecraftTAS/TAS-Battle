@@ -1,0 +1,14 @@
+# Plugin Info
+name: KnockFFA-Plugin
+version: 1.0.0-SNAPSHOT
+description: Adds Knock FFA to a Bungeecord Server
+author: Pancake(MCPfannkuchenYT)
+
+# Code Info
+main: de.pfannekuchen.knockffa.KnockFFA
+load: POSTWORLD
+api-version: 1.17
+
+# Additional Stuff
+website: mgnet.work
+prefix: KnockFFA
