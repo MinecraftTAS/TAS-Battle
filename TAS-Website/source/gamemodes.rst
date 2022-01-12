@@ -8,9 +8,9 @@ Skywars
 --------
 Skywars is a gamemode where players fight on islands. Players can select their start-kits and also find more loot in chests around the islands.
 
-Bedwars
+KnockFFA
 --------
-Bedwars does not exist yet :(
+KnockFFA is a gamemode where you stand on a small strip of land on a floating island and have to punch off your opponents.
 
 FFA
 --------
