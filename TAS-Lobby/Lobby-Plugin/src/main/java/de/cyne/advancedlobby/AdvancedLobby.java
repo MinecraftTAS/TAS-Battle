@@ -63,7 +63,7 @@ public class AdvancedLobby extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
-
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "tickratechanger:data");
         this.createFiles();
         this.loadFiles();
 

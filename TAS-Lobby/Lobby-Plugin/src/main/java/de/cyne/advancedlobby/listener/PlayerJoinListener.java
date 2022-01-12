@@ -1,5 +1,7 @@
 package de.cyne.advancedlobby.listener;
 
+import java.nio.ByteBuffer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -27,7 +29,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-
+		p.sendPluginMessage(AdvancedLobby.getInstance(), "tickratechanger:data", ByteBuffer.allocate(4).putFloat(20.0f).array());
         e.setJoinMessage(Locale.JOIN_MESSAGE.getMessage(p).replace("%player%", AdvancedLobby.getName(p)));
 
         double health = AdvancedLobby.cfg.getDouble("player_join.health");
