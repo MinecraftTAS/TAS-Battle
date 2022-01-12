@@ -42,13 +42,16 @@ public class Main extends Plugin implements Listener {
 				String ch = null;
 				switch (server) {
 				case "ffa":
-					ch = 
+					ch 
 					break;
 				case "skywars":
-					ch = 
+					ch 
 					break;
 				case "juggernaut":
-					ch = 
+					ch 
+					break;
+				case "knockffa":
+					ch 
 					break;
 				default: 
 					break;
