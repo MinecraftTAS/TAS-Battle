@@ -29,6 +29,9 @@ public class PlayerInteractListener implements Listener {
         Player p = e.getPlayer();
         ItemStack item = p.getInventory().getItemInMainHand();
 
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK)
+        	e.setCancelled(true);
+        
         if (!AdvancedLobby.multiWorld_mode | AdvancedLobby.lobbyWorlds.contains(p.getWorld())) {
             if (e.getAction() == Action.PHYSICAL) {
                 if (AdvancedLobby.cfg.getBoolean("disable_physical_player_interaction")) {
