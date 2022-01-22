@@ -93,6 +93,8 @@ public class Game {
 	 * @return Whether the event should be cancalled or not
 	 */
 	public static boolean shouldAllowInteraction(Entity entity) {
+		if (Game.isRunning && !alivePlayers.contains(entity))
+			return true;
 		return !entity.isOp() && !Game.isRunning;
 	}
 

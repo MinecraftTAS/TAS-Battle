@@ -85,9 +85,11 @@ public class Game {
 	/**
 	 * Whether Interactions such as block breaking, damage and interactions should be cancelled
 	 * @param entity Player to interact
-	 * @return Whether the event should be cancalled or not
+	 * @return Whether the event should be cancelled or not
 	 */
 	public static boolean shouldAllowInteraction(Entity entity) {
+		if (Game.isRunning && !alivePlayers.contains(entity))
+			return true;
 		return !entity.isOp() && !Game.isRunning;
 	}
 
