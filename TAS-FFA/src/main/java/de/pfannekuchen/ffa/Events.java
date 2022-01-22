@@ -1,11 +1,16 @@
 package de.pfannekuchen.ffa;
 
+import java.util.ArrayList;
+
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,6 +45,19 @@ public class Events implements Listener {
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
 		e.joinMessage(null);
 		Game.onJoin(e.getPlayer());
+	}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void onInteractEvent4(PlayerInteractEvent e) throws Exception { 
+		if (e.getClickedBlock() != null)
+			if (e.getClickedBlock().getType() == Material.CHEST)
+				e.setCancelled(true);
+	}
+	@EventHandler
+	public void onTntExplode(EntityExplodeEvent e) {
+		new ArrayList<>(e.blockList()).forEach(c -> {
+			if (c.getType() == Material.CHEST || c.getType() == Material.TRAPPED_CHEST)
+				e.blockList().remove(c);
+		});
 	}
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent e) {

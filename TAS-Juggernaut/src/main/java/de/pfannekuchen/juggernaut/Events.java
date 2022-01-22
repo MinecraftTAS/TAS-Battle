@@ -1,12 +1,17 @@
 package de.pfannekuchen.juggernaut;
 
+import java.util.ArrayList;
+
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -43,6 +48,19 @@ public class Events implements Listener {
 		if (e.getRegainReason() == RegainReason.SATIATED || e.getRegainReason() == RegainReason.EATING || e.getRegainReason() == RegainReason.MAGIC_REGEN && e.getEntityType() == EntityType.PLAYER && Game.juggernaut != null) {
 			if (e.getEntity().getName().equals(Game.juggernaut.getName())) e.setCancelled(true);
 		}
+	}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void onInteractEvent4(PlayerInteractEvent e) throws Exception { 
+		if (e.getClickedBlock() != null)
+			if (e.getClickedBlock().getType() == Material.CHEST)
+				e.setCancelled(true);
+	}
+	@EventHandler
+	public void onTntExplode(EntityExplodeEvent e) {
+		new ArrayList<>(e.blockList()).forEach(c -> {
+			if (c.getType() == Material.CHEST || c.getType() == Material.TRAPPED_CHEST)
+				e.blockList().remove(c);
+		});
 	}
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
