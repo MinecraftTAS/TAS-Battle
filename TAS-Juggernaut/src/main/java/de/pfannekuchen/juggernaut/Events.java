@@ -49,7 +49,7 @@ public class Events implements Listener {
 			if (e.getEntity().getName().equals(Game.juggernaut.getName())) e.setCancelled(true);
 		}
 	}
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInteractEvent4(PlayerInteractEvent e) throws Exception { 
 		if (e.getClickedBlock() != null)
 			if (e.getClickedBlock().getType() == Material.CHEST)

@@ -88,7 +88,7 @@ public class Game {
 	 * @return Whether the event should be cancelled or not
 	 */
 	public static boolean shouldAllowInteraction(Entity entity) {
-		if (Game.isRunning && !alivePlayers.contains(entity))
+		if (entity instanceof Player && Game.isRunning && !alivePlayers.contains((Player) entity))
 			return true;
 		return !entity.isOp() && !Game.isRunning;
 	}

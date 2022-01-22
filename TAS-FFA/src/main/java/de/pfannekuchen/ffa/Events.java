@@ -46,7 +46,7 @@ public class Events implements Listener {
 		e.joinMessage(null);
 		Game.onJoin(e.getPlayer());
 	}
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInteractEvent4(PlayerInteractEvent e) throws Exception { 
 		if (e.getClickedBlock() != null)
 			if (e.getClickedBlock().getType() == Material.CHEST)
