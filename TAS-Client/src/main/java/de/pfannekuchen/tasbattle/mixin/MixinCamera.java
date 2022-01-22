@@ -28,11 +28,15 @@ public abstract class MixinCamera {
     @Shadow private float eyeHeightOld;
     
     @Unique private float localYRot;
+    @Unique private boolean isReentry;
     
 	@Inject(method = "setup", cancellable = true, at = @At("HEAD"))
     public void setup(BlockGetter blockGetter, Entity __unused, boolean bl, boolean bl2, float f1, CallbackInfo ci) {
 		if (__unused != Minecraft.getInstance().player && Minecraft.getInstance().player.isSpectator()) ci.cancel();
-		else return;
+		else {
+			TASBattle.scroll = 7;
+			return;
+		}
 		this.initialized = true;
 		this.level = blockGetter;
 		this.detached = bl;
