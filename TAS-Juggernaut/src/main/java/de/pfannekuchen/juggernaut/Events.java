@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -26,6 +27,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -47,6 +50,22 @@ public class Events implements Listener {
 	@EventHandler public void onRegenerateEvent(EntityRegainHealthEvent e) { 
 		if (e.getRegainReason() == RegainReason.SATIATED || e.getRegainReason() == RegainReason.EATING || e.getRegainReason() == RegainReason.MAGIC_REGEN && e.getEntityType() == EntityType.PLAYER && Game.juggernaut != null) {
 			if (e.getEntity().getName().equals(Game.juggernaut.getName())) e.setCancelled(true);
+		}
+	}
+	@EventHandler 
+	public void onShieldDisable(EntityDamageByEntityEvent e) { 
+		if (e.getDamager() == null) return;
+		if (e.getEntity() == null) return;
+		try {
+			Material m = ((Player) e.getDamager()).getInventory().getItemInMainHand().getType();
+			if (e.getEntity().getType() != EntityType.PLAYER || e.getDamager().getType() != EntityType.PLAYER) return;
+			if (((Player) e.getEntity()).getInventory().getItemInOffHand().getType() == Material.SHIELD)
+				if (m == Material.DIAMOND_AXE || m == Material.GOLDEN_AXE || m == Material.IRON_AXE || m == Material.WOODEN_AXE || m == Material.STONE_AXE) {
+					if (((Player) e.getEntity()).getCooldown(Material.SHIELD) == 0 && ((Player) e.getEntity()).isBlocking()) {
+						e.getDamager().playSound(Sound.sound(org.bukkit.Sound.ITEM_SHIELD_BREAK, Source.MASTER, 1.0f, 1.0f));
+					}
+				}
+		} catch (Exception e1) {
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)

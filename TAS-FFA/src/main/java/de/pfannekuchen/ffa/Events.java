@@ -3,12 +3,14 @@ package de.pfannekuchen.ffa;
 import java.util.ArrayList;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -23,6 +25,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -45,6 +49,22 @@ public class Events implements Listener {
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
 		e.joinMessage(null);
 		Game.onJoin(e.getPlayer());
+	}
+	@EventHandler 
+	public void onShieldDisable(EntityDamageByEntityEvent e) { 
+		if (e.getDamager() == null) return;
+		if (e.getEntity() == null) return;
+		try {
+			Material m = ((Player) e.getDamager()	).getInventory().getItemInMainHand().getType();
+			if (e.getEntity().getType() != EntityType.PLAYER || e.getDamager().getType() != EntityType.PLAYER) return;
+			if (((Player) e.getEntity()).getInventory().getItemInOffHand().getType() == Material.SHIELD)
+				if (m == Material.DIAMOND_AXE || m == Material.GOLDEN_AXE || m == Material.IRON_AXE || m == Material.WOODEN_AXE || m == Material.STONE_AXE) {
+					if (((Player) e.getEntity()).getCooldown(Material.SHIELD) == 0 && ((Player) e.getEntity()).isBlocking()) {
+						e.getDamager().playSound(Sound.sound(org.bukkit.Sound.ITEM_SHIELD_BREAK, Source.MASTER, 1.0f, 1.0f));
+					}
+				}
+		} catch (Exception e1) {
+		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInteractEvent4(PlayerInteractEvent e) throws Exception { 
