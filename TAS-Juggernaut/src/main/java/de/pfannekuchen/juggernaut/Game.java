@@ -120,13 +120,6 @@ public class Game {
 			jitems[3] = Files.readAllBytes(new File(kit, "icon.dat").toPath());
 			availableJKits.put(folder.getName(), jitems);
 		}
-		/* Start a Thread that updates every second */
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				for (Player p : Bukkit.getOnlinePlayers()) if (!isRunning) p.sendActionBar(Component.text("\u00A7cLC to view a kit. RC to vote a kit."));
-			}
-		}.runTaskTimer(Juggernaut.instance(), 0L, 20L);
 	}
 
 	/**
