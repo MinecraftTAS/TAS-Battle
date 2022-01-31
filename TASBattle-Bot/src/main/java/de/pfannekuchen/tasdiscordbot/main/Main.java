@@ -42,21 +42,24 @@ public class Main extends Plugin implements Listener {
 				String ch = null;
 				switch (server) {
 				case "ffa":
-					ch
+					ch 
 					break;
 				case "skywars":
-					ch
+					ch 
 					break;
 				case "juggernaut":
-					ch
+					ch 
 					break;
 				case "knockffa":
-					ch
+					ch 
 					break;
 				case "cores":
-					ch
+					ch 
 					break;
-				default: 
+				case "survivalgames":
+					ch 
+					break;
+				default:
 					break;
 				}
 				if (ch != null) {
