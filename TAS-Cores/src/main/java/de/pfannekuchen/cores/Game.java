@@ -366,7 +366,7 @@ public class Game {
 			checkTickrate();
 			Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.DO_TILE_DROPS, false));
 			Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.KEEP_INVENTORY, true));
-			Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true));
+			Bukkit.getWorlds().forEach(w -> w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, false));
 			startGame();
 		}
 	}
@@ -395,6 +395,10 @@ public class Game {
 	 * @param player The Player that died
 	 */
 	public static void onPlayerOut(Player player) {
+		if (team1.contains(player))
+			team1.remove(player);
+		if (team2.contains(player))
+			team2.remove(player);
 		alivePlayers.remove(player);
 		PlayerStats.addLoss(player);
 		player.setGameMode(GameMode.SPECTATOR);
