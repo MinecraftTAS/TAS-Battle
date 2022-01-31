@@ -104,6 +104,9 @@ public class TASDiscordBot extends ListenerAdapter implements Runnable {
 			case "930947058674827305":
 				server = "knockffa";
 				break;
+			case "937723699665190973":
+				server = "cores";
+				break;
 			default: 
 				break;
 			}
