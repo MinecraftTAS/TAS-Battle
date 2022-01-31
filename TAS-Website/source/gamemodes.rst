@@ -22,3 +22,8 @@ Juggernaut
 --------
 This gamemode works similair to FFA. A random player is chosen to be the juggernaut and his goal is to kill all players to win the game. 
 The Juggernaut has better gear and more health but can not regenerate. If the juggernaut dies before all players are killed then the juggernaut loses the game.
+
+Cores
+--------
+This gamemode is also similair to FFA but every player chooses a kit for themselves and has to break 2 cores of the opponent. After those are broken the
+team can no longer respawn and once all players of a team are eliminated the other team wins.
