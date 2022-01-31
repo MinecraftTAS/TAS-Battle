@@ -23,6 +23,10 @@ Juggernaut
 This gamemode works similair to FFA. A random player is chosen to be the juggernaut and his goal is to kill all players to win the game. 
 The Juggernaut has better gear and more health but can not regenerate. If the juggernaut dies before all players are killed then the juggernaut loses the game.
 
+Survival Games
+--------
+You spawn on a map without any gear and equip yourself with chests lying around. Your goal is to be the last man standing
+
 Cores
 --------
 This gamemode is also similair to FFA but every player chooses a kit for themselves and has to break 2 cores of the opponent. After those are broken the
