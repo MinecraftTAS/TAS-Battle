@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -59,6 +60,10 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerRespawnEvent e) {
 		e.setRespawnLocation(Game.respawn(e.getPlayer()));
+	}
+	@EventHandler
+	public void onCrafting(CraftItemEvent e) {
+		e.setCancelled(true);
 	}
 	@EventHandler 
 	public void onShieldDisable(EntityDamageByEntityEvent e) { 
