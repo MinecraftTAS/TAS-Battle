@@ -1,4 +1,4 @@
-package de.pfannekuchen.replaymod.filter;
+package de.pfannekuchen.tasbattle.rmfilter;
 
 import com.google.gson.JsonObject;
 import com.replaymod.replaystudio.PacketData;

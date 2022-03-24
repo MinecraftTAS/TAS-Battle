@@ -1,4 +1,4 @@
-package de.pfannekuchen.replaymod.filter;
+package de.pfannekuchen.tasbattle.rmfilter;
 
 import java.io.IOException;
 

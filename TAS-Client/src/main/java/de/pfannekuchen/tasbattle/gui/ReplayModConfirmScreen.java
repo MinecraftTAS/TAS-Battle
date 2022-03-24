@@ -1,15 +1,24 @@
 package de.pfannekuchen.tasbattle.gui;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
+import java.io.FileOutputStream;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.replaymod.replaystudio.PacketData;
+import com.replaymod.replaystudio.Studio;
+import com.replaymod.replaystudio.io.ReplayOutputStream;
+import com.replaymod.replaystudio.lib.viaversion.api.protocol.packet.State;
+import com.replaymod.replaystudio.lib.viaversion.api.protocol.version.ProtocolVersion;
+import com.replaymod.replaystudio.protocol.PacketTypeRegistry;
+import com.replaymod.replaystudio.replay.ReplayFile;
+import com.replaymod.replaystudio.replay.ReplayMetaData;
+import com.replaymod.replaystudio.replay.ZipReplayFile;
+import com.replaymod.replaystudio.stream.PacketStream;
+import com.replaymod.replaystudio.studio.ReplayStudio;
 
+import de.pfannekuchen.tasbattle.rmfilter.ProgressFilter;
+import de.pfannekuchen.tasbattle.rmfilter.SpeedupFilter;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.Screen;
@@ -22,6 +31,39 @@ public class ReplayModConfirmScreen extends Screen {
 	private static boolean isWorking = false;
 	private MultiLineLabel message = MultiLineLabel.EMPTY;
 	private Screen s;
+	
+	public static void convert(File f, BufferedOutputStream out, float tickrate, File temp) throws Exception {
+		// Create a Studio
+		Studio studio = new ReplayStudio();
+
+		// Load Input File
+		ReplayFile replayFileIn = new ZipReplayFile(studio, f);
+		ReplayMetaData replayMetaIn = replayFileIn.getMetaData();
+		ProtocolVersion replayVersionIn = replayMetaIn.getProtocolVersion();
+		PacketStream replayStreamIn = replayFileIn.getPacketData(PacketTypeRegistry.get(replayVersionIn, State.PLAY)).asPacketStream();
+		
+		// Make Output Stream
+		ReplayOutputStream replayStreamOut = new ReplayOutputStream(replayVersionIn, out, null);
+		
+		// Prepare Stream
+		replayStreamIn.start();
+		replayStreamIn.addFilter(new ProgressFilter(replayMetaIn.getDuration()));
+		replayStreamIn.addFilter(new SpeedupFilter(tickrate), 0, replayMetaIn.getDuration());
+		
+		// Copy Input File to Output File while applying a Speedup Filter
+		PacketData data;
+		while ((data = replayStreamIn.next()) != null) {
+			replayStreamOut.write(data);
+		}
+	
+		for (PacketData dat : replayStreamIn.end()) {
+			replayStreamOut.write(dat);
+		}
+		
+		// Close all streams
+		replayStreamOut.close();
+		replayFileIn.close();
+	}
 	
 	public ReplayModConfirmScreen(Screen s) {
 		super(TextComponent.EMPTY);
@@ -38,30 +80,15 @@ public class ReplayModConfirmScreen extends Screen {
 					File outFile = new File(f.getParentFile(), f.getName().replace(".mcpr", "-fix.mcpr"));
 					if (outFile.exists()) continue;
 					
-					System.out.println("Converting " + f.getName() + "...");
-
-					// Load file
-					final byte[] file = Files.readAllBytes(f.toPath());
-					
-					// Connect
-					Socket client = new Socket("mgnet.work", 6663);
-					BufferedInputStream in = new BufferedInputStream(client.getInputStream());
-					DataOutputStream out = new DataOutputStream(new BufferedOutputStream(client.getOutputStream()));
-					
 					long time = System.currentTimeMillis();
-					
-					// Send data
-					out.writeFloat(4.0f); // Tickrate
-					out.writeInt(file.length); // Data Length
-					out.write(file);
-					out.flush();
-					
-					// Read data
-					Files.write(outFile.toPath(), in.readAllBytes(), StandardOpenOption.CREATE);
+
+					System.out.println("Converting " + f.getName() + "...");
+					File temp = new File(minecraft.gameDirectory, "temp");
+					temp.mkdir();
+					convert(f, new BufferedOutputStream(new FileOutputStream(outFile)), 4.0f, temp);
 					
 					System.out.println("Took: " + (System.currentTimeMillis() - time) + "ms");
-					client.close();
-					Thread.sleep(5000);
+					Thread.sleep(50);
 				}
 				System.out.println("Worker thread is done.");
 				isWorking = false;
