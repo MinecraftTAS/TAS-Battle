@@ -2,14 +2,8 @@ plugins {
 	id 'fabric-loom' version '0.10-SNAPSHOT'
 }
 
-version = project.mod_version
-group = project.maven_group
-
-Set<String> apiModules = [
-    "fabric-api-base",
-    "fabric-command-api-v1",
-    "fabric-networking-api-v1"
-]
+version = "1.0.0-SNAPSHOT"
+group = "de.pfannekuchen"
 
 repositories {
 	maven { url = 'https://maven.mgnet.work' }
@@ -17,11 +11,10 @@ repositories {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	minecraft "com.mojang:minecraft:1.17.1"
 	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	
-	apiModules.forEach {
-	    include(modImplementation(fabricApi.module(it, "0.37.0+1.17")))
-	}
+	modImplementation "net.fabricmc:fabric-loader:0.13.3"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.46.1+1.17"
+	modImplementation "com.replaymod:replaymod:2.6.4"
+	modImplementation "de.pfannekuchen:accountapi:1.1.0-SNAPSHOT"
 }
