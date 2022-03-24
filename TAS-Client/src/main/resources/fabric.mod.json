@@ -1,8 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "tasbattle",
-  "version": "${version}",
-
+  "version": "1.0.0-SNAPSHOT",
   "name": "TAS Battle",
   "description": "TAS Battle is a mod where you fight in slowmotion. :)!",
   "authors": [
@@ -12,7 +11,6 @@
     "homepage": "https://mgnet.work/",
     "sources": "https://github.com/MCPfannkuchenYT/TASBattle"
   },
-  "accessWidener": "lotas.accesswidener",
   "license": "GPTv3",
   "icon": "TODO",
 

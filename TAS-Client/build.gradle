@@ -1,10 +1,6 @@
-
 plugins {
 	id 'fabric-loom' version '0.10-SNAPSHOT'
 }
-
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
 
 version = project.mod_version
 group = project.maven_group
@@ -25,39 +21,7 @@ dependencies {
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	
-	include group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
-	include group: 'net.lingala.zip4j', name: 'zip4j', version: '2.9.1'
-	implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
-	implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.9.1'
-	
 	apiModules.forEach {
 	    include(modImplementation(fabricApi.module(it, "0.37.0+1.17")))
-	}
-}
-
-loom {
-	accessWidenerPath = file("src/main/resources/lotas.accesswidener")
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = "UTF-8"
-	it.options.release = 16
-}
-
-java {
-	withSourcesJar()
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
 	}
 }

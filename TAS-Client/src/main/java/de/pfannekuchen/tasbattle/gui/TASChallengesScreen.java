@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.pfannekuchen.tasbattle.mixin.accessor.SelectWorldScreenAccessor;
-import net.lingala.zip4j.ZipFile;
+import de.pfannekuchen.tasbattle.util.ZipUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -45,9 +45,7 @@ public class TASChallengesScreen extends SelectWorldScreen {
 					File out = new File(SAVES_DIR, s);
 					File _temp = File.createTempFile("tasbattle", "zip");
 					Files.copy(url.openStream(), _temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					ZipFile file = new ZipFile(_temp);
-					file.extractAll(out.getAbsolutePath());
-					file.close();
+					ZipUtils.unzip(_temp, out.getAbsolutePath());
 					_temp.delete();
 				}
 				isDownloading.set(false);

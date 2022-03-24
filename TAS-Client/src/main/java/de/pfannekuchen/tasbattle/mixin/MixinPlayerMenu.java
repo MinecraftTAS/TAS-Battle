@@ -24,6 +24,7 @@ public class MixinPlayerMenu {
 	@Shadow @Final private ResourceLocation location;
 	@Shadow @Final private Component name;
 	
+	@SuppressWarnings("resource")
 	@Inject(method = "selectItem", at = @At("HEAD"), cancellable = true)
 	public void inject_selectItem(SpectatorMenu spectatorMenu, CallbackInfo ci) {
 		System.out.println("Starting to spectate " + name.getString());

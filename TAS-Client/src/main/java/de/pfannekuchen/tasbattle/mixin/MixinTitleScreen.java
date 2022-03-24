@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,9 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import de.pfannekuchen.tasbattle.TASBattle;
 import de.pfannekuchen.tasbattle.gui.TASBattleScreen;
 import de.pfannekuchen.tasbattle.gui.TASChallengesScreen;
-import de.pfannekuchen.tasbattle.gui.VideoUpspeederScreen;
-import de.pfannekuchen.tasbattle.util.OSUtils;
-import de.pfannekuchen.tasbattle.util.OSUtils.OS;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -55,11 +53,6 @@ public abstract class MixinTitleScreen extends Screen {
 			if (mouseX >= (double)b.x && mouseY >= (double)b.y && mouseX < (double)(b.x + b.getWidth()) && mouseY < (double)(b.y + b.getHeight()) && !b.active) 
 				this.renderTooltip(stack, this.minecraft.font.split(new TextComponent("Please update TAS Battle."), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
 		}));
-		addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 48 + 48, 200, 20, new TextComponent("Speed up Videos"), (buttonWidget) -> {
-			minecraft.setScreen(new VideoUpspeederScreen());
-		}, (buttonWidget, matrixStack, i, j) -> {
-			if (buttonWidget.isMouseOver(i, j)) this.renderTooltip(matrixStack, this.minecraft.font.split(new TextComponent((OSUtils.getOS() == OS.WINDOWS) ? "The Video Upspeeder is a small Mod that can speed up your Videos without the need of any Editing Software! \u00A74Download might trigger Anti-Virus" : "This feature is only available for Windows Users"), Math.max(this.width / 2 - 43, 170)), i, j);
-		})).active = (OSUtils.getOS() == OS.WINDOWS);
 	}
 	
 	@Inject(at = @At("TAIL"), method = "init")
@@ -72,6 +65,7 @@ public abstract class MixinTitleScreen extends Screen {
 			Files.copy(new URL("https://data.mgnet.work/tasbattle/update.jar").openStream(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			long size2 = temp.length();
 			if (size1 == size2) return;
+			if (GLFW.glfwGetKey(this.minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS) return;
 			((Button) children().get(children().size() - 2)).setMessage(new TextComponent("Update and Quit"));
 			((Button) children().get(children().size() - 6)).active = false;
 		}

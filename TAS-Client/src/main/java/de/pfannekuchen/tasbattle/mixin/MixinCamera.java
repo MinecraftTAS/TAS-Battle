@@ -30,6 +30,7 @@ public abstract class MixinCamera {
     @Unique private float localYRot;
     @Unique private boolean isReentry;
     
+	@SuppressWarnings("resource")
 	@Inject(method = "setup", cancellable = true, at = @At("HEAD"))
     public void setup(BlockGetter blockGetter, Entity __unused, boolean bl, boolean bl2, float f1, CallbackInfo ci) {
 		if (__unused != Minecraft.getInstance().player && Minecraft.getInstance().player.isSpectator()) ci.cancel();
