@@ -1,0 +1,20 @@
+plugins {
+    id 'java-library'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://maven.mgnet.work" }
+	maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+	implementation group: 'com.replaymod.replaystudio', name: 'ReplayStudio', version: 'unknown'
+    implementation 'com.google.code.gson:gson:2.3.1'
+    implementation 'it.unimi.dsi:fastutil:8.3.1'
+    implementation 'com.github.viaversion:opennbt:0a02214'
+    implementation 'org.apache.commons:commons-lang3:3.3.2'
+    implementation 'org.apache.commons:commons-collections4:4.0'
+    implementation 'commons-cli:commons-cli:1.2'
+}

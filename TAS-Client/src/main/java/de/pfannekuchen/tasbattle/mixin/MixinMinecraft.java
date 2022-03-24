@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.pfannekuchen.tasbattle.TASBattle;
+import de.pfannekuchen.tasbattle.gui.ReplayModConfirmScreen;
 import de.pfannekuchen.tasbattle.gui.TASBattleScreen;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -76,6 +77,11 @@ public class MixinMinecraft {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if (s == null) {
+			
+		} else if ("MinecraftGuiScreen".equals(s.getClass().getSimpleName()) && ((Minecraft) (Object) this).screen instanceof TitleScreen) {
+			((Minecraft) (Object) this).setScreen(new ReplayModConfirmScreen(s));
+			ci.cancel();
 		}
 	}
 	
