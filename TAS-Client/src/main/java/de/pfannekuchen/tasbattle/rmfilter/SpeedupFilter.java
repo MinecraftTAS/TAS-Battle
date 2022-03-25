@@ -2,7 +2,6 @@ package de.pfannekuchen.tasbattle.rmfilter;
 
 import java.io.IOException;
 
-import com.github.steveice10.netty.buffer.ByteBuf;
 import com.google.gson.JsonObject;
 import com.replaymod.replaystudio.PacketData;
 import com.replaymod.replaystudio.Studio;
@@ -10,6 +9,8 @@ import com.replaymod.replaystudio.filter.StreamFilter;
 import com.replaymod.replaystudio.protocol.Packet;
 import com.replaymod.replaystudio.protocol.PacketType;
 import com.replaymod.replaystudio.stream.PacketStream;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * A filter that manipulates the packet timestamp

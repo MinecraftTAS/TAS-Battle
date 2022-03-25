@@ -15,18 +15,5 @@ dependencies {
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:0.13.3"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:0.46.1+1.17"
-	
-	implementation group: 'com.replaymod.replaystudio', name: 'ReplayStudio', version: 'unknown'
-    implementation 'it.unimi.dsi:fastutil:8.3.1'
-    implementation 'com.github.viaversion:opennbt:0a02214'
-    implementation 'org.apache.commons:commons-lang3:3.3.2'
-    implementation 'org.apache.commons:commons-collections4:4.0'
-    implementation 'commons-cli:commons-cli:1.2'
-    
-    include group: 'com.replaymod.replaystudio', name: 'ReplayStudio', version: 'unknown'
-    include 'it.unimi.dsi:fastutil:8.3.1'
-    include 'com.github.viaversion:opennbt:0a02214'
-    include 'org.apache.commons:commons-lang3:3.3.2'
-    include 'org.apache.commons:commons-collections4:4.0'
-    include 'commons-cli:commons-cli:1.2'
+	modImplementation files ("replaymod.jar")
 }
