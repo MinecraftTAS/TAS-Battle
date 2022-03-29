@@ -2,6 +2,8 @@ plugins {
 	id 'fabric-loom' version '0.10-SNAPSHOT'
 }
 
+sourceCompatibility = targetCompatibility = 16
+
 version = "1.0.0-SNAPSHOT"
 group = "de.pfannekuchen"
 
