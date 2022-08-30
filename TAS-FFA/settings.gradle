@@ -1,0 +1,3 @@
+include ':TAS-Tickrate', ':TAS-Common'
+project(":TAS-Tickrate").projectDir = new File(settingsDir, "../TAS-Tickrate")
+project(":TAS-Common").projectDir = new File(settingsDir, "../TAS-Common")

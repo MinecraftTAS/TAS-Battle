@@ -1,28 +1,12 @@
-# Plugin Info
+# Plugin specific
 name: FFA-Plugin
-version: 1.0.0-SNAPSHOT
-description: Adds FFA to a Bungeecord Server
-author: Pancake(MCPfannkuchenYT)
-
-# Code Info
-main: de.pfannekuchen.ffa.FFA
-load: POSTWORLD
-api-version: 1.17
-
-# Additional Stuff
+version: 2.0.0-SNAPSHOT
+description: FFA plugin for the TAS Battle server
+author: Pancake
 website: mgnet.work
 prefix: FFA
 
-commands:
-    savekit:
-        usage: /savekit <kit>
-        description: Saves the specified Inventory as the Kit.
-    loadkit:
-        usage: /loadkit <kit>
-        description: Loads the specified Kit into the Inventory.
-    kit:
-        usage: /kit <kit>
-        description: Changes the active kit.
-    delkit:
-        usage: /delkit <kit>
-        description: Deletes a kit
+# Implementation specific
+main: de.pancake.ffa.FFA
+load: POSTWORLD
+api-version: 1.17
