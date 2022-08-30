@@ -26,7 +26,7 @@ public abstract class TickrateChangerAPI {
 	 * @param player Player
 	 */
 	static void updatePlayer(Player player) {
-		player.sendPluginMessage(TickrateChanger.plugin, TickrateChanger.TRC_C, ByteBuffer.allocate(4).putFloat(TickrateChanger.TICKRATE).array());
+		player.sendPluginMessage(TickrateChanger.PLUGIN, TickrateChanger.TRC_C, ByteBuffer.allocate(4).putFloat(TickrateChanger.TICKRATE).array());
 	}
 
 	/**

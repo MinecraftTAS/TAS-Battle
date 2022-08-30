@@ -23,7 +23,7 @@ public class TickrateChanger extends JavaPlugin {
 	/**
 	 * Tickrate changer plugin instance
 	 */
-	static TickrateChanger plugin;
+	static TickrateChanger PLUGIN;
 
 	/**
 	 * Tickrate changer plugin channel identifier
@@ -41,7 +41,7 @@ public class TickrateChanger extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		// update plugin singleton
-		plugin = this;
+		PLUGIN = this;
 
 		// initialize tickrate changer detector
 		this.detector = new TickrateChangerDetector();

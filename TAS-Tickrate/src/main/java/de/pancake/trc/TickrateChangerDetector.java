@@ -41,7 +41,7 @@ class TickrateChangerDetector implements PluginMessageListener, Listener {
 					e.getPlayer().kick(Component.text("Couldn't connect you to the game server. Please make sure you have installed the TAS Battle client properly.", NamedTextColor.RED));
 			}
 
-		}.runTaskLater(TickrateChanger.plugin, 8 * 20));
+		}.runTaskLater(TickrateChanger.PLUGIN, 8 * 20));
 	}
 
 	/**
