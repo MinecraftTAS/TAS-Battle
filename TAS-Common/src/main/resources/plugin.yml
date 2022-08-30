@@ -1,0 +1,11 @@
+# Plugin specific
+name: TAS-Battle-Common
+version: 1.0.0-SNAPSHOT
+description: Common TAS Battle Library for all plugins
+author: Pancake
+website: https://tasbattle.mgnet.work
+
+# Implementation specific
+main: de.pancake.common.CommonTASBattle
+load: POSTWORLD
+api-version: 1.17
