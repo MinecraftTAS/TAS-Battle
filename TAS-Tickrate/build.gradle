@@ -1,0 +1,18 @@
+// Apply plugins
+plugins {
+    id 'java-library'
+}
+
+// Set source compatibility to java 17 since the tas battle server still runs java 17
+sourceCompatibility = targetCompatibility = 17
+
+// Add papermc repository
+repositories {
+	mavenCentral()
+    maven { url "https://papermc.io/repo/repository/maven-public/" }
+}
+
+// Add paper api
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
+}
