@@ -15,8 +15,8 @@ repositories {
 // Add paper api
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
-    compileOnly project(":TAS-Tickrate")
-    compileOnly project(":TAS-Common")
+    api project(":TAS-Tickrate")
+    api project(":TAS-Common")
 }
 
 // Upload the plugin to the server via sftp [login via key]

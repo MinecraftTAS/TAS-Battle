@@ -2,6 +2,8 @@ package de.pancake.ffa;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.pancake.common.CommonTASBattle;
+
 /**
  * FFA plugin
  * @author Pancake
@@ -20,6 +22,8 @@ public class FFA extends JavaPlugin {
 	public void onEnable() {
 		// update plugin singleton
 		plugin = this;
+		CommonTASBattle.registerEvents("LOBBY", new Lobby());
+		CommonTASBattle.updatePhase("LOBBY");
 	}
 
 }

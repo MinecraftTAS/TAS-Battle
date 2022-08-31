@@ -1,5 +1,6 @@
 package de.pancake.common;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -31,11 +32,11 @@ public class CommonTASBattle extends JavaPlugin {
 	}
 
 	/**
-	 * Loads the plugin
+	 * Enables the plugin
 	 */
 	@Override
-	public void onLoad() {
-
+	public void onEnable() {
+		Bukkit.getPluginManager().registerEvents(new EventListener(), this);
 	}
 
 }

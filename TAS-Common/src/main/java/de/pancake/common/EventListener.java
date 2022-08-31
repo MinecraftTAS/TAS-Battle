@@ -1,5 +1,6 @@
 package de.pancake.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,8 +64,6 @@ class EventListener implements Listener {
 			e.setCancelled(events.entityDamage(e.getEntity(), e.getDamage(), e.getCause()));
 	}
 
-	// a
-
 	@EventHandler
 	public void onPlayerDrop(PlayerDropItemEvent e) {
 		var events = phases.get(CommonTASBattle.PHASE);
@@ -76,7 +75,7 @@ class EventListener implements Listener {
 	public void onPlayerPickup(EntityPickupItemEvent e) {
 		var events = phases.get(CommonTASBattle.PHASE);
 		if (events != null)
-			e.setCancelled(events.playerPickup(e.getEntity(), e.getItem()));
+			e.setCancelled(events.entityPickup(e.getEntity(), e.getItem()));
 	}
 
 	@EventHandler
@@ -104,8 +103,10 @@ class EventListener implements Listener {
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		var events = phases.get(CommonTASBattle.PHASE);
 		if (events != null) {
-			e.getDrops().clear();
-			e.getDrops().addAll(events.playerDeath(e.getPlayer(), e.getDrops()));
+			var drops = e.getDrops();
+			var newDrops = new ArrayList<>(events.playerDeath(e.getEntity(), drops));
+			drops.clear();
+			drops.addAll(newDrops);
 		}
 	}
 

@@ -10,3 +10,4 @@ prefix: FFA
 main: de.pancake.ffa.FFA
 load: POSTWORLD
 api-version: 1.17
+depend: ["Tickrate-Changer", "TAS-Battle-Common"]
