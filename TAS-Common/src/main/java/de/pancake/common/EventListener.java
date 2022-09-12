@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -12,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -90,6 +92,13 @@ class EventListener implements Listener {
 		var events = phases.get(CommonTASBattle.PHASE);
 		if (events != null)
 			e.setCancelled(events.playerInteract(e.getPlayer(), e.getAction(), e.getClickedBlock(), e.getMaterial(), e.getItem()));
+	}
+
+	@EventHandler
+	public void onClickEvent(InventoryClickEvent e) {
+		var events = phases.get(CommonTASBattle.PHASE);
+		if (events != null)
+			e.setCancelled(events.playerClick((Player) e.getWhoClicked(), e.getClick(), e.getSlot(), e.getCurrentItem(), e.getCursor(), e.getInventory()));
 	}
 
 	@EventHandler

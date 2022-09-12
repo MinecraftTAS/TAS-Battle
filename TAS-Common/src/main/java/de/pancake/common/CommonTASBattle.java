@@ -12,7 +12,7 @@ public class CommonTASBattle extends JavaPlugin {
 	/**
 	 * Current phase
 	 */
-	static String PHASE;
+	public static String PHASE;
 
 	/**
 	 * Updates the current phase

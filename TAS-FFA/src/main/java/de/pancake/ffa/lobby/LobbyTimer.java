@@ -15,7 +15,7 @@ import de.pancake.ffa.FFA;
  * Timer for launching the game
  * @author Pancake
  */
-public class LobbyTimer {
+class LobbyTimer {
 
 	/**
 	 * Players in the lobby
@@ -79,7 +79,7 @@ public class LobbyTimer {
 	 */
 	private void advance() {
 		// Advance timer
-		if (this.players.size() >= this.max && this.time > 5)
+		if (this.players.size() >= this.max && this.time > 30)
 			this.forceStart();
 		else if (this.players.size() < this.min)
 			this.time = this.startTime;
@@ -89,7 +89,7 @@ public class LobbyTimer {
 		// Update player levels and play sound
 		for (Player p : this.players) {
 			p.setLevel(this.time);
-			p.setExp(this.time / (float) this.startTime);
+			p.setExp(Math.max(0.0f, Math.min(1.0f, this.time / (float) this.startTime)));
 			if (this.time < 10)
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5f, this.time <= 0 ? 1.0f : 0.7f);
 		}
@@ -101,13 +101,13 @@ public class LobbyTimer {
 	}
 
 	/**
-	 * Forcibly updates the countdown to 5 seconds
+	 * Forcibly updates the countdown to 30 seconds
 	 */
 	public void forceStart() {
 		if (this.task.isCancelled())
 			return;
 
-		this.time = 5;
+		this.time = 30;
 	}
 
 	/**

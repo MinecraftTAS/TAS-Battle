@@ -11,6 +11,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -109,5 +111,17 @@ public interface Events {
 	 * @return New item drops
 	 */
 	List<ItemStack> playerDeath(Player player, List<ItemStack> drops);
+
+	/**
+	 * Called when a player clicks in an inventory
+	 * @param p Player
+	 * @param click Click type
+	 * @param slot Slot
+	 * @param clickedItem Clicked item
+	 * @param cursor Item below cursor
+	 * @param inventory Inventory Inventory clicked in
+	 * @return Cancel-state
+	 */
+	boolean playerClick(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory);
 
 }
