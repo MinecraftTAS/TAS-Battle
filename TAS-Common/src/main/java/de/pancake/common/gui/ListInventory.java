@@ -125,9 +125,12 @@ public class ListInventory {
 		if (item == null)
 			return;
 
-		// toggle last item again
-		if (!this.allowMultiple && i != this.lastUpdated && this.entries.get(this.alias.get(this.lastUpdated)))
-			this.interact(this.lastUpdated);
+		// toggle last item again (looks scuffed, why?)
+		if (this.lastUpdated != null)
+			if (this.alias.get(this.lastUpdated) != null)
+				if (!this.allowMultiple && i != this.lastUpdated && this.entries.get(this.alias.get(this.lastUpdated)))
+					this.interact(this.lastUpdated);
+		this.lastUpdated = i;
 
 		// toggle item
 		var meta = i.getItemMeta();

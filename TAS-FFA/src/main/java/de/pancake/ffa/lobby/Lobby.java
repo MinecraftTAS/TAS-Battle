@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.player.PlayerKickEvent.Cause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,6 +34,11 @@ public class Lobby implements Events {
 	private LobbyTimer timer = new LobbyTimer(90, 2, 3, FFA::startGame);
 
 	/**
+	 * Lobby kit manager
+	 */
+	private LobbyKitManager kits = new LobbyKitManager();
+
+	/**
 	 * Lobby scenario manager
 	 */
 	private LobbyScenarioManager scenarios = new LobbyScenarioManager();
@@ -48,12 +54,25 @@ public class Lobby implements Events {
 		var inv = player.getInventory();
 		inv.clear();
 
-		var chestItem = new ItemStack(Material.CHEST);
-		chestItem.editMeta(m -> {
+		var kitsItem = new ItemStack(Material.CHEST);
+		kitsItem.editMeta(m -> {
+			m.displayName(Component.text(ChatColor.WHITE + "Kits"));
+			m.lore(Arrays.asList(Component.text(ChatColor.DARK_PURPLE + "Vote for a kit"), Component.text(ChatColor.DARK_PURPLE + "Every player will spawn with the same gear")));
+		});
+		inv.setItem(0, kitsItem);
+
+		var scenariosItem = new ItemStack(Material.COMPASS);
+		scenariosItem.editMeta(m -> {
 			m.displayName(Component.text(ChatColor.WHITE + "Scenarios"));
 			m.lore(Arrays.asList(Component.text(ChatColor.DARK_PURPLE + "Every FFA game can be customized with scenarios."), Component.text(ChatColor.DARK_PURPLE + "These are small additions to the rules that"), Component.text(ChatColor.DARK_PURPLE + "allow for unique and fun gameplay.")));
 		});
-		inv.setItem(0, chestItem);
+		inv.setItem(1, scenariosItem);
+
+		var barrierItem = new ItemStack(Material.RED_BED);
+		barrierItem.editMeta(m -> {
+			m.displayName(Component.text(ChatColor.RED + "Leave the game"));
+		});
+		inv.setItem(8, barrierItem);
 
 		player.updateInventory(); // not taking any risks ._.
 	}
@@ -67,20 +86,27 @@ public class Lobby implements Events {
 	}
 
 	/**
-	 * Opens the scenarios menu on interaction
+	 * Opens the scenarios and kits menu or disconnects the player on interaction
 	 * @see #playerInteract(Player, Action, Block, Material, ItemStack)
 	 */
 	private void playerInteract2(Player player, Action action, Block clickedBlock, Material material, ItemStack item) {
-		if (item != null && item.getType() == Material.CHEST)
+		if (item == null)
+			return;
+		if (item.getType() == Material.CHEST)
+			this.kits.openInventory(player);
+		else if (item.getType() == Material.COMPASS)
 			this.scenarios.openInventory(player);
+		else if (item.getType() == Material.RED_BED)
+			player.kick(Component.text("You left the game."), Cause.SELF_INTERACTION);
 	}
 
 	/**
-	 * Interacts with the scenarios menu in a ui
+	 * Interacts with the scenarios and kits menu in a ui
 	 * @see #playerClick(Player, ClickType, int, ItemStack, ItemStack, Inventory)
 	 */
 	private void playerClick2(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) {
 		this.scenarios.interact(p, clickedItem);
+		this.kits.interact(p, clickedItem);
 	}
 
 	// @formatter:off
