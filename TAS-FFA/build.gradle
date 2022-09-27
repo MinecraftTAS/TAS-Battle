@@ -31,6 +31,6 @@ task restartServer(type: Exec) {
 	commandLine "ssh tasbattle@mgnet.work screen -S ffa -X stuff ^C".split(" ")
 }
 
-upload.dependsOn = ['build']
+upload.dependsOn = ['build', ':TAS-Tickrate:upload', ':TAS-Common:upload']
 upload.finalizedBy(restartServer)
 upload.group = 'tasbattle'
