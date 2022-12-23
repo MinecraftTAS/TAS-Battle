@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,15 +14,20 @@ import de.pancake.common.gui.ListInventory.Item;
 
 class LobbyKitManager {
 
+	/**
+	 * Description on every kit item
+	 */
+	private static final String DESC = "\n\n" + ChatColor.AQUA + "Click to select!";
+
 	// @formatter:off
 	/**
 	 * List of available kits
 	 */
 	private List<Item> KITS = Arrays.asList(
-		new Item("Kit 1", "B", Material.DIAMOND_CHESTPLATE),
-		new Item("Kit 2", "D", Material.IRON_SWORD),
-		new Item("Kit 3", "C", Material.IRON_CHESTPLATE),
-		new Item("Kit 4", "A", Material.CHAINMAIL_BOOTS));
+		new Item(ChatColor.GOLD + "Kit 1", ChatColor.GRAY + "B" + DESC, Material.DIAMOND_CHESTPLATE),
+		new Item(ChatColor.GOLD + "Kit 2", ChatColor.GRAY + "D" + DESC, Material.IRON_SWORD),
+		new Item(ChatColor.GOLD + "Kit 3", ChatColor.GRAY + "C" + DESC, Material.IRON_CHESTPLATE),
+		new Item(ChatColor.GOLD + "Kit 4", ChatColor.GRAY + "A" + DESC, Material.CHAINMAIL_BOOTS));
 	// @formatter:on
 
 	/**

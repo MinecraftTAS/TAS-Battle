@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,15 +14,20 @@ import de.pancake.common.gui.ListInventory.Item;
 
 class LobbyScenarioManager {
 
+	/**
+	 * Description on every scenario item
+	 */
+	private static final String DESC = "\n\n" + ChatColor.AQUA + "Click to toggle!";
+
 	// @formatter:off
 	/**
 	 * List of available scenarios
 	 */
 	private List<Item> SCENARIOS = Arrays.asList(
-		new Item("20 Hearts", "Every player has 20 hearts instead of 10", Material.RED_DYE),
-		new Item("Strength", "Every player has Strength I", Material.IRON_SWORD),
-		new Item("Dynamic speed", "Only decreases the game speed when players are close", Material.CLOCK),
-		new Item("No drops", "Players and blocks do not drop", Material.GRASS_BLOCK));
+		new Item(ChatColor.GOLD + "20 Hearts", ChatColor.GRAY + "Every player has 20 hearts instead of 10" + DESC, Material.RED_DYE),
+		new Item(ChatColor.GOLD + "Strength", ChatColor.GRAY + "Every player has Strength I" + DESC, Material.IRON_SWORD),
+		new Item(ChatColor.GOLD + "Dynamic speed", ChatColor.GRAY + "Only decreases the game speed when players are close" + DESC, Material.CLOCK),
+		new Item(ChatColor.GOLD + "No drops", ChatColor.GRAY + "Players and blocks do not drop" + DESC, Material.GRASS_BLOCK));
 	// @formatter:on
 
 	/**
