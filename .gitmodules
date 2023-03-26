@@ -1,9 +1,0 @@
-[submodule "TAS-Server/PaperMC-SlowPaper"]
-	path = TAS-Server/PaperMC-SlowPaper
-	url = https://github.com/MCPfannkuchenYT/SlowPaper.git
-[submodule "TAS-Server/PaperMC-Waterfall"]
-	path = TAS-Server/PaperMC-Waterfall
-	url = https://github.com/MCPfannkuchenYT/Waterfall.git
-[submodule "TAS-Lobby/zNPC"]
-	path = TAS-Lobby/zNPC
-	url = https://github.com/MCPfannkuchenYT/znpc-servers.git
