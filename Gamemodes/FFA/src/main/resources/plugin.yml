@@ -8,5 +8,5 @@ website: https://minecrafttas.com/tas-battle/
 # Implementation specific
 main: com.minecrafttas.tasbattle.ffa.FFA
 load: POSTWORLD
-api-version: 1.17
+api-version: 1.19
 depend: ["TAS-Battle-Common", "TAS-Battle-Tickrate-Changer"]

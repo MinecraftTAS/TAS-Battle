@@ -8,4 +8,4 @@ website: https://minecrafttas.com/tas-battle/
 # Implementation specific
 main: com.minecrafttas.tasbattle.common.CommonTASBattle
 load: POSTWORLD
-api-version: 1.17
+api-version: 1.19

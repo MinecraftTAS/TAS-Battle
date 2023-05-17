@@ -34,13 +34,12 @@ public abstract class TickrateChangerAPI {
 	 */
 	static void updateServer() {
 		try {
-			var msPerTick = Class.forName("net.minecraft.server.MinecraftServer").getField("b"); // unavoidable obfuscation
-			msPerTick.setAccessible(true);
+			var msPerTick = Class.forName("net.minecraft.server.MinecraftServer").getField("MS_PER_TICK");
 			msPerTick.setInt(null, (int) (1000 / TickrateChanger.TICKRATE));
+			
 			var gamespeed = Class.forName("net.minecraft.server.MinecraftServer").getField("GAMESPEED");
-			gamespeed.setAccessible(true);
 			gamespeed.setFloat(null, TickrateChanger.TICKRATE / 20.0f);
-		} catch (NoSuchFieldException | SecurityException | ClassNotFoundException | IllegalArgumentException | IllegalAccessException e) {
+		} catch (Exception e) {
 			System.err.println("Unable to update the server tickrate");
 			e.printStackTrace();
 		}

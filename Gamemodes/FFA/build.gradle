@@ -5,9 +5,9 @@ plugins {
 }
 
 // Update plugin info
-group = "com.minecrafttas.tasbattle.common"
+group = "com.minecrafttas.tasbattle.ffa"
 version = "1.0.0-SNAPSHOT"
-archivesBaseName = "tasbattle-common"
+archivesBaseName = "tasbattle-ffa"
 
 // Add repositories required for project
 repositories {
@@ -18,7 +18,7 @@ repositories {
 // Add paper api
 dependencies {
 	// Add paper mc api for compile time
-    compileOnly "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.19.1-R0.1-SNAPSHOT"
     // Add Common and Tickrate TAS Battle libraries
     api project(":Tickrate-Changer")
     api project(":Common")
