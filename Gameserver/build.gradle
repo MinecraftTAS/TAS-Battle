@@ -1,0 +1,25 @@
+// Apply plugins required for project
+plugins {
+	// Add java library
+    id 'java-library'
+}
+
+// Update plugin info
+group = "com.minecrafttas"
+version = "1.0.0-SNAPSHOT"
+archivesBaseName = "tasbattle"
+
+// Add repositories required for project
+repositories {
+	// Add papermc repository for api
+    maven { url "https://papermc.io/repo/repository/maven-public/" }
+}
+
+// Add paper api
+dependencies {
+	// Add paper mc api for compile time
+    compileOnly "io.papermc.paper:paper-api:1.19.1-R0.1-SNAPSHOT"
+}
+
+// Configure source sets
+sourceSets.main.java.srcDirs += ['src/common/java', 'src/ffa/java']

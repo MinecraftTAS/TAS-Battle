@@ -1,3 +1,0 @@
-include ':Common', ':Tickrate-Changer'
-project(":Common").projectDir = new File(settingsDir, "../Common")
-project(":Tickrate-Changer").projectDir = new File(settingsDir, "../Tickrate Changer")
