@@ -1,0 +1,16 @@
+# Plugin specific
+name: TAS-Battle
+version: 1.0.0-SNAPSHOT
+description: TAS-Battle plugin
+author: Pancake
+website: https://minecrafttas.com/tas-battle/
+
+# Implementation specific
+main: com.minecrafttas.tasbattle.TASBattle
+load: POSTWORLD
+api-version: 1.19
+
+commands:
+    tickrate:
+        usage: /tickrate <tickrate>
+        description: Updates the tickrate
