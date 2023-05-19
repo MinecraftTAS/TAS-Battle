@@ -30,6 +30,7 @@ import net.kyori.adventure.text.Component;
 public class Lobby implements GameMode {
 	
 	private LobbyTimer timer;
+	private List<LobbyManager> managers;
 	
 	/**
 	 * Initialize lobby
@@ -37,6 +38,7 @@ public class Lobby implements GameMode {
 	 * @param gameMode Game mode
 	 */
 	public Lobby(TASBattle plugin, AbstractGameMode gameMode) {
+		this.managers = gameMode.createManagers();
 		this.timer = new LobbyTimer(plugin, 90, 2, 3, gameMode::startGameMode);
 	}
 
@@ -51,6 +53,16 @@ public class Lobby implements GameMode {
 		var inv = player.getInventory();
 		inv.clear();
 
+		int i = 0;
+		for (LobbyManager manager : this.managers) {
+			var item = new ItemStack(manager.getItem());
+			item.editMeta(m -> {
+				m.displayName(Component.text(ChatColor.WHITE + manager.getInventoryTitle()));
+				m.lore(manager.getItemLore());
+			});
+			inv.setItem(i++, item);
+		}
+		
 		var leaveItem = new ItemStack(Material.RED_BED);
 		leaveItem.editMeta(m -> {
 			m.displayName(Component.text(ChatColor.RED + "Leave the game"));
@@ -78,7 +90,9 @@ public class Lobby implements GameMode {
 		if (item == null)
 			return;
 		
-		// TODO: interact config items here
+		for (LobbyManager manager : this.managers)
+			if (item.getType() == manager.getItem())
+				manager.openInventory(player);
 		
 		if (item.getType() == Material.RED_BED)
 			player.kick(Component.text("You left the game."), Cause.SELF_INTERACTION);
@@ -89,7 +103,8 @@ public class Lobby implements GameMode {
 	 * @see #playerClick(Player, ClickType, int, ItemStack, ItemStack, Inventory)
 	 */
 	private void playerClick2(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) {
-		// TODO: click config here
+		for (LobbyManager manager : this.managers)
+			manager.onInteract(p, clickedItem);
 	}
 
 	// Restrict basic player events

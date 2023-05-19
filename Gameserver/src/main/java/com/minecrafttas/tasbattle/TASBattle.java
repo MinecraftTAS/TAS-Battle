@@ -10,12 +10,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.minecrafttas.tasbattle.ffa.FFA;
 import com.minecrafttas.tasbattle.gamemode.ModeManagement;
 import com.minecrafttas.tasbattle.lobby.Lobby;
+import com.minecrafttas.tasbattle.lobby.LobbyManager;
 import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
 
 public class TASBattle extends JavaPlugin {
 
 	/**
-	 * Abstract gamemode module
+	 * Abstract module
 	 */
 	public static abstract class AbstractModule {
 
@@ -40,6 +41,9 @@ public class TASBattle extends JavaPlugin {
 		
 	}
 	
+	/**
+	 * Abstract gamemode
+	 */
 	public static abstract class AbstractGameMode {
 		
 		protected TASBattle plugin;
@@ -57,6 +61,12 @@ public class TASBattle extends JavaPlugin {
 		 * @param players Participating players
 		 */
 		public abstract void startGameMode(List<Player> players);
+		
+		/**
+		 * Create all managers that modify the game rules
+		 * @return List of managers
+		 */
+		public abstract List<LobbyManager> createManagers();
 		
 	}
 	
