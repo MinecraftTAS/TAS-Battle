@@ -1,5 +1,6 @@
 package com.minecrafttas.tasbattle.ffa;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -7,6 +8,9 @@ import org.bukkit.entity.Player;
 
 import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.TASBattle.AbstractGameMode;
+import com.minecrafttas.tasbattle.ffa.managers.KitManager;
+import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager;
+import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
 import net.kyori.adventure.text.Component;
 
@@ -15,11 +19,20 @@ import net.kyori.adventure.text.Component;
  * @author Pancake
  */
 public class FFA extends AbstractGameMode {
+	
 	public FFA(TASBattle plugin) { super(plugin); }
 
 	@Override
 	public void startGameMode(List<Player> players) {
 		Bukkit.broadcast(Component.text("we can have fun now... woo"));
+	}
+
+	@Override
+	public List<LobbyManager> createManagers() {
+		return Arrays.asList(
+			new KitManager(),
+			new ScenarioManager()
+		);
 	}
 	
 }
