@@ -1,4 +1,4 @@
-package com.minecrafttas.tasbattle.ffa.lobby;
+package com.minecrafttas.tasbattle.lobby;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
  * @author Pancake
  */
 class LobbyTimer {
-
-	/**
-	 * Players in the lobby
-	 */
+	
 	private List<Player> players = new ArrayList<>();
 
 	/**
@@ -29,41 +26,28 @@ class LobbyTimer {
 	/**
 	 * Timer starting time
 	 */
-	private int startTime;
+	private int startTime, time;
+	private int minPlayers, maxPlayers;
 
 	/**
-	 * Current timer time
-	 */
-	private int time;
-
-	/**
-	 * Minimal amount of players required for time to start
-	 */
-	private int min;
-
-	/**
-	 * Maximal amount of players until forcestart
-	 */
-	private int max;
-
-	/**
-	 * Consumer that will be called when the timer hits zero
+	 * Run gamemode callback
 	 */
 	private Consumer<List<Player>> start;
 
 	/**
-	 * Creates a new lobby timer and starts it
+	 * Create new lobby timer
 	 * @param time Time to start counting down from
-	 * @param min Minimal amount of players required
+	 * @param minPlayers Minimal amount of players required
 	 * @param max Maximal amount of players before fast start
 	 * @param start Game start runnable
 	 */
-	public LobbyTimer(JavaPlugin plugin, int startTime, int min, int max, Consumer<List<Player>> start) {
+	public LobbyTimer(JavaPlugin plugin, int startTime, int minPlayers, int maxPlayers, Consumer<List<Player>> start) {
 		this.startTime = startTime;
 		this.time = startTime;
-		this.min = min;
-		this.max = max;
+		this.minPlayers = minPlayers;
+		this.maxPlayers = maxPlayers;
 		this.start = start;
+		
 		// Run advance() every second
 		this.task = new BukkitRunnable() {
 			@Override
@@ -78,9 +62,9 @@ class LobbyTimer {
 	 */
 	private void advance() {
 		// Advance timer
-		if (this.players.size() >= this.max && this.time > 30)
+		if (this.players.size() >= this.maxPlayers && this.time > 30)
 			this.forceStart();
-		else if (this.players.size() < this.min)
+		else if (this.players.size() < this.minPlayers)
 			this.time = this.startTime;
 		else
 			this.time--;
@@ -100,7 +84,7 @@ class LobbyTimer {
 	}
 
 	/**
-	 * Forcibly updates the countdown to 30 seconds
+	 * Update countdown to 30 seconds
 	 */
 	public void forceStart() {
 		if (this.task.isCancelled())
@@ -110,7 +94,7 @@ class LobbyTimer {
 	}
 
 	/**
-	 * Removes a player from the timer
+	 * Remove player from timer
 	 * @param p Player
 	 */
 	public void removePlayer(Player p) {
@@ -121,7 +105,7 @@ class LobbyTimer {
 	}
 
 	/**
-	 * Adds a player to the timer
+	 * Add player to timer
 	 * @param p Player
 	 */
 	public void addPlayer(Player p) {

@@ -1,6 +1,5 @@
-package com.minecrafttas.tasbattle.ffa.lobby;
+package com.minecrafttas.tasbattle.lobby;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -19,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TASBattle.AbstractGameMode;
 import com.minecrafttas.tasbattle.gamemode.GameMode;
 
 import net.kyori.adventure.text.Component;
@@ -29,80 +29,67 @@ import net.kyori.adventure.text.Component;
  */
 public class Lobby implements GameMode {
 	
-	private LobbyKitManager kits;
-	private LobbyScenarioManager scenarios;
+	private LobbyTimer timer;
 	
 	/**
 	 * Initialize lobby
+	 * @param plugin Plugin
+	 * @param gameMode Game mode
 	 */
-	public Lobby(TASBattle plugin) {
-		this.kits = new LobbyKitManager();
-		this.scenarios = new LobbyScenarioManager();
+	public Lobby(TASBattle plugin, AbstractGameMode gameMode) {
+		this.timer = new LobbyTimer(plugin, 90, 2, 3, gameMode::startGameMode);
 	}
 
 	/**
-	 * Update the lobby countdown when a player joins the server and edit the players inventory
+	 * Update lobby countdown and edit inventory when player joins the server
 	 */
 	@Override
 	public void playerJoin(Player player) {
+		this.timer.addPlayer(player);
+
 		// update inventory
 		var inv = player.getInventory();
 		inv.clear();
 
-		var kitsItem = new ItemStack(Material.CHEST);
-		kitsItem.editMeta(m -> {
-			m.displayName(Component.text(ChatColor.WHITE + "Kits"));
-			m.lore(Arrays.asList(Component.text(ChatColor.DARK_PURPLE + "Vote for a kit"), Component.text(ChatColor.DARK_PURPLE + "Every player will spawn with the same gear")));
-		});
-		inv.setItem(0, kitsItem);
-
-		var scenariosItem = new ItemStack(Material.COMPASS);
-		scenariosItem.editMeta(m -> {
-			m.displayName(Component.text(ChatColor.WHITE + "Scenarios"));
-			m.lore(Arrays.asList(Component.text(ChatColor.DARK_PURPLE + "Every FFA game can be customized with scenarios."), Component.text(ChatColor.DARK_PURPLE + "These are small additions to the rules that"), Component.text(ChatColor.DARK_PURPLE + "allow for unique and fun gameplay.")));
-		});
-		inv.setItem(1, scenariosItem);
-
-		var barrierItem = new ItemStack(Material.RED_BED);
-		barrierItem.editMeta(m -> {
+		var leaveItem = new ItemStack(Material.RED_BED);
+		leaveItem.editMeta(m -> {
 			m.displayName(Component.text(ChatColor.RED + "Leave the game"));
 		});
-		inv.setItem(8, barrierItem);
-
+		inv.setItem(8, leaveItem);
+		
+		// TODO: setup config items here
+		
 		player.updateInventory(); // not taking any risks ._.
 	}
 
 	/**
-	 * Update the lobby countdown when a player leaves the server
+	 * Update lobby countdown when player leaves the server
 	 */
 	@Override
 	public void playerLeave(Player player) {
-		
+		this.timer.removePlayer(player);
 	}
 
 	/**
-	 * Opens the scenarios and kits menu or disconnects the player on interaction
+	 * Handle player interaction for configuration
 	 * @see #playerInteract(Player, Action, Block, Material, ItemStack)
 	 */
 	private void playerInteract2(Player player, Action action, Block clickedBlock, Material material, ItemStack item) {
 		if (item == null)
 			return;
 		
-		if (item.getType() == Material.CHEST)
-			this.kits.openInventory(player);
-		else if (item.getType() == Material.COMPASS)
-			this.scenarios.openInventory(player);
-		else if (item.getType() == Material.RED_BED)
+		// TODO: interact config items here
+		
+		if (item.getType() == Material.RED_BED)
 			player.kick(Component.text("You left the game."), Cause.SELF_INTERACTION);
 	}
 
 	/**
-	 * Interacts with the scenarios and kits menu in a ui
+	 * Handle configuration interactions
 	 * @see #playerClick(Player, ClickType, int, ItemStack, ItemStack, Inventory)
 	 */
 	private void playerClick2(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) {
-		this.scenarios.interact(p, clickedItem);
-		this.kits.interact(p, clickedItem);
+		// TODO: click config here
 	}
 
 	// Restrict basic player events
