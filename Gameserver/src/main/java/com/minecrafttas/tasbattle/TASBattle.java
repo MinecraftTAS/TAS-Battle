@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.minecrafttas.tasbattle.ffa.FFA;
+import com.minecrafttas.tasbattle.bedwars.Bedwars;
 import com.minecrafttas.tasbattle.gamemode.ModeManagement;
 import com.minecrafttas.tasbattle.lobby.Lobby;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
@@ -85,7 +85,7 @@ public class TASBattle extends JavaPlugin {
 		this.modeManagement.onEnable(this);
 		
 		// init ffa lobby for now
-		this.modeManagement.registerGameMode("LOBBY", new Lobby(this, new FFA(this)));
+		this.modeManagement.registerGameMode("LOBBY", new Lobby(this, new Bedwars(this)));
 		this.modeManagement.setGameMode("LOBBY");
 	}
 	
