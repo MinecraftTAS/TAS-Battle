@@ -1,11 +1,15 @@
 package com.minecrafttas.tasbattle;
 
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.minecrafttas.tasbattle.ffa.FFA;
 import com.minecrafttas.tasbattle.gamemode.ModeManagement;
+import com.minecrafttas.tasbattle.lobby.Lobby;
 import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
 
 public class TASBattle extends JavaPlugin {
@@ -36,6 +40,26 @@ public class TASBattle extends JavaPlugin {
 		
 	}
 	
+	public static abstract class AbstractGameMode {
+		
+		protected TASBattle plugin;
+		
+		/**
+		 * Initialize abstract gamemode
+		 * @param plugin
+		 */
+		public AbstractGameMode(TASBattle plugin) {
+			this.plugin = plugin;
+		}
+
+		/**
+		 * Start game mode
+		 * @param players Participating players
+		 */
+		public abstract void startGameMode(List<Player> players);
+		
+	}
+	
 	private TickrateChanger tickrateChanger;
 	private ModeManagement modeManagement;
 
@@ -50,8 +74,9 @@ public class TASBattle extends JavaPlugin {
 		this.modeManagement = new ModeManagement();
 		this.modeManagement.onEnable(this);
 		
-		// init ffa for now
-		new FFA().onEnable(this);
+		// init ffa lobby for now
+		this.modeManagement.registerGameMode("LOBBY", new Lobby(this, new FFA(this)));
+		this.modeManagement.setGameMode("LOBBY");
 	}
 	
 	/**
