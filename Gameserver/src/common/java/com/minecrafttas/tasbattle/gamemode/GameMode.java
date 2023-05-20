@@ -35,6 +35,11 @@ public interface GameMode {
 	void playerLeave(Player player);
 
 	/**
+	 * Called when the server ticks
+	 */
+	void serverTick();
+	
+	/**
 	 * Called when a player breaks a block
 	 * @param player Player
 	 * @param block Block broken

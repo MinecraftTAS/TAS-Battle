@@ -18,6 +18,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.destroystokyo.paper.event.server.ServerTickStartEvent;
+
 /**
  * Event listener implementation
  * @author Pancake
@@ -122,4 +124,11 @@ class EventListener implements Listener {
 		}
 	}
 
+	@EventHandler
+	public void onServerTick(ServerTickStartEvent e) {
+		var events = this.mode.getGameMode();
+		if (events != null)
+			events.serverTick();
+	}
+	
 }
