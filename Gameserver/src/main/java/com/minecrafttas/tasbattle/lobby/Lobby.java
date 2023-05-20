@@ -39,7 +39,7 @@ public class Lobby implements GameMode {
 	 */
 	public Lobby(TASBattle plugin, AbstractGameMode gameMode) {
 		this.managers = gameMode.createManagers();
-		this.timer = new LobbyTimer(plugin, 90, 2, 3, gameMode::startGameMode);
+		this.timer = new LobbyTimer(plugin, 5, 2, 3, gameMode::startGameMode);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class Lobby implements GameMode {
 		var inv = player.getInventory();
 		inv.clear();
 
-		int i = 0;
+		var i = 0;
 		for (LobbyManager manager : this.managers) {
 			var item = new ItemStack(manager.getItem());
 			item.editMeta(m -> {
@@ -120,6 +120,7 @@ public class Lobby implements GameMode {
 	// Non-required events
 	@Override public boolean entityExplosion(Entity entity, Location loc) { return false; }
 	@Override public List<ItemStack> playerDeath(Player player, List<ItemStack> drops) { return drops; }
+	@Override public void serverTick() {}
 
 
 }
