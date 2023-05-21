@@ -118,7 +118,7 @@ public class Lobby implements GameMode {
 	@Override public boolean playerClick(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) { this.playerClick2(p, click, slot, clickedItem, cursor, inventory); return true; }
 
 	// Non-required events
-	@Override public boolean entityExplosion(Entity entity, Location loc) { return false; }
+	@Override public boolean entityExplosion(Entity entity, Location loc, List<Block> blocklist) { return false; }
 	@Override public List<ItemStack> playerDeath(Player player, List<ItemStack> drops) { return drops; }
 	@Override public void serverTick() {}
 

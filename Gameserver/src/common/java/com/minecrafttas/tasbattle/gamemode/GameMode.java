@@ -105,9 +105,10 @@ public interface GameMode {
 	 * Called when an entity explodes
 	 * @param entity Entity
 	 * @param loc Location of explosion
+	 * @param list List of blocks in explosion
 	 * @return Cancel-state
 	 */
-	boolean entityExplosion(Entity entity, Location loc);
+	boolean entityExplosion(Entity entity, Location loc, List<Block> list);
 
 	/**
 	 * Called when a player dies
