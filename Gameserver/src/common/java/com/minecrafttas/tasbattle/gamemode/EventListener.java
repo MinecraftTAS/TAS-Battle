@@ -110,7 +110,7 @@ class EventListener implements Listener {
 	public void onEntityExplosion(EntityExplodeEvent e) {
 		var events = this.mode.getGameMode();
 		if (events != null)
-			e.setCancelled(events.entityExplosion(e.getEntity(), e.getLocation()));
+			e.setCancelled(events.entityExplosion(e.getEntity(), e.getLocation(), e.blockList()));
 	}
 
 	@EventHandler

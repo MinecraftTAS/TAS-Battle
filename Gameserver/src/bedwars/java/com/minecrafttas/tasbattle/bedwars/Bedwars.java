@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.TASBattle.AbstractGameMode;
+import com.minecrafttas.tasbattle.bedwars.components.ItemPhysics;
 import com.minecrafttas.tasbattle.bedwars.components.ResourceSpawner;
 import com.minecrafttas.tasbattle.gamemode.GameMode;
 import com.minecrafttas.tasbattle.loading.WorldUtils;
@@ -36,6 +37,7 @@ public class Bedwars extends AbstractGameMode implements GameMode {
 	
 	private World world;
 	private ResourceSpawner spawner;
+	private ItemPhysics physics;
 	
 	/**
 	 * Initialize bedwars gamemode
@@ -51,6 +53,7 @@ public class Bedwars extends AbstractGameMode implements GameMode {
 		// load components
 		try {
 			this.spawner = new ResourceSpawner(this.world);
+			this.physics = new ItemPhysics(this.world);
 		} catch (Exception e) {
 			System.err.println("Exception occured while intializing bedwars");
 			e.printStackTrace();
@@ -81,6 +84,7 @@ public class Bedwars extends AbstractGameMode implements GameMode {
 		
 		// launch game components
 		this.spawner.startGame();
+		this.physics.startGame(players);
 		
 		for (Player p : players)
 			p.teleport(this.world.getSpawnLocation());
@@ -96,22 +100,56 @@ public class Bedwars extends AbstractGameMode implements GameMode {
 	 */
 	@Override
 	public void serverTick() {
-		// tick game components
 		this.spawner.tick();
+		this.physics.tick();
+	}
+	
+	@Override
+	public boolean playerBreak(Player player, Block block) {
+		return this.physics.onBlockBreak(block.getLocation());
+	}
+	
+	@Override
+	public boolean playerPlace(Player player, Block block, ItemStack itemInHand, Block blockAgainst) {
+		this.physics.onBlockPlace(block);
+		return false;
+	}
+	
+	@Override
+	public List<ItemStack> playerDeath(Player player, List<ItemStack> drops) {
+		this.physics.onDeath(player);
+		return Arrays.asList();
+	}
+	
+	@Override
+	public boolean playerInteract(Player player, Action action, Block clickedBlock, Material material, ItemStack item) {
+		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
+			return this.physics.onRightClickInteract(player, item);
+		
+		return false;
+	}
+	
+	@Override
+	public boolean entityExplosion(Entity entity, Location loc, List<Block> blocklist) {
+		this.physics.onTntExplode(entity.getType(), blocklist);
+		return false;
+	}
+	
+	@Override
+	public boolean playerDrop(Player player, Item item) { 
+		return this.physics.onDrop(item.getItemStack());
+	}
+	
+	@Override
+	public boolean playerClick(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) {
+		return this.physics.onClick(clickedItem);
 	}
 	
 	@Override public void playerJoin(Player player) { }
 	@Override public void playerLeave(Player player) {}
-	@Override public boolean playerBreak(Player player, Block block) { return false; }
-	@Override public boolean playerPlace(Player player, Block block, ItemStack itemInHand, Block blockAgainst) { return false; }
 	@Override public boolean entityDamage(Entity entity, double damage, DamageCause cause) { return true; } // watch out
-	@Override public boolean playerDrop(Player player, Item item) { return false; }
 	@Override public boolean entityPickup(LivingEntity entity, Item item) { return false; }
 	@Override public boolean playerConsume(Player player, ItemStack item) { return false; }
-	@Override public boolean playerInteract(Player player, Action action, Block clickedBlock, Material material, ItemStack item) { return false; }
-	@Override public boolean entityExplosion(Entity entity, Location loc) { return false; }
-	@Override public List<ItemStack> playerDeath(Player player, List<ItemStack> drops) { return Arrays.asList(); }
-	@Override public boolean playerClick(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) { return false; }
 
 
 }
