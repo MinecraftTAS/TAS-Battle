@@ -67,8 +67,13 @@ class EventListener implements Listener {
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e) {
 		var events = this.mode.getGameMode();
-		if (events != null)
-			e.setCancelled(events.entityDamage(e.getEntity(), e.getDamage(), e.getCause()));
+		if (events != null) {
+			double dmg = events.entityDamage(e.getEntity(), e.getDamage(), e.getCause());
+			if (dmg <= 0.0001)
+				e.setCancelled(true);
+			else
+				e.setDamage(dmg);
+		}
 	}
 
 	@EventHandler

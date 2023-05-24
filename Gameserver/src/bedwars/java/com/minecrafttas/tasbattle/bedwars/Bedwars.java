@@ -142,12 +142,15 @@ public class Bedwars extends AbstractGameMode implements GameMode {
 	
 	@Override
 	public boolean playerClick(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) {
+		if (clickedItem == null)
+			return true;
+		
 		return this.physics.onClick(clickedItem);
 	}
 	
 	@Override public void playerJoin(Player player) { }
 	@Override public void playerLeave(Player player) {}
-	@Override public boolean entityDamage(Entity entity, double damage, DamageCause cause) { return true; } // watch out
+	@Override public double entityDamage(Entity entity, double damage, DamageCause cause) { return cause == DamageCause.FALL ? 0 : this.physics.onTntDamage(cause, damage); } // watch out
 	@Override public boolean entityPickup(LivingEntity entity, Item item) { return false; }
 	@Override public boolean playerConsume(Player player, ItemStack item) { return false; }
 

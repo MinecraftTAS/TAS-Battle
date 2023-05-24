@@ -64,7 +64,7 @@ public interface GameMode {
 	 * @param cause Cause of damage
 	 * @return Cancel-state
 	 */
-	boolean entityDamage(Entity entity, double damage, DamageCause cause);
+	double entityDamage(Entity entity, double damage, DamageCause cause);
 
 	/**
 	 * Called when a player drops an item
