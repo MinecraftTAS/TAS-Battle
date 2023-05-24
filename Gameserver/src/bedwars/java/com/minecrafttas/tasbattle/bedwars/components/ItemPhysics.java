@@ -15,6 +15,7 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -190,6 +191,9 @@ public class ItemPhysics {
 	 * @return Should cancel event
 	 */
 	public boolean onRightClickInteract(Player p, ItemStack i) {
+		if (i == null)
+			return false;
+		
 		if (i.getType() != Material.FIRE_CHARGE)
 			return false;
 		
@@ -211,15 +215,22 @@ public class ItemPhysics {
 	 * @param blocklist List of affected blocks
 	 */
 	public void onTntExplode(EntityType type, List<Block> blocklist) {
-		var stream = this.blocks.stream();
-		if (type == EntityType.FIREBALL)
-			stream = stream.filter(c -> c.getBlock().getType() != Material.END_STONE); // double check predicate
-		
-		stream.forEach(c -> {
-			for (Block block : blocklist)
-				if (c.equals(block.getLocation()))
-					blocklist.remove(block);
-		});
+		for (Block block : new ArrayList<>(blocklist))
+			if (!this.blocks.contains(block.getLocation()) || (type == EntityType.FIREBALL && block.getType() == Material.END_STONE))
+				blocklist.remove(block);
+	}
+	
+	/**
+	 * Update tnt damage
+	 * @param cause Cause of damage
+	 * @param damage Damage taken
+	 * @return New damage
+	 */
+	public double onTntDamage(DamageCause cause, double damage) {
+		if (cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION)
+			return Math.min(damage, 4);
+
+		return damage;
 	}
 	
 	/**
@@ -241,6 +252,5 @@ public class ItemPhysics {
 	}
 
 	// also double check explosion velocity, damage and fireball throw angle
-	// also check if armor and tools work properly
 	
 }

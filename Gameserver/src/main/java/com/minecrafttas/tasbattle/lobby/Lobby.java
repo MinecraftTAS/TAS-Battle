@@ -111,7 +111,7 @@ public class Lobby implements GameMode {
 	@Override public boolean playerBreak(Player player, Block block) { return true; }
 	@Override public boolean playerPlace(Player player, Block block, ItemStack itemInHand, Block blockAgainst) { return true; }
 	@Override public boolean playerDrop(Player player, Item item) { return true; }
-	@Override public boolean entityDamage(Entity entity, double damage, DamageCause cause) { return true; }
+	@Override public double entityDamage(Entity entity, double damage, DamageCause cause) { return 0; }
 	@Override public boolean playerConsume(Player player, ItemStack item) { return true; }
 	@Override public boolean entityPickup(LivingEntity entity, Item item) { return true; }
 	@Override public boolean playerInteract(Player player, Action action, Block clickedBlock, Material material, ItemStack item) { this.playerInteract2(player, action, clickedBlock, material, item); return true; }
