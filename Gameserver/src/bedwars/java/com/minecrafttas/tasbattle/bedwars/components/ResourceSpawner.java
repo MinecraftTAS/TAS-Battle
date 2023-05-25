@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,39 +16,36 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import com.destroystokyo.paper.event.server.ServerTickStartEvent;
+import com.minecrafttas.tasbattle.TASBattle;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 
 /**
  * Resource spawner
  * @author Pancake
  */
-public class ResourceSpawner {
+public class ResourceSpawner implements Listener {
 
+	// TODO: no stack, no more than 4
+	
+	@RequiredArgsConstructor
 	public class Spawner {
 		
-		private Location loc;
-		private Integer[] tiers;
-		private ItemStack item;
-		private int currentTier;
-		private int lastSpawnAt;
+		@NonNull private Location loc;
+		@NonNull private Integer[] tiers;
+		@NonNull private ItemStack item;
 		
-		/**
-		 * Initialize spawner
-		 * @param loc Spawner location
-		 * @param tiers Spawner tiers
-		 * @param item Spawner item
-		 */
-		public Spawner(Location loc, Integer[] tiers, ItemStack item) {
-			this.loc = loc;
-			this.tiers = tiers;
-			this.item = item;
-			this.currentTier = 0;
-			this.lastSpawnAt = -1;
-		}
+		private int currentTier = 0;
+		private int lastSpawnAt = -1;
 		
 		/**
 		 * Tick spawner
@@ -77,9 +75,11 @@ public class ResourceSpawner {
 	
 	/**
 	 * Initialize resource spawner
+	 * @param plugin Plugin
 	 * @param world World
 	 */
-	public ResourceSpawner(World world) {
+	public ResourceSpawner(TASBattle plugin, World world) {
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.world = world;
 		this.armorStandUpdates = new ArrayList<>();
 		
@@ -147,7 +147,8 @@ public class ResourceSpawner {
 	/**
 	 * Tick resource spawner
 	 */
-	public void tick() {
+	@EventHandler
+	public void onTick(ServerTickStartEvent e) {
 		this.tick++;
 		
 		for (Spawner[] spawners : this.teamSpawners)
