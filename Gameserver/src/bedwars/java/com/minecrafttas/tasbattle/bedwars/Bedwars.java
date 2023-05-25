@@ -17,18 +17,33 @@ import com.minecrafttas.tasbattle.bedwars.components.TeamShop;
 import com.minecrafttas.tasbattle.loading.WorldUtils;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
+import lombok.Getter;
+
 /**
  * Bedwars gamemode
  * @author Pancake
  */
 public class Bedwars implements GameMode {
 	
+	@Getter
 	private TASBattle plugin;
+	
+	@Getter
 	private World world;
+	
+	@Getter
 	private ResourceSpawner spawner;
+	
+	@Getter
 	private PlacementRules placementRules;
+	
+	@Getter
 	private ExplosivePhysics explosivePhysics;
+	
+	@Getter
 	private InventoryManagement inventoryManagement;
+	
+	@Getter
 	private TeamShop teamShop;
 	
 	/**
@@ -69,12 +84,5 @@ public class Bedwars implements GameMode {
 	public List<LobbyManager> createManagers() {
 		return Arrays.asList();
 	}
-	
-	// TODO: figure out a spot to use these or i'm sad
-	public ResourceSpawner getSpawner() { return this.spawner; }
-	public PlacementRules getPlacementRules() { return this.placementRules; }
-	public ExplosivePhysics getExplosivePhysics() { return this.explosivePhysics; }
-	public InventoryManagement getInventoryManagement() { return this.inventoryManagement; }
-	public TeamShop getTeamShop() { return this.teamShop; }
 	
 }

@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -29,9 +30,13 @@ public class ListInventory {
 	 * @author Pancake
 	 */
 	public static class Item {
+		@Getter
 		private String title;
+		@Getter
 		private String description;
+		@Getter
 		private Material type;
+		@Getter
 		private ItemStack stack;
 
 		public Item(String title, String description, Material type) {
@@ -45,22 +50,6 @@ public class ListInventory {
 				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 				meta.lore(Arrays.asList(this.description.split("\n")).stream().map(c -> Component.text(ChatColor.DARK_PURPLE + c)).collect(Collectors.toList()));
 			});
-		}
-
-		public String getTitle() {
-			return this.title;
-		}
-
-		public String getDescription() {
-			return this.description;
-		}
-
-		public Material getType() {
-			return this.type;
-		}
-
-		public ItemStack getItemStack() {
-			return this.stack;
 		}
 
 	}
