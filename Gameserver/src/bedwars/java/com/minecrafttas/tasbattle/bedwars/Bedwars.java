@@ -66,7 +66,7 @@ public class Bedwars implements GameMode {
 	 */
 	@Override
 	public void startGameMode(List<Player> players) {
-		this.spawner = new ResourceSpawner(this.world);
+		this.spawner = new ResourceSpawner(this.plugin, this.world);
 		this.placementRules = new PlacementRules(this.plugin);
 		this.explosivePhysics = new ExplosivePhysics(this.plugin, this.placementRules);
 		this.inventoryManagement = new InventoryManagement(this.plugin, players);
