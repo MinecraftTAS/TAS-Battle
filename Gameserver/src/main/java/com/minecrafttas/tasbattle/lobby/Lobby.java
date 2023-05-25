@@ -2,24 +2,27 @@ package com.minecrafttas.tasbattle.lobby;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent.Cause;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.TASBattle.AbstractGameMode;
-import com.minecrafttas.tasbattle.gamemode.GameMode;
+import com.minecrafttas.tasbattle.TASBattle.GameMode;
 
 import net.kyori.adventure.text.Component;
 
@@ -27,7 +30,7 @@ import net.kyori.adventure.text.Component;
  * Event listener during lobby phase
  * @author Pancake
  */
-public class Lobby implements GameMode {
+public class Lobby implements Listener {
 	
 	private LobbyTimer timer;
 	private List<LobbyManager> managers;
@@ -37,16 +40,22 @@ public class Lobby implements GameMode {
 	 * @param plugin Plugin
 	 * @param gameMode Game mode
 	 */
-	public Lobby(TASBattle plugin, AbstractGameMode gameMode) {
+	public Lobby(TASBattle plugin, GameMode gameMode) {
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.managers = gameMode.createManagers();
 		this.timer = new LobbyTimer(plugin, 5, 2, 3, gameMode::startGameMode);
 	}
 
 	/**
 	 * Update lobby countdown and edit inventory when player joins the server
+	 * @param e Event
 	 */
-	@Override
-	public void playerJoin(Player player) {
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		if (this.timer.isGameRunning())
+			return;
+		
+		var player = e.getPlayer();
 		this.timer.addPlayer(player);
 
 		// update inventory
@@ -76,17 +85,30 @@ public class Lobby implements GameMode {
 
 	/**
 	 * Update lobby countdown when player leaves the server
+	 * @param e Event
 	 */
-	@Override
-	public void playerLeave(Player player) {
-		this.timer.removePlayer(player);
+	@EventHandler
+	public void onQuitLeave(PlayerQuitEvent e) {
+		if (this.timer.isGameRunning())
+			return;
+		
+		this.timer.removePlayer(e.getPlayer());
 	}
 
 	/**
 	 * Handle player interaction for configuration
-	 * @see #playerInteract(Player, Action, Block, Material, ItemStack)
+	 * @param e Event
 	 */
-	private void playerInteract2(Player player, Action action, Block clickedBlock, Material material, ItemStack item) {
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent e) {
+		if (this.timer.isGameRunning())
+			return;
+		
+		e.setCancelled(true);
+		
+		var item = e.getItem();
+		var player = e.getPlayer();
+		
 		if (item == null)
 			return;
 		
@@ -99,28 +121,26 @@ public class Lobby implements GameMode {
 	}
 
 	/**
-	 * Handle configuration interactions
-	 * @see #playerClick(Player, ClickType, int, ItemStack, ItemStack, Inventory)
+	 * Handle configuration interaction
+	 * @param e Event
 	 */
-	private void playerClick2(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) {
+	@EventHandler
+	public void onClickEvent(InventoryClickEvent e) {
+		if (this.timer.isGameRunning())
+			return;
+		
 		for (LobbyManager manager : this.managers)
-			manager.onInteract(p, clickedItem);
+			manager.onInteract((Player) e.getWhoClicked(), e.getCurrentItem());
+		
+		e.setCancelled(true);
 	}
 
-	// Restrict basic player events
-	@Override public boolean playerBreak(Player player, Block block) { return true; }
-	@Override public boolean playerPlace(Player player, Block block, ItemStack itemInHand, Block blockAgainst) { return true; }
-	@Override public boolean playerDrop(Player player, Item item) { return true; }
-	@Override public double entityDamage(Entity entity, double damage, DamageCause cause) { return 0; }
-	@Override public boolean playerConsume(Player player, ItemStack item) { return true; }
-	@Override public boolean entityPickup(LivingEntity entity, Item item) { return true; }
-	@Override public boolean playerInteract(Player player, Action action, Block clickedBlock, Material material, ItemStack item) { this.playerInteract2(player, action, clickedBlock, material, item); return true; }
-	@Override public boolean playerClick(Player p, ClickType click, int slot, ItemStack clickedItem, ItemStack cursor, Inventory inventory) { this.playerClick2(p, click, slot, clickedItem, cursor, inventory); return true; }
-
-	// Non-required events
-	@Override public boolean entityExplosion(Entity entity, Location loc, List<Block> blocklist) { return false; }
-	@Override public List<ItemStack> playerDeath(Player player, List<ItemStack> drops) { return drops; }
-	@Override public void serverTick() {}
-
+	// restrict basic player events
+	@EventHandler public void onPlayerBreak(BlockBreakEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
+	@EventHandler public void onPlayerPlace(BlockPlaceEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
+	@EventHandler public void onPlayerDrop(PlayerDropItemEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
+	@EventHandler public void onPlayerConsume(PlayerItemConsumeEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
+	@EventHandler public void onEntityDamage(EntityDamageEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
+	@EventHandler public void onEntityPickup(EntityPickupItemEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
-import com.minecrafttas.tasbattle.gamemode.GameMode;
 import com.minecrafttas.tasbattle.gui.ListInventory.Item;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
@@ -18,7 +17,7 @@ public class ScenarioManager extends LobbyManager {
 	 * Abstract scenario of the ffa game
 	 * @author Pancake
 	 */
-	public abstract class AbstractScenario implements GameMode {
+	public abstract class AbstractScenario {
 
 		/**
 		 * Title of the scenario
