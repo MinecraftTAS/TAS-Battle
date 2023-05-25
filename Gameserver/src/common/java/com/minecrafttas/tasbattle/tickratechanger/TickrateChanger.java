@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,9 +15,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.TASBattle.AbstractModule;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -24,7 +26,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
  * Tickrate Changer module
  * @author Pancake
  */
-public class TickrateChanger extends AbstractModule implements PluginMessageListener, Listener {
+public class TickrateChanger implements PluginMessageListener, Listener, CommandExecutor {
 	
 	private static final String TRC_CHANNEL = "tickratechanger:data";
 
@@ -34,9 +36,9 @@ public class TickrateChanger extends AbstractModule implements PluginMessageList
 	
 	/**
 	 * Initialize tickrate changer
+	 * @param plugin Plugin
 	 */
-	@Override
-	public void onEnable(TASBattle plugin) {
+	public TickrateChanger(TASBattle plugin) {
 		this.plugin = plugin;
 
 		// register plugin channels
@@ -46,6 +48,7 @@ public class TickrateChanger extends AbstractModule implements PluginMessageList
 
 		// register events
 		Bukkit.getPluginManager().registerEvents(this, plugin);
+		plugin.getCommand("tickrate").setExecutor(this);
 		this.setTickrate(20.0f);
 	}
 
@@ -84,24 +87,6 @@ public class TickrateChanger extends AbstractModule implements PluginMessageList
 	private void updatePlayer(Player p) {
 		p.sendPluginMessage(plugin, TickrateChanger.TRC_CHANNEL, ByteBuffer.allocate(4).putFloat(this.tickrate).array());
 	}
-	
-	/**
-	 * Handle /tickrate command
-	 */
-	@Override
-	public void onCommand(CommandSender sender, String[] args) {
-		if (!sender.isOp() || args.length != 1)
-			return;
-
-		try {
-			// parse and update tickrate
-			var tickrate = Float.parseFloat(args[0]);
-			this.setTickrate(tickrate);
-			sender.sendMessage(Component.text("Updated tickrate to " + tickrate + "."));
-		} catch (NumberFormatException e) {
-			sender.sendMessage(Component.text("Unable to parse tickrate: " + args[0] + ".", NamedTextColor.RED));
-		}
-	}
 
 	/**
 	 * Schedule verification timer on player join
@@ -132,6 +117,23 @@ public class TickrateChanger extends AbstractModule implements PluginMessageList
 		this.updatePlayer(player);
 	}
 	
-	@Override public String getCommandName() { return "tickrate"; }
+	/**
+	 * Handle /tickrate command
+	 */
+	@Override
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		if (!sender.isOp() || args.length != 1)
+			return true;
+
+		try {
+			// parse and update tickrate
+			var tickrate = Float.parseFloat(args[0]);
+			this.setTickrate(tickrate);
+			sender.sendMessage(Component.text("Updated tickrate to " + tickrate + "."));
+		} catch (NumberFormatException e) {
+			sender.sendMessage(Component.text("Unable to parse tickrate: " + args[0] + ".", NamedTextColor.RED));
+		}
+		return true;
+	}
 	
 }

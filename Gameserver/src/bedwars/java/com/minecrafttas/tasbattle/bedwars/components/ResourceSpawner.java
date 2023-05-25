@@ -1,6 +1,7 @@
 package com.minecrafttas.tasbattle.bedwars.components;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -76,15 +78,19 @@ public class ResourceSpawner {
 	/**
 	 * Initialize resource spawner
 	 * @param world World
-	 * @throws Exception Filesystem exception
 	 */
-	public ResourceSpawner(World world) throws Exception {
+	public ResourceSpawner(World world) {
 		this.world = world;
 		this.armorStandUpdates = new ArrayList<>();
 		
 		// load config
 		var config = new YamlConfiguration();
-		config.load(new File(this.world.getWorldFolder(), "locations.yml"));
+		try {
+			config.load(new File(this.world.getWorldFolder(), "locations.yml"));
+		} catch (IOException | InvalidConfigurationException e) {
+			System.err.println("Unable to load resource spawners");
+			e.printStackTrace();
+		}
 		
 		// load timings
 		var ironTicks = config.getIntegerList("ironTiers").toArray(Integer[]::new);
@@ -114,12 +120,7 @@ public class ResourceSpawner {
 		// create special spawners
 		this.diamondSpawners = config.getStringList("diamondSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).map(loc -> new Spawner(loc, diamondTicks, diamondItem)).collect(Collectors.toList()).toArray(Spawner[]::new);
 		this.emeraldSpawners = config.getStringList("emeraldSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).map(loc -> new Spawner(loc, emeraldTicks, emeraldItem)).collect(Collectors.toList()).toArray(Spawner[]::new);
-	}
-	
-	/**
-	 * Start game and initialize components
-	 */
-	public void startGame() {
+		
 		// create emerald spawner armor stands
 		for (var spawner : this.emeraldSpawners) {
 			var loc = spawner.loc.clone();

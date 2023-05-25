@@ -33,7 +33,7 @@ public class ExplosivePhysics implements Listener {
 	/**
 	 * Initialize explosive physics
 	 * @param plugin Plugin
-	 * @param placementRules Placement helper
+	 * @param placementRules Placement rules
 	 */
 	public ExplosivePhysics(TASBattle plugin, PlacementRules placementRules) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);

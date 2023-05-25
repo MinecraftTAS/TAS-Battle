@@ -18,20 +18,9 @@ class LobbyTimer {
 	
 	private List<Player> players = new ArrayList<>();
 
-	/**
-	 * Timer task
-	 */
 	private BukkitTask task;
-
-	/**
-	 * Timer starting time
-	 */
 	private int startTime, time;
 	private int minPlayers, maxPlayers;
-
-	/**
-	 * Run gamemode callback
-	 */
 	private Consumer<List<Player>> start;
 
 	/**
@@ -87,9 +76,6 @@ class LobbyTimer {
 	 * Update countdown to 30 seconds
 	 */
 	public void forceStart() {
-		if (this.task.isCancelled())
-			return;
-
 		this.time = 30;
 	}
 
@@ -98,9 +84,6 @@ class LobbyTimer {
 	 * @param p Player
 	 */
 	public void removePlayer(Player p) {
-		if (this.task.isCancelled())
-			return;
-
 		this.players.remove(p);
 	}
 
@@ -109,10 +92,15 @@ class LobbyTimer {
 	 * @param p Player
 	 */
 	public void addPlayer(Player p) {
-		if (this.task.isCancelled())
-			return;
-
 		this.players.add(p);
+	}
+	
+	/**
+	 * Is game already running
+	 * @return Game running
+	 */
+	public boolean isGameRunning() {
+		return this.task.isCancelled();
 	}
 
 }
