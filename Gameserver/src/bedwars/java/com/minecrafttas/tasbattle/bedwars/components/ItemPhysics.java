@@ -1,21 +1,14 @@
 package com.minecrafttas.tasbattle.bedwars.components;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Villager;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -40,7 +33,6 @@ public class ItemPhysics {
 		Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS
 	);
 
-	private List<Location> blocks;
 	private Map<Player, Integer> pickaxeTiers;
 	private Map<Player, Integer> axeTiers;
 	private Map<Player, Integer> shearsTiers;	
@@ -55,7 +47,6 @@ public class ItemPhysics {
 	public ItemPhysics(World world) {
 		this.world = world;
 		
-		this.blocks = new ArrayList<>();
 		this.pickaxeTiers = new HashMap<>();
 		this.axeTiers = new HashMap<>();
 		this.shearsTiers = new HashMap<>();
@@ -146,30 +137,6 @@ public class ItemPhysics {
 	public void setArmorTier(Player p, int tier) { this.armorTiers.put(p, tier); }
 	
 	/**
-	 * Notify block place and instantly explode tnt
-	 * @param l Block location
-	 * @param b Block
-	 */
-	public void onBlockPlace(Block b) {
-		this.blocks.add(b.getLocation());
-		if (b.getType() == Material.TNT) {
-			b.setType(Material.AIR);
-			
-			b.getWorld().spawn(b.getLocation().add(0.5, 0.5, 0.5), TNTPrimed.class).setFuseTicks(50);
-		}
-			
-	}
-	
-	/**
-	 * Should block break be cancelled
-	 * @param l Block location
-	 * @return Should cancel
-	 */
-	public boolean onBlockBreak(Location l) {
-		return !this.blocks.remove(l);
-	}
-	
-	/**
 	 * Update player tier on death
 	 * @param p Player
 	 */
@@ -183,56 +150,7 @@ public class ItemPhysics {
 		if (this.shearsTiers.containsKey(p))
 			this.shearsTiers.put(p, Math.max(0, this.pickaxeTiers.get(p) - 1));
 	}
-	
-	/**
-	 * Throw fireballs on right click interaction
-	 * @param p Player
-	 * @param i Item
-	 * @return Should cancel event
-	 */
-	public boolean onRightClickInteract(Player p, ItemStack i) {
-		if (i == null)
-			return false;
-		
-		if (i.getType() != Material.FIRE_CHARGE)
-			return false;
-		
-		if (i.getAmount() == 1)
-			p.getInventory().remove(i);
-		else
-			i.setAmount(i.getAmount() - 1);
-		
-		var f = p.launchProjectile(Fireball.class, p.getLocation().getDirection());
-		f.setInvulnerable(true);
-		f.setYield(f.getYield() * 2.0f);
-		
-		return true;
-	}
-	
-	/**
-	 * Notify and update block break list from explosion
-	 * @param type Type of explosion entity
-	 * @param blocklist List of affected blocks
-	 */
-	public void onTntExplode(EntityType type, List<Block> blocklist) {
-		for (Block block : new ArrayList<>(blocklist))
-			if (!this.blocks.contains(block.getLocation()) || (type == EntityType.FIREBALL && block.getType() == Material.END_STONE))
-				blocklist.remove(block);
-	}
-	
-	/**
-	 * Update tnt damage
-	 * @param cause Cause of damage
-	 * @param damage Damage taken
-	 * @return New damage
-	 */
-	public double onTntDamage(DamageCause cause, double damage) {
-		if (cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION)
-			return Math.min(damage, 4);
 
-		return damage;
-	}
-	
 	/**
 	 * Should cancel item drop
 	 * @param i Item dropped

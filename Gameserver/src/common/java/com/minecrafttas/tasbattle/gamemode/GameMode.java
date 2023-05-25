@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
  * @see ModeManagement#registerEvents(String, Events)
  * @author Pancake
  */
+@Deprecated
 public interface GameMode {
 
 	/**
