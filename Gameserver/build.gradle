@@ -2,6 +2,8 @@
 plugins {
 	// Add java library
     id 'java-library'
+    // Add eclipse project
+    id 'eclipse'
 }
 
 // Update plugin info
@@ -14,12 +16,17 @@ base {
 
 // Add repositories required for project
 repositories {
+	// Add maven central for lombok
+	mavenCentral()
 	// Add papermc repository for api
     maven { url "https://papermc.io/repo/repository/maven-public/" }
 }
 
 // Add paper api
 dependencies {
+	// Add lombok processor
+	compileOnly 'org.projectlombok:lombok:1.18.28'
+	annotationProcessor 'org.projectlombok:lombok:1.18.28'
 	// Add paper mc api for compile time
     compileOnly "io.papermc.paper:paper-api:1.19.1-R0.1-SNAPSHOT"
 }

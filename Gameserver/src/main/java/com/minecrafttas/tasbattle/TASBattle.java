@@ -9,6 +9,7 @@ import com.minecrafttas.tasbattle.bedwars.Bedwars;
 import com.minecrafttas.tasbattle.lobby.Lobby;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
+import lombok.Getter;
 
 public class TASBattle extends JavaPlugin {
 	
@@ -17,8 +18,11 @@ public class TASBattle extends JavaPlugin {
 		abstract List<LobbyManager> createManagers();
 	}
 	
+	@Getter
 	private TickrateChanger tickrateChanger;
+	@Getter
 	private GameMode gameMode;
+	@Getter
 	private Lobby lobby;
 	
 	/**
@@ -31,30 +35,6 @@ public class TASBattle extends JavaPlugin {
 		// TODO: fix this
 		this.gameMode = new Bedwars(this);
 		this.lobby = new Lobby(this, this.gameMode);
-	}
-
-	/**
-	 * Get Tickrate Changer instance
-	 * @return Tickrate Changer instance
-	 */
-	public TickrateChanger getTickrateChanger() {
-		return this.tickrateChanger;
-	}
-	
-	/**
-	 * Get Gamemode instance
-	 * @return Gamemode instance
-	 */
-	public GameMode getGameMode() {
-		return this.gameMode;
-	}
-	
-	/**
-	 * Get Lobby instance
-	 * @return Lobby instance
-	 */
-	public Lobby getLobby() {
-		return this.lobby;
 	}
 	
 }
