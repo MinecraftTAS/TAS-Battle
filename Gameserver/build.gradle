@@ -49,7 +49,7 @@ task copyPlugin(type: Exec) {
 // Restart preview server
 task restartServer(type: Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "ssh -p 13524 pancake@mgnet.work echo ${pancake_password} | sudo -S -u tasbattle screen -XS preview quit".split(" ")
+	commandLine "ssh -p 13524 pancake@mgnet.work echo ${pancake_password} | sudo -S -u tasbattle screen -XS previewgameserver01 quit".split(" ")
 }
 
 upload.dependsOn = ['build']
