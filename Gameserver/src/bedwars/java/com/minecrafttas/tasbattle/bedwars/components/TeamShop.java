@@ -2,13 +2,11 @@ package com.minecrafttas.tasbattle.bedwars.components;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,11 +17,10 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.bedwars.components.shop.ItemShop;
 
 import net.kyori.adventure.text.Component;
 
@@ -100,34 +97,9 @@ public class TeamShop implements Listener {
 		if (!this.itemShopLocations.contains(e.getRightClicked()))
 			return;
 
-		// TODO: rewrite obviously
-		Inventory inventory = Bukkit.createInventory(null, 54, Component.text("\u00A78Item Shop"));
-		inventory.addItem(getItemStack(Material.NETHER_STAR, "Quick Buy", 1));
-		inventory.addItem(getItemStack(Material.TERRACOTTA, "Blocks", 1));
-		inventory.addItem(getItemStack(Material.GOLDEN_SWORD, "Weapons", 1));
-		inventory.addItem(getItemStack(Material.CHAINMAIL_BOOTS, "Armor", 1));
-		inventory.addItem(getItemStack(Material.STONE_PICKAXE, "Tools", 1));
-		inventory.addItem(getItemStack(Material.BOW, "Bow", 1));
-		inventory.addItem(getItemStack(Material.BREWING_STAND, "Potions", 1));
-		inventory.addItem(getItemStack(Material.TNT, "Utilities", 1));
-		inventory.addItem(getItemStack(Material.BARRIER, "Close Shop", 1));
-		e.getPlayer().openInventory(inventory);
+		e.getPlayer().openInventory(new ItemShop().inventory());
 		
 		e.setCancelled(true);
-	}
-	
-	@Deprecated
-	private static ItemStack getItemStack(Material mat, String name, int amount, String... lore) {
-		ItemStack item = new ItemStack(mat, amount);
-		item.editMeta(e -> {
-			e.displayName(Component.text("\u00A7f" + name.replace('§', '\u00A7')));
-			if (lore != null) {
-				List<Component> l = new ArrayList<>();
-				for (String string : lore) l.add(Component.text("\u00A7f" + string.replace('§', '\u00A7')));
-				e.lore(l);
-			}
-		});
-		return item;
 	}
 	
 }

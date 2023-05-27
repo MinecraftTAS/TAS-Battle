@@ -2,10 +2,12 @@ package com.minecrafttas.tasbattle;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.minecrafttas.tasbattle.bedwars.Bedwars;
+import com.minecrafttas.tasbattle.gui.GuiHandler;
 import com.minecrafttas.tasbattle.lobby.Lobby;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
@@ -30,6 +32,7 @@ public class TASBattle extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
+		Bukkit.getPluginManager().registerEvents(new GuiHandler(), this);
 		this.tickrateChanger = new TickrateChanger(this);
 		
 		// TODO: fix this
