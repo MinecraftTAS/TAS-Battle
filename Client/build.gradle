@@ -1,0 +1,42 @@
+plugins {
+	id 'fabric-loom' version '1.2-SNAPSHOT'
+}
+
+sourceCompatibility = targetCompatibility = 17
+
+version = "1.0.0-SNAPSHOT"
+group = "com.minecrafttas"
+
+repositories {
+	maven { url = 'https://maven.mgnet.work' }
+	maven { url 'https://jitpack.io' }
+}
+
+loom {
+	// set access widener
+	accessWidenerPath = file('src/main/resources/tasbattle.accesswidener')
+	
+	// add log4jconfig
+	log4jConfigs.from(file('src/main/resources/log4j.xml'))
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:1.19.4"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:0.14.9"
+	
+	compileOnly 'org.projectlombok:lombok:1.18.28'
+	annotationProcessor 'org.projectlombok:lombok:1.18.28'
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}

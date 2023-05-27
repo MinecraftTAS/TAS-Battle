@@ -1,21 +1,21 @@
 # Gradle
-.gradle
-build
+**/.gradle
+**/build
 
 # Eclipse
-bin
-.settings
-.classpath
-.project
+**/bin
+**/.settings
+**/.classpath
+**/.project
 
 # IntelliJ
-.idea/
+**/.idea/
 
 # Minecraft
-run
+**/run
 
 # Fabric Files
-*.launch
+**/*.launch
 
 # Custom Files
 Private.java
