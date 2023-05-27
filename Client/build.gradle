@@ -1,11 +1,13 @@
 plugins {
-	id 'fabric-loom' version '1.2-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 }
 
-sourceCompatibility = targetCompatibility = 17
+java {
+	sourceCompatibility = targetCompatibility = 17
+}
 
-version = "1.0.0-SNAPSHOT"
-group = "com.minecrafttas"
+version = "${project.mod_version}"
+group = "${project.mod_group}"
 
 repositories {
 	maven { url = 'https://maven.mgnet.work' }
@@ -17,24 +19,26 @@ loom {
 	accessWidenerPath = file('src/main/resources/tasbattle.accesswidener')
 	
 	// add log4jconfig
-	log4jConfigs.from(file('src/main/resources/log4j.xml'))
+	log4jConfigs.from(file('log4j.xml'))
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.19.4"
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:0.14.9"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	
-	compileOnly 'org.projectlombok:lombok:1.18.28'
-	annotationProcessor 'org.projectlombok:lombok:1.18.28'
+	compileOnly "org.projectlombok:lombok:${lombok_version}"
+	annotationProcessor "org.projectlombok:lombok:${lombok_version}"
 }
 
 processResources {
 	inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft_version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+
+    filesMatching("fabric.mod.json") {
+        expand 'mod_url': project.mod_url, 'name': project.mod_name, 'mod_version': project.version, 'mod_description': project.mod_description, 'mod_sources': project.mod_sources
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
  * @author Scribble
  */
 @Mixin(SoundEngine.class)
-public class MixinTickrateChangerAudioPitch {
+public class MixinSoundEngine {
 
 	@Inject(method = "calculatePitch", at = @At(value = "HEAD"), cancellable = true)
 	public void redosetPitch(SoundInstance soundInstance, CallbackInfoReturnable<Float> ci) {
