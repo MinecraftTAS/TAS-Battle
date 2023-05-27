@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "tasbattle",
+	"version": "1.0.0",
+	"name": "TASBattle",
+	"description": "Client for slow motion PVP",
+	"authors": [
+		"Pancake",
+		"Scribble"
+	],
+	"contact": {
+		"homepage": "https://minecrafttas.com",
+		"sources": "https://github.com/MinecraftTAS/TASBattle"
+	},
+
+	"license": "GPLv3",
+	"icon": "",
+	"environment": "client",
+	"accessWidener": "tasbattle.accesswidener",
+	"entrypoints": {
+		"main": [
+			"com.minecrafttas.tasbattle.TASBattle"
+		]
+	},
+	"mixins": [
+		"tasbattle.mixin.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.19",
+		"minecraft": "~1.19.4",
+		"java": ">=17"
+	}
+}
