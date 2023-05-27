@@ -1,16 +1,16 @@
 {
 	"schemaVersion": 1,
 	"id": "tasbattle",
-	"version": "1.0.0",
-	"name": "TASBattle",
-	"description": "Client for slow motion PVP",
+	"version": "${mod_version}",
+	"name": "${name}",
+	"description": "${mod_description}",
 	"authors": [
 		"Pancake",
 		"Scribble"
 	],
 	"contact": {
-		"homepage": "https://minecrafttas.com",
-		"sources": "https://github.com/MinecraftTAS/TASBattle"
+		"homepage": "${mod_url}",
+		"sources": "${mod_sources}"
 	},
 
 	"license": "GPLv3",

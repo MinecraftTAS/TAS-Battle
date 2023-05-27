@@ -4,12 +4,15 @@
   "package": "com.minecrafttas.tasbattle.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-  	"tickratechanger.MixinTickrateChanger"
   ],
   "client": [
   	"MixinTitleScreen",
-  	"tickratechanger.MixinTickrateChangerAudioPitch",
-  	"tickratechanger.MixinTickrateChangerEnchantmentGlimm"
+  	"tickratechanger.MixinItemRenderer",
+  	"tickratechanger.MixinLevelRenderer",
+  	"tickratechanger.MixinSoundEngine",
+  	"tickratechanger.MixinSubtitleOverlay",
+  	"tickratechanger.MixinToastInstance",
+  	"MixinMain"
   ],
   "injectors": {
     "defaultRequire": 1
