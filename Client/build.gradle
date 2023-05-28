@@ -19,7 +19,7 @@ loom {
 	accessWidenerPath = file('src/main/resources/tasbattle.accesswidener')
 	
 	// add log4jconfig
-	log4jConfigs.from(file('log4j.xml'))
+	//log4jConfigs.from(file('log4j.xml'))
 }
 
 dependencies {

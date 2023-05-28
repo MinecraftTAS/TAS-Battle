@@ -12,7 +12,9 @@
   	"tickratechanger.MixinSoundEngine",
   	"tickratechanger.MixinSubtitleOverlay",
   	"tickratechanger.MixinToastInstance",
-  	"MixinMain"
+  	"MixinMain",
+  	"spectator.MixinMinecraft",
+  	"spectator.MixinMouseHandler"
   ],
   "injectors": {
     "defaultRequire": 1

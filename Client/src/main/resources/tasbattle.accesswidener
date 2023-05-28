@@ -3,3 +3,5 @@ accessWidener v1 named
 accessible field net/minecraft/client/Minecraft timer Lnet/minecraft/client/Timer;
 accessible field net/minecraft/client/Timer msPerTick F
 mutable field net/minecraft/client/Timer msPerTick F
+
+accessible field net/minecraft/client/KeyMapping CATEGORY_SORT_ORDER Ljava/util/Map;
