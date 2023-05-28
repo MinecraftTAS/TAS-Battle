@@ -32,7 +32,8 @@ public class Tickratechanger {
 		this.gamespeed = tickrate/20;
 		this.msPerTick = (long) (1000L/tickrate);
 		
-		changeClientTickrate(msPerTick);
+		Minecraft mc = Minecraft.getInstance();
+		mc.timer.msPerTick = msPerTick;
 	}
 	
 	/**
@@ -41,10 +42,5 @@ public class Tickratechanger {
 	 */
 	public long getMilliseconds() {
 		return (long) (this.gameTime + ((System.currentTimeMillis() - this.systemTimeSinceTC) * this.gamespeed));
-	}
-	
-	private void changeClientTickrate(long msPerTick) {
-		Minecraft mc = Minecraft.getInstance();
-		mc.timer.msPerTick = msPerTick;
 	}
 }

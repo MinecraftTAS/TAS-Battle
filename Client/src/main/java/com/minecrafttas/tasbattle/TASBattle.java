@@ -16,6 +16,8 @@ public class TASBattle implements ModInitializer{
 	
 	public static final Tickratechanger tickratechanger = new Tickratechanger();
 	
+	public static final SpectatorManager spectatormanager = new SpectatorManager();
+	
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initialized TASBattle");

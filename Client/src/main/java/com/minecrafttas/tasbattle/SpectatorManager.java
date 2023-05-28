@@ -1,5 +1,7 @@
 package com.minecrafttas.tasbattle;
 
+import net.minecraft.client.player.LocalPlayer;
+
 public class SpectatorManager {
 	
 	public void startSpectating() {
@@ -18,4 +20,11 @@ public class SpectatorManager {
 		// Press Q to cycle to the next player
 	}
 	
+	public void onKey() {
+		
+	}
+	
+	public void onMouse(LocalPlayer player, double pitchD, double yawD) {
+		
+	}
 }
