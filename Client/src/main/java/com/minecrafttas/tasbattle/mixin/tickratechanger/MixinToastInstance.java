@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TickrateChanger;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,7 +24,7 @@ public class MixinToastInstance {
 	 */
 	@ModifyVariable(method = "Lnet/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance;render(ILcom/mojang/blaze3d/vertex/PoseStack;)Z", at = @At(value = "STORE"), ordinal = 0, index = 4)
 	public long modifyAnimationTime(long animationTimer) {
-		return TASBattle.tickratechanger.getMilliseconds();
+		return TickrateChanger.getInstance().getMilliseconds();
 	}
 
 }

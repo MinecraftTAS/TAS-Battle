@@ -5,3 +5,12 @@ accessible field net/minecraft/client/Timer msPerTick F
 mutable field net/minecraft/client/Timer msPerTick F
 
 accessible field net/minecraft/client/KeyMapping CATEGORY_SORT_ORDER Ljava/util/Map;
+
+accessible field net/minecraft/client/KeyMapping key Lcom/mojang/blaze3d/platform/InputConstants$Key;
+
+accessible field net/minecraft/client/resources/language/ClientLanguage storage Ljava/util/Map;
+mutable field net/minecraft/client/resources/language/ClientLanguage storage Ljava/util/Map;
+
+accessible method net/minecraft/client/Camera setPosition (Lnet/minecraft/world/phys/Vec3;)V
+accessible method net/minecraft/client/Camera setPosition (DDD)V
+accessible method net/minecraft/client/Camera getPosition ()Lnet/minecraft/world/phys/Vec3;
