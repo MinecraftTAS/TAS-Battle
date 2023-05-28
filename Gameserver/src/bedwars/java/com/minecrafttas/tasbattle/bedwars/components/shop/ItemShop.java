@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.EnchantedItemStack;
 import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.NamedItemStack;
 import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.PotionItemStack;
 import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.PurchasableItemStack;
@@ -91,9 +93,9 @@ public class ItemShop extends PagedInventory {
 		items = new PurchasableItemStack[] {
 			null,
 			new PurchasableItemStack(Price.GOLD, 2, Material.ARROW, 8, "Arrow"),
-//			new PurchasableItem(Price.GOLD, 12, Material.BOW, 1, "Bow"),
-//			new PurchasableItem(Price.GOLD, 24, Material.BOW, 1, "Bow II"),
-//			new PurchasableItem(Price.EMERALD, 6, Material.BOW, 1, "Bow III"),
+			new PurchasableItemStack(Price.GOLD, 12, Material.BOW, 1, "Bow"),
+			new EnchantedItemStack(Price.GOLD, 24, Material.BOW, new Enchantment[] { Enchantment.ARROW_DAMAGE }, new int[] { 1 }, "Bow II"),
+			new EnchantedItemStack(Price.EMERALD, 6, Material.BOW, new Enchantment[] { Enchantment.ARROW_DAMAGE, Enchantment.ARROW_KNOCKBACK }, new int[] { 1, 1 }, "Bow III"),
 		};
 		this.setPage(5, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Runnable[]::new)));
 		

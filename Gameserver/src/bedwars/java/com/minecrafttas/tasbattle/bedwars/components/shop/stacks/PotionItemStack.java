@@ -6,7 +6,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 
 /**
- * Purchasable item stack in shop inventory
+ * Purchasable potion item stack in shop inventory
  */
 public class PotionItemStack extends PurchasableItemStack {
 	
