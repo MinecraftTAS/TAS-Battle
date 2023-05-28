@@ -3,8 +3,11 @@ package com.minecrafttas.tasbattle;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 
-public class Tickratechanger {
+public class TickrateChanger {
 
+	@Getter
+	private static TickrateChanger instance;
+	
 	@Getter
 	private float tickrate;
 	
@@ -16,6 +19,10 @@ public class Tickratechanger {
 	
 	private long systemTimeSinceTC = System.currentTimeMillis(); // system time passed since last tickrate change
 	private long gameTime = System.currentTimeMillis(); // game time passed (since last tickrate update)
+	
+	public TickrateChanger() {
+		instance = this;
+	}
 	
 	public void changeTickrate(float tickrate) {
 		if(tickrate<=0 || tickrate > 1000) return;

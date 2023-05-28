@@ -13,8 +13,10 @@
   	"tickratechanger.MixinSubtitleOverlay",
   	"tickratechanger.MixinToastInstance",
   	"MixinMain",
-  	"spectator.MixinMinecraft",
-  	"spectator.MixinMouseHandler"
+  	"MixinMinecraft",
+  	"spectator.MixinMouseHandler",
+  	"HookOptions",
+  	"MixinLanguageManager"
   ],
   "injectors": {
     "defaultRequire": 1

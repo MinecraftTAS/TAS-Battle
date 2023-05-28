@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TickrateChanger;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,6 +24,6 @@ public class MixinSubtitleOverlay {
 	 */
 	@ModifyConstant(method = "render", constant = @Constant(doubleValue = 3000D))
 	public double applyTickrate(double threethousand) {
-		return (threethousand * (20.0 / TASBattle.tickratechanger.getTickrate()));
+		return (threethousand * (20.0 / TickrateChanger.getInstance().getTickrate()));
 	}
 }

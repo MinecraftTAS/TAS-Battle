@@ -12,16 +12,20 @@ public class TASBattle implements ModInitializer{
 	@Getter
 	private static boolean isDevEnvironment=false;
 	
-	public static final Logger LOGGER = LogManager.getLogger("TASBattle");
+	public static final Logger LOGGER = LogManager.getLogger("TAS Battle");
 	
-	public static final Tickratechanger tickratechanger = new Tickratechanger();
+	public TickrateChanger tickrateChanger;
 	
-	public static final SpectatorManager spectatormanager = new SpectatorManager();
+	public SpectatorManager spectatorManager;
 	
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Initialized TASBattle");
+		LOGGER.info("Initialized TAS Battle");
 		isDevEnvironment = FabricLoader.getInstance().isDevelopmentEnvironment();
+		
+		tickrateChanger = new TickrateChanger();
+		
+		spectatorManager = new SpectatorManager();
 	}
-
+	
 }

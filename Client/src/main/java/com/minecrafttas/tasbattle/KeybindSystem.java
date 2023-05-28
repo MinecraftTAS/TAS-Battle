@@ -7,13 +7,6 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
 
-import com.minecrafttas.lotas.mods.DragonManipulation;
-import com.minecrafttas.lotas.mods.DragonManipulation.Phase;
-import com.minecrafttas.lotas.mods.DupeMod;
-import com.minecrafttas.lotas.mods.SavestateMod;
-import com.minecrafttas.lotas.mods.TickAdvance;
-import com.minecrafttas.lotas.mods.TickrateChanger;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
@@ -33,11 +26,17 @@ public class KeybindSystem {
 	 * List of keybinds
 	 */
 	private static Keybind[] keybinds = {
-		new Keybind("Spectate next player", "TASBattle", GLFW.GLFW_KEY_E, true, () -> {
-			TASBattle.spectatormanager.spectateNextPlayer();
+		new Keybind("keybind.tasbattle.spectatenext", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_R, true, () -> { //Spectate next player //TAS Battle
+			SpectatorManager.getInstance().spectateNextPlayer();
 		}),
-		new Keybind("Spectate previous player", "TASBattle", GLFW.GLFW_KEY_Q, true, () -> {
-			TASBattle.spectatormanager.spectatePreviousPlayer();
+		new Keybind("keybind.tasbattle.spectateprev", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_Q, true, () -> { //Spectate previous player //TAS Battle
+			SpectatorManager.getInstance().spectatePreviousPlayer();
+		}),
+		new Keybind("Test", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_F8, true, () -> { //Spectate previous player //TAS Battle
+			SpectatorManager.getInstance().startSpectating();
+		}),
+		new Keybind("Test2", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_F9, true, () -> { //Spectate previous player //TAS Battle
+			SpectatorManager.getInstance().stopSpectating();
 		})
 	};
 
@@ -106,7 +105,7 @@ public class KeybindSystem {
 	}
 
 	/**
-	 * Watches out for key presses and triggers sub events.
+	 * Watches for key presses and triggers sub events.
 	 * @param mc Instance of minecraft
 	 */
 	public static void onGameLoop(Minecraft mc) {
@@ -135,7 +134,7 @@ public class KeybindSystem {
 			return false;
 
 		boolean wasPressed = keys.containsKey(map) ? keys.get(map) : false;
-		boolean isPressed = GLFW.glfwGetKey(mc.getWindow().getWindow(), map.key.getValue()) == GLFW.GLFW_PRESS; // @GetWindow;
+		boolean isPressed = GLFW.glfwGetKey(mc.getWindow().getWindow(), map.key.getValue()) == GLFW.GLFW_PRESS;
 		keys.put(map, isPressed);
 		return !wasPressed && isPressed;
 	}
