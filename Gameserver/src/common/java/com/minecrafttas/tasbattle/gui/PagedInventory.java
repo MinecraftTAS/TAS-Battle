@@ -1,5 +1,6 @@
 package com.minecrafttas.tasbattle.gui;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,15 @@ public class PagedInventory extends ClickableInventory {
 	public void setPage(int i, Page p) {
 		this.pages[i] = p;
 		this.setSlot(i, p.item, () -> {
+			for (int j = 18; j < this.inventory().getSize(); j++)
+				this.setSlot(j, null, null);
+			
 			for (int j = 0; j < p.content.length; j++)
-				this.setSlot(j + 9, p.content[j], p.interactions[j]);
+				this.setSlot(j + 18, p.content[j], p.interactions[j]);
+			
+			for (int j = 0; j < this.pages.length; j++)
+				this.setSlot(j + 9, new ItemStack(i == j ? Material.GREEN_STAINED_GLASS_PANE : Material.BLACK_STAINED_GLASS_PANE), null);
+
 		});
 	}
 	
