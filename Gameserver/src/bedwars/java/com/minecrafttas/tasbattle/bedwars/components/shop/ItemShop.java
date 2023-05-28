@@ -8,6 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.CustomItemStack;
 import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.EnchantedItemStack;
 import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.NamedItemStack;
 import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.PotionItemStack;
@@ -63,7 +64,7 @@ public class ItemShop extends PagedInventory {
 			new PurchasableItemStack(Price.IRON, 10, Material.STONE_SWORD, 1, "Stone Sword"),
 			new PurchasableItemStack(Price.GOLD, 6, Material.IRON_SWORD, 1, "Iron Sword"),
 			new PurchasableItemStack(Price.EMERALD, 4, Material.DIAMOND_SWORD, 1, "Diamond Sword"),
-//			new PurchasableItem(Price.GOLD, 5, Material.STICK, 1, "Knockback Stick"),
+			new EnchantedItemStack(Price.GOLD, 5, Material.STICK, new Enchantment[] { Enchantment.KNOCKBACK }, new int[] { 2 }, "Knockback Stick"),
 		};
 		this.setPage(2, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Runnable[]::new)));
 		
@@ -71,9 +72,9 @@ public class ItemShop extends PagedInventory {
 		item = new NamedItemStack(Material.CHAINMAIL_BOOTS, 1, "Armor");
 		items = new PurchasableItemStack[] {
 			null,
-//			new PurchasableItem(Price.IRON, 24, Material.CHAINMAIL_BOOTS, 1, "Chainmail Armor"),
-//			new PurchasableItem(Price.GOLD, 12, Material.IRON_BOOTS, 1, "Iron Armor"),
-//			new PurchasableItem(Price.EMERALD, 6, Material.DIAMOND_BOOTS, 1, "Diamond Armor"),
+			new CustomItemStack(Price.IRON, 24, Material.CHAINMAIL_BOOTS, 1, "Chainmail Armor", null),
+			new CustomItemStack(Price.GOLD, 12, Material.IRON_BOOTS, 1, "Iron Armor", null),
+			new CustomItemStack(Price.EMERALD, 6, Material.DIAMOND_BOOTS, 1, "Diamond Armor", null),
 		};
 		this.setPage(3, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Runnable[]::new)));
 		
@@ -81,10 +82,10 @@ public class ItemShop extends PagedInventory {
 		item = new NamedItemStack(Material.STONE_PICKAXE, 1, "Tools");
 		items = new PurchasableItemStack[] {
 			null,
-//			new PurchasableItem(Price.IRON, 4, Material.WHITE_WOOL, 16, "Wool"),
-//			new PurchasableItem(Price.IRON, 8, Material.TERRACOTTA, 16, "Terracotta"),
-//			new PurchasableItem(Price.IRON, 12, Material.GLASS, 4, "Glass"),
-//			new PurchasableItem(Price.EMERALD, 4, Material.OBSIDIAN, 4, "Obsidian"),
+//			new CustomItemStack(Price.IRON, 4, Material.WHITE_WOOL, 16, "Wool"),
+//			new CustomItemStack(Price.IRON, 8, Material.TERRACOTTA, 16, "Terracotta"),
+//			new CustomItemStack(Price.IRON, 12, Material.GLASS, 4, "Glass"),
+//			new CustomItemStack(Price.EMERALD, 4, Material.OBSIDIAN, 4, "Obsidian"),
 		};
 		this.setPage(4, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Runnable[]::new)));
 		
