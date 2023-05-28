@@ -26,17 +26,14 @@ public class KeybindSystem {
 	 * List of keybinds
 	 */
 	private static Keybind[] keybinds = {
-		new Keybind("keybind.tasbattle.spectatenext", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_R, true, () -> { //Spectate next player //TAS Battle
+		new Keybind("keybind.tasbattle.spectate", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_R, true, () -> { // Spectate previous player //TAS Battle
+			SpectatorManager.getInstance().toggleSpectate();
+		}),
+		new Keybind("keybind.tasbattle.spectatenext", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_E, true, () -> { //Spectate next player //TAS Battle
 			SpectatorManager.getInstance().spectateNextPlayer();
 		}),
 		new Keybind("keybind.tasbattle.spectateprev", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_Q, true, () -> { //Spectate previous player //TAS Battle
 			SpectatorManager.getInstance().spectatePreviousPlayer();
-		}),
-		new Keybind("Test", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_F8, true, () -> { //Spectate previous player //TAS Battle
-			SpectatorManager.getInstance().startSpectating();
-		}),
-		new Keybind("Test2", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_F9, true, () -> { //Spectate previous player //TAS Battle
-			SpectatorManager.getInstance().stopSpectating();
 		})
 	};
 

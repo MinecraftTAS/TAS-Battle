@@ -12,6 +12,7 @@ group = "${project.mod_group}"
 repositories {
 	maven { url = 'https://maven.mgnet.work' }
 	maven { url 'https://jitpack.io' }
+	maven { url = 'https://nexus.covers1624.net/repository/maven-releases/'}
 }
 
 loom {
@@ -20,6 +21,15 @@ loom {
 	
 	// add log4jconfig
 	//log4jConfigs.from(file('log4j.xml'))
+	
+	runs {
+	    clientLogin {
+	         inherit runs.client
+	         programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+	         mainClass.set 'net.covers1624.devlogin.DevLogin'
+	         ideConfigGenerated true
+	    }
+	}
 }
 
 dependencies {
@@ -29,6 +39,8 @@ dependencies {
 	
 	compileOnly "org.projectlombok:lombok:${lombok_version}"
 	annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+	
+	localRuntime "net.covers1624:DevLogin:0.1.0.2"
 }
 
 processResources {

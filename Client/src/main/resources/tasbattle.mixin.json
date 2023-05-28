@@ -12,7 +12,6 @@
   	"tickratechanger.MixinSoundEngine",
   	"tickratechanger.MixinSubtitleOverlay",
   	"tickratechanger.MixinToastInstance",
-  	"MixinMain",
   	"MixinMinecraft",
   	"spectator.MixinMouseHandler",
   	"HookOptions",

@@ -9,13 +9,13 @@ public class TickrateChanger {
 	private static TickrateChanger instance;
 	
 	@Getter
-	private float tickrate;
+	private float tickrate = 20;
 	
 	@Getter
-	private float gamespeed;
+	private float gamespeed = 1;
 	
 	@Getter
-	private long msPerTick;
+	private long msPerTick = 50;
 	
 	private long systemTimeSinceTC = System.currentTimeMillis(); // system time passed since last tickrate change
 	private long gameTime = System.currentTimeMillis(); // game time passed (since last tickrate update)
