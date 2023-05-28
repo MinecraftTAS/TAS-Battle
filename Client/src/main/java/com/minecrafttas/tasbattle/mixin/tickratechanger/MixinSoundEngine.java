@@ -20,7 +20,7 @@ public class MixinSoundEngine {
 
 	@Inject(method = "calculatePitch", at = @At(value = "HEAD"), cancellable = true)
 	public void redosetPitch(SoundInstance soundInstance, CallbackInfoReturnable<Float> ci) {
-		ci.setReturnValue(Mth.clamp(soundInstance.getPitch(), 0.5F, 2.0F) * (TickrateChanger.getInstance().getTickrate() / 20F));
+		ci.setReturnValue(Mth.clamp(soundInstance.getPitch(), 0.5F, 2.0F) * (TickrateChanger.getInstance().getGamespeed()));
 		ci.cancel();
 	}
 
