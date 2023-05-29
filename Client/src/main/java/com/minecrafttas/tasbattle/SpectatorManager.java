@@ -25,7 +25,7 @@ public class SpectatorManager {
 	private static SpectatorManager instance;
 
 	/**
-	 * The entity that 
+	 * The entity that is spectated by the player
 	 */
 	private Entity spectatedEntity;
 
