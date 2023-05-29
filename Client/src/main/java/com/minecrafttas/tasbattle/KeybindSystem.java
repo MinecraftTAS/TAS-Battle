@@ -27,7 +27,7 @@ public class KeybindSystem {
 	 */
 	private static Keybind[] keybinds = {
 		new Keybind("keybind.tasbattle.spectate", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_R, true, () -> { // Spectate previous player //TAS Battle
-			SpectatorManager.getInstance().toggleSpectate();
+			SpectatorManager.getInstance().cycleSpectate();
 		}),
 		new Keybind("keybind.tasbattle.spectatenext", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_E, true, () -> { //Spectate next player //TAS Battle
 			SpectatorManager.getInstance().spectateNextPlayer();
