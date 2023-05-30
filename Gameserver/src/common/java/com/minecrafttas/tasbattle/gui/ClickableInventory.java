@@ -1,6 +1,9 @@
 package com.minecrafttas.tasbattle.gui;
 
+import java.util.function.Consumer;
+
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,9 +14,10 @@ import net.kyori.adventure.text.Component;
  * @author Pancake
  */
 public class ClickableInventory {
-
+	public static interface Interaction extends Consumer<Player> {}
+	
 	private Inventory inv;
-	private Runnable[] interactions;
+	private Interaction[] interactions;
 	
 	/**
 	 * Initialize inventory with actions
@@ -22,7 +26,7 @@ public class ClickableInventory {
 	 */
 	public ClickableInventory(Component title, int size) {
 		this.inv = Bukkit.createInventory(null, size, title);
-		this.interactions = new Runnable[size];
+		this.interactions = new Interaction[size];
 		GuiHandler.instances.put(inv, this);
 	}
 	
@@ -32,7 +36,7 @@ public class ClickableInventory {
 	 * @param item Item
 	 * @param action Action
 	 */
-	public void setSlot(int slot, ItemStack item, Runnable action) {
+	public void setSlot(int slot, ItemStack item, Interaction action) {
 		this.inv.setItem(slot, item);
 		this.interactions[slot] = action;
 	}
@@ -47,11 +51,12 @@ public class ClickableInventory {
 	
 	/**
 	 * Interact with inventory
-	 * @param slot
+	 * @param p Player
+	 * @param slot Slot
 	 */
-	public void onInteract(int slot) {
+	public void onInteract(Player p, int slot) {
 		if (this.interactions[slot] != null)
-			this.interactions[slot].run();
+			this.interactions[slot].accept(p);
 	}
 	
 }

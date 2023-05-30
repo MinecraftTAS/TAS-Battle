@@ -15,7 +15,7 @@ public class PagedInventory extends ClickableInventory {
 	public static class Page {
 		private final ItemStack item;
 		private final ItemStack[] content;
-		private final Runnable[] interactions;
+		private final Interaction[] interactions;
 	}
 
 	private Page[] pages;
@@ -37,7 +37,7 @@ public class PagedInventory extends ClickableInventory {
 	 */
 	public void setPage(int i, Page p) {
 		this.pages[i] = p;
-		this.setSlot(i, p.item, () -> {
+		this.setSlot(i, p.item, (player) -> {
 			for (int j = 18; j < this.inventory().getSize(); j++)
 				this.setSlot(j, null, null);
 			
