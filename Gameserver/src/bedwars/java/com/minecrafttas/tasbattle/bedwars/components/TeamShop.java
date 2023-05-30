@@ -30,15 +30,18 @@ import net.kyori.adventure.text.Component;
 public class TeamShop implements Listener {
 
 	private World world;
+	private InventoryManagement invMng;
 	private List<Villager> itemShopLocations;
 	
 	/**
 	 * Initialize team shop
 	 * @param plugin Plugin
+	 * @param invMng Inventory management
 	 * @param world Game world
 	 */
-	public TeamShop(TASBattle plugin, World world) {
+	public TeamShop(TASBattle plugin, InventoryManagement invMng, World world) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
+		this.invMng = invMng;
 		this.world = world;
 		
 		// load config
@@ -97,7 +100,7 @@ public class TeamShop implements Listener {
 		if (!this.itemShopLocations.contains(e.getRightClicked()))
 			return;
 
-		e.getPlayer().openInventory(new ItemShop().inventory());
+		e.getPlayer().openInventory(new ItemShop(this.invMng).inventory());
 		
 		e.setCancelled(true);
 	}

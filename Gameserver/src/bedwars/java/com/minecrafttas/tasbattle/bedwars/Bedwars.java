@@ -70,7 +70,7 @@ public class Bedwars implements GameMode {
 		this.placementRules = new PlacementRules(this.plugin);
 		this.explosivePhysics = new ExplosivePhysics(this.plugin, this.placementRules);
 		this.inventoryManagement = new InventoryManagement(this.plugin, players);
-		this.teamShop = new TeamShop(this.plugin, this.world);
+		this.teamShop = new TeamShop(this.plugin, this.inventoryManagement, this.world);
 
 		// prepare players
 		for (Player p : players) {

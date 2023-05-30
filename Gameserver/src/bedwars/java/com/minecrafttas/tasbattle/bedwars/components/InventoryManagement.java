@@ -85,15 +85,15 @@ public class InventoryManagement implements Listener {
 			if (!(bootsType == Material.LEATHER_BOOTS && leggingsType == Material.LEATHER_LEGGINGS) && this.armorTiers.getOrDefault(p, -1) == -1) {
 				inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
 				inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-			} else if (!(bootsType == Material.CHAINMAIL_BOOTS && leggingsType == Material.CHAINMAIL_LEGGINGS) && this.armorTiers.getOrDefault(p, -1) != 0) {
-				inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
-				inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-			} else if (!(bootsType == Material.IRON_BOOTS && leggingsType == Material.IRON_LEGGINGS) && this.armorTiers.getOrDefault(p, -1) != 1) {
-				inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
-				inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-			} else if (!(bootsType == Material.DIAMOND_BOOTS && leggingsType == Material.DIAMOND_LEGGINGS) && this.armorTiers.getOrDefault(p, -1) != 2) {
-				inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
-				inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
+			} else if (!(bootsType == Material.CHAINMAIL_BOOTS && leggingsType == Material.CHAINMAIL_LEGGINGS) && this.armorTiers.getOrDefault(p, -1) == 0) {
+				inv.setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+				inv.setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
+			} else if (!(bootsType == Material.IRON_BOOTS && leggingsType == Material.IRON_LEGGINGS) && this.armorTiers.getOrDefault(p, -1) == 1) {
+				inv.setBoots(new ItemStack(Material.IRON_BOOTS));
+				inv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+			} else if (!(bootsType == Material.DIAMOND_BOOTS && leggingsType == Material.DIAMOND_LEGGINGS) && this.armorTiers.getOrDefault(p, -1) == 2) {
+				inv.setBoots(new ItemStack(Material.DIAMOND_BOOTS));
+				inv.setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
 			}
 			
 			// verify the correct tier of pickaxe is in the inventory
