@@ -13,6 +13,7 @@ import com.minecrafttas.tasbattle.bedwars.components.ExplosivePhysics;
 import com.minecrafttas.tasbattle.bedwars.components.InventoryManagement;
 import com.minecrafttas.tasbattle.bedwars.components.PlacementRules;
 import com.minecrafttas.tasbattle.bedwars.components.ResourceSpawner;
+import com.minecrafttas.tasbattle.bedwars.components.Team;
 import com.minecrafttas.tasbattle.bedwars.components.TeamShop;
 import com.minecrafttas.tasbattle.loading.WorldUtils;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
@@ -46,6 +47,9 @@ public class Bedwars implements GameMode {
 	@Getter
 	private TeamShop teamShop;
 	
+	@Getter
+	private Team team;
+	
 	/**
 	 * Initialize bedwars gamemode
 	 * @param plugin Plugin
@@ -71,13 +75,7 @@ public class Bedwars implements GameMode {
 		this.explosivePhysics = new ExplosivePhysics(this.plugin, this.placementRules);
 		this.inventoryManagement = new InventoryManagement(this.plugin, players);
 		this.teamShop = new TeamShop(this.plugin, this.inventoryManagement, this.world);
-
-		// prepare players
-		for (Player p : players) {
-			p.setFallDistance(0.0f);
-			p.teleport(this.world.getSpawnLocation());
-			p.getInventory().clear();
-		}
+		this.team = new Team(this.plugin, players, this.world);
 	}
 	
 	@Override
