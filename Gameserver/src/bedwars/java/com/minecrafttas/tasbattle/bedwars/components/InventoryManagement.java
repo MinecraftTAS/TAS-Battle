@@ -97,23 +97,23 @@ public class InventoryManagement implements Listener {
 			}
 			
 			// verify the correct tier of pickaxe is in the inventory
-			if (!inv.contains(Material.WOODEN_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == -1)
+			if (!inv.contains(Material.WOODEN_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 0)
 				inv.addItem(new ItemStack(Material.WOODEN_PICKAXE));
-			else if (!inv.contains(Material.STONE_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 0)
+			else if (!inv.contains(Material.STONE_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 1)
 				inv.addItem(new ItemStack(Material.STONE_PICKAXE));
-			else if (!inv.contains(Material.IRON_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 1)
+			else if (!inv.contains(Material.IRON_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 2)
 				inv.addItem(new ItemStack(Material.IRON_PICKAXE));
-			else if (!inv.contains(Material.DIAMOND_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 2)
+			else if (!inv.contains(Material.DIAMOND_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 3)
 				inv.addItem(new ItemStack(Material.DIAMOND_PICKAXE));
 			
 			// verify the correct tier of axe is in the inventory
-			if (!inv.contains(Material.WOODEN_AXE) && this.axeTiers.getOrDefault(p, -1) == -1)
+			if (!inv.contains(Material.WOODEN_AXE) && this.axeTiers.getOrDefault(p, -1) == 0)
 				inv.addItem(new ItemStack(Material.WOODEN_AXE));
-			else if (!inv.contains(Material.STONE_AXE) && this.axeTiers.getOrDefault(p, -1) == 0)
+			else if (!inv.contains(Material.STONE_AXE) && this.axeTiers.getOrDefault(p, -1) == 1)
 				inv.addItem(new ItemStack(Material.STONE_AXE));
-			else if (!inv.contains(Material.IRON_AXE) && this.axeTiers.getOrDefault(p, -1) == 1)
+			else if (!inv.contains(Material.IRON_AXE) && this.axeTiers.getOrDefault(p, -1) == 2)
 				inv.addItem(new ItemStack(Material.IRON_AXE));
-			else if (!inv.contains(Material.DIAMOND_AXE) && this.axeTiers.getOrDefault(p, -1) == 2)
+			else if (!inv.contains(Material.DIAMOND_AXE) && this.axeTiers.getOrDefault(p, -1) == 3)
 				inv.addItem(new ItemStack(Material.DIAMOND_AXE));
 			
 			// verify the correct tier of shears are in the inventory
@@ -170,9 +170,9 @@ public class InventoryManagement implements Listener {
 	public int getArmorTier(Player p) { return this.armorTiers.getOrDefault(p, -1); }
 	
 	// set tier methods
-	public void increasePickaxeTier(Player p) { this.pickaxeTiers.put(p, Math.min(3, this.pickaxeTiers.getOrDefault(p, -1) + 1)); }
-	public void increaseAxeTier(Player p) { this.axeTiers.put(p, Math.min(3, this.axeTiers.getOrDefault(p, -1) + 1)); }
-	public void increaseShearsTier(Player p) { this.shearsTiers.put(p, 0); }
+	public boolean increasePickaxeTier(Player p) { this.pickaxeTiers.put(p, Math.min(3, this.pickaxeTiers.getOrDefault(p, -1) + 1)); return true; }
+	public boolean increaseAxeTier(Player p) { this.axeTiers.put(p, Math.min(3, this.axeTiers.getOrDefault(p, -1) + 1)); return true; }
+	public boolean increaseShearsTier(Player p) { this.shearsTiers.put(p, 0); return true; }
 	public void setArmorTier(Player p, int tier) { this.armorTiers.put(p, tier); }
 	
 }

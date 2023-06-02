@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -28,8 +29,10 @@ public class ItemShop extends PagedInventory {
 	
 	/**
 	 * Initialize item shop
+	 * @param p Player
+	 * @param invMng Inventory management instance
 	 */
-	public ItemShop(InventoryManagement invMng) {
+	public ItemShop(Player p, InventoryManagement invMng) {
 		super(Component.text("§8Item Shop"), 54);
 		this.invMng = invMng;
 		
@@ -76,23 +79,23 @@ public class ItemShop extends PagedInventory {
 		item = new NamedItemStack(Material.CHAINMAIL_BOOTS, 1, "Armor");
 		items = new PurchasableItemStack[] {
 			null,
-			new CustomItemStack(Price.IRON, 24, Material.CHAINMAIL_BOOTS, 1, "Chainmail Armor", p -> {
-				if (this.invMng.getArmorTier(p) < 0) {
-					this.invMng.setArmorTier(p, 0);
+			new CustomItemStack(Price.IRON, 24, Material.CHAINMAIL_BOOTS, 1, "Chainmail Armor", player -> {
+				if (this.invMng.getArmorTier(player) < 0) {
+					this.invMng.setArmorTier(player, 0);
 					return true;
 				}
 				return false;
 			}),
-			new CustomItemStack(Price.GOLD, 12, Material.IRON_BOOTS, 1, "Iron Armor", p -> {
-				if (this.invMng.getArmorTier(p) < 1) {
-					this.invMng.setArmorTier(p, 1);
+			new CustomItemStack(Price.GOLD, 12, Material.IRON_BOOTS, 1, "Iron Armor", player -> {
+				if (this.invMng.getArmorTier(player) < 1) {
+					this.invMng.setArmorTier(player, 1);
 					return true;
 				}
 				return false;
 			}),
-			new CustomItemStack(Price.EMERALD, 6, Material.DIAMOND_BOOTS, 1, "Diamond Armor", p -> {
-				if (this.invMng.getArmorTier(p) < 2) {
-					this.invMng.setArmorTier(p, 2);
+			new CustomItemStack(Price.EMERALD, 6, Material.DIAMOND_BOOTS, 1, "Diamond Armor", player -> {
+				if (this.invMng.getArmorTier(player) < 2) {
+					this.invMng.setArmorTier(player, 2);
 					return true;
 				}
 				return false;
@@ -104,11 +107,39 @@ public class ItemShop extends PagedInventory {
 		item = new NamedItemStack(Material.STONE_PICKAXE, 1, "Tools");
 		items = new PurchasableItemStack[] {
 			null,
-//			new CustomItemStack(Price.IRON, 4, Material.WHITE_WOOL, 16, "Wool"),
-//			new CustomItemStack(Price.IRON, 8, Material.TERRACOTTA, 16, "Terracotta"),
-//			new CustomItemStack(Price.IRON, 12, Material.GLASS, 4, "Glass"),
-//			new CustomItemStack(Price.EMERALD, 4, Material.OBSIDIAN, 4, "Obsidian"),
+			null,
+			null,
+			new CustomItemStack(Price.IRON, 20, Material.SHEARS, 1, "Shears", player -> {
+				if (this.invMng.getShearsTier(player) == -1) {
+					this.invMng.increaseShearsTier(player);
+					return true;
+				}
+				return false;
+			})
 		};
+		
+		// pickaxe
+		var pickaxeTier = this.invMng.getPickaxeTier(p);
+		items[1] = switch (pickaxeTier) {
+			case -1: yield new CustomItemStack(Price.IRON, 10, Material.WOODEN_PICKAXE, 1, "Wooden Pickaxe", player -> this.invMng.increasePickaxeTier(player));
+			case 0: yield new CustomItemStack(Price.IRON, 10, Material.STONE_PICKAXE, 1, "Stone Pickaxe", player -> this.invMng.increasePickaxeTier(player));
+			case 1: yield new CustomItemStack(Price.GOLD, 3, Material.IRON_PICKAXE, 1, "Iron Pickaxe", player -> this.invMng.increasePickaxeTier(player));
+			case 2: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_PICKAXE, 1, "Diamond Pickaxe", player -> this.invMng.increasePickaxeTier(player));
+			case 3: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_PICKAXE, 1, "Diamond Pickaxe", player -> false);
+			default: throw new IllegalArgumentException("Unexpected value: " + pickaxeTier);
+		};
+		
+		// axe
+		var axeTier = this.invMng.getAxeTier(p);
+		items[2] = switch (axeTier) {
+			case -1: yield new CustomItemStack(Price.IRON, 10, Material.WOODEN_AXE, 1, "Wooden Axe", player -> this.invMng.increaseAxeTier(player));
+			case 0: yield new CustomItemStack(Price.IRON, 10, Material.STONE_AXE, 1, "Stone Axe", player -> this.invMng.increaseAxeTier(player));
+			case 1: yield new CustomItemStack(Price.GOLD, 3, Material.IRON_AXE, 1, "Iron Axe", player -> this.invMng.increaseAxeTier(player));
+			case 2: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_AXE, 1, "Diamond Axe", player -> this.invMng.increaseAxeTier(player));
+			case 3: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_AXE, 1, "Diamond Axe", player -> false);
+			default: throw new IllegalArgumentException("Unexpected value: " + axeTier);
+		};
+		
 		this.setPage(4, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		// bows page
