@@ -100,7 +100,7 @@ public class TeamShop implements Listener {
 		if (!this.itemShopLocations.contains(e.getRightClicked()))
 			return;
 
-		e.getPlayer().openInventory(new ItemShop(this.invMng).inventory());
+		e.getPlayer().openInventory(new ItemShop(e.getPlayer(), this.invMng).inventory());
 		
 		e.setCancelled(true);
 	}
