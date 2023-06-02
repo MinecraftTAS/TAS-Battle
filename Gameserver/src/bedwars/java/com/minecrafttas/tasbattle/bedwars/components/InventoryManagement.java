@@ -71,14 +71,15 @@ public class InventoryManagement implements Listener {
 		for (var p : this.players) {
 			var inv = p.getInventory();
 			
-			// verify at least one sword in inventory
-			if (!inv.contains(Material.WOODEN_SWORD) && !inv.contains(Material.STONE_SWORD) && !inv.contains(Material.IRON_SWORD) && !inv.contains(Material.DIAMOND_SWORD))
+			// verify the correct sword is in the inventory
+			var woodenSwords = inv.all(Material.WOODEN_SWORD);
+			if (inv.contains(Material.STONE_SWORD) || inv.contains(Material.IRON_SWORD) || inv.contains(Material.DIAMOND_SWORD)) {
+				inv.remove(Material.WOODEN_SWORD);
+			} else if (woodenSwords.size() > 1)
+				inv.remove(woodenSwords.values().iterator().next());
+			else if (woodenSwords.size() == 0)
 				inv.addItem(new ItemStack(Material.WOODEN_SWORD));
 			
-			// verify no more than one wooden sword in inventory
-			if (inv.all(Material.WOODEN_SWORD).size() > 1)
-				inv.remove(Material.WOODEN_SWORD);
-				
 			// verify the correct tier of armor is in the inventory
 			var bootsType = inv.getBoots() == null ? Material.AIR : inv.getBoots().getType();
 			var leggingsType = inv.getLeggings() == null ? Material.AIR : inv.getLeggings().getType();
@@ -106,6 +107,15 @@ public class InventoryManagement implements Listener {
 			else if (!inv.contains(Material.DIAMOND_PICKAXE) && this.pickaxeTiers.getOrDefault(p, -1) == 3)
 				inv.addItem(new ItemStack(Material.DIAMOND_PICKAXE));
 			
+			if (this.pickaxeTiers.getOrDefault(p, -1) != 0)
+				inv.remove(Material.WOODEN_PICKAXE);
+			if (this.pickaxeTiers.getOrDefault(p, -1) != 1)
+				inv.remove(Material.STONE_PICKAXE);
+			if (this.pickaxeTiers.getOrDefault(p, -1) != 2)
+				inv.remove(Material.IRON_PICKAXE);
+			if (this.pickaxeTiers.getOrDefault(p, -1) != 3)
+				inv.remove(Material.DIAMOND_PICKAXE);
+			
 			// verify the correct tier of axe is in the inventory
 			if (!inv.contains(Material.WOODEN_AXE) && this.axeTiers.getOrDefault(p, -1) == 0)
 				inv.addItem(new ItemStack(Material.WOODEN_AXE));
@@ -116,9 +126,23 @@ public class InventoryManagement implements Listener {
 			else if (!inv.contains(Material.DIAMOND_AXE) && this.axeTiers.getOrDefault(p, -1) == 3)
 				inv.addItem(new ItemStack(Material.DIAMOND_AXE));
 			
+			if (this.axeTiers.getOrDefault(p, -1) != 0)
+				inv.remove(Material.WOODEN_AXE);
+			if (this.axeTiers.getOrDefault(p, -1) != 1)
+				inv.remove(Material.STONE_AXE);
+			if (this.axeTiers.getOrDefault(p, -1) != 2)
+				inv.remove(Material.IRON_AXE);
+			if (this.axeTiers.getOrDefault(p, -1) != 3)
+				inv.remove(Material.DIAMOND_AXE);
+			
 			// verify the correct tier of shears are in the inventory
-			if (!inv.contains(Material.SHEARS) && this.shearsTiers.getOrDefault(p, -1) == 0)
+			var shears = inv.all(Material.SHEARS);
+
+			if (shears.isEmpty() && this.shearsTiers.getOrDefault(p, -1) == 0)
 				inv.addItem(new ItemStack(Material.SHEARS));
+			
+			if (shears.size() > 1)
+				inv.remove(shears.values().iterator().next());
 		}
 	}
 	
