@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -58,9 +59,11 @@ public class Team implements Listener {
 					player.getInventory().clear();
 					player.setFallDistance(0.0f);
 					player.teleport(this.baseLocations[i]);
+					player.setBedSpawnLocation(this.baseLocations[i], true);
+					player.setGameMode(GameMode.SURVIVAL);
 				}
 			}
 		}
 	}
-	
+
 }
