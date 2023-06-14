@@ -30,8 +30,9 @@ public class FFA implements GameMode {
 	 * Initialize ffa gamemode
 	 * @param plugin Plugin
 	 */
+	public FFA(TASBattle plugin) {
 		this.plugin = plugin;
-	
+		
 		// find available worlds
 		var serverDir = new File(".");
 		var availableWorlds = serverDir.listFiles((dir, name) -> name.startsWith("ffa-"));
@@ -39,9 +40,12 @@ public class FFA implements GameMode {
 		var worldName = availableWorlds[(int) (Math.random() * availableWorlds.length)].getName();
 		this.world = WorldUtils.loadWorld(worldName);
 	}
+	
 	@Override
 	public void startGameMode(List<Player> players) {
 		Bukkit.broadcast(Component.text("we can have fun now... woo"));
+		// teleport players
+		SpreadplayersUtils.spreadplayers(players, this.world.getSpawnLocation(), 128.0);
 	}
 
 	@Override
