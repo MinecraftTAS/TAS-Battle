@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.TASBattle.GameMode;
+import com.minecrafttas.tasbattle.ffa.components.GameLogic;
 import com.minecrafttas.tasbattle.ffa.managers.KitManager;
 import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager;
 import com.minecrafttas.tasbattle.ffa.utils.SpreadplayersUtils;
@@ -36,8 +37,14 @@ public class FFA implements GameMode {
 	@Getter
 	private World world;
 	
+	@Getter
 	private KitManager kitManager;
+	
+	@Getter
 	private ScenarioManager scenarioManager;
+	
+	@Getter
+	private GameLogic gameLogic;
 	
 	/**
 	 * Initialize ffa gamemode
@@ -58,11 +65,11 @@ public class FFA implements GameMode {
 	public void startGameMode(List<Player> players) {
 		// determine most voted kit
 		Item kit = this.kitManager.getInventories().values().stream().map(inv -> inv.getItems().get(0)).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
-		Bukkit.broadcast(Component.text("Kit: " + kit.getTitle()));
+		Bukkit.broadcast(Component.text("§b» §7Selected kit: §6" + kit.getTitle()));
 
 		// determine all enabled scenarios
 		List<Item> scenarios = this.scenarioManager.getInventories().values().stream().map(inv -> inv.getItems()).flatMap(Collection::stream).toList();
-		Bukkit.broadcast(Component.text("Scenarios: " + Arrays.toString(scenarios.stream().map(e -> e.getTitle()).toArray())));
+		Bukkit.broadcast(Component.text("§b» §7Enabeld scenarios: §6" + Arrays.toString(scenarios.stream().map(e -> e.getTitle()).toArray())));
 		
 		// update players
 		for (var p : players) {
@@ -71,8 +78,12 @@ public class FFA implements GameMode {
 			p.getInventory().clear();
 			p.closeInventory();
 		}
+		
 		// teleport players
 		SpreadplayersUtils.spreadplayers(players, this.world.getSpawnLocation(), 128.0);
+		
+		// create game logic
+		this.gameLogic = new GameLogic(this.plugin, this.world, players);
 	}
 
 	@Override
