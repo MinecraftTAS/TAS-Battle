@@ -1,7 +1,12 @@
 package com.minecrafttas.tasbattle;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import com.google.inject.Inject;
@@ -11,8 +16,8 @@ import com.velocitypowered.api.event.permission.PermissionsSetupEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.permission.PermissionFunction;
 import com.velocitypowered.api.permission.PermissionProvider;
-import com.velocitypowered.api.permission.PermissionSubject;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -27,50 +32,62 @@ import net.kyori.adventure.text.Component;
 		url = "https://github.com/MinecraftTAS/TAS-Battle", description = "basic proxy management plugin for the tasbattle proxy server")
 public class ProxyPlugin {
 
-	private static final String LOBBY_SERVER = "lobby";
-	
-	private static final List<String> LOBBY_ENABLED_SERVERS = Arrays.asList(
-		"ffa",
-		"bedwars",
-		"skywars",
-		"juggernaut",
-		"knockffa",
-		"cores",
-		"survivalgames",
-		"speeduhc"
-	);
-	
-	private static final List<UUID> ADMIN_UUIDS = Arrays.asList(
-		UUID.fromString("f3112feb-00c1-4de8-9829-53b940342996"), // scribble
-		UUID.fromString("b8abdafc-5002-40df-ab68-63206ea4c7e8"), // scribble (tasbot)
-		UUID.fromString("faed0946-bb7f-4fcc-bff1-5fb9ef75a066"), // pancake
-		UUID.fromString("455798c9-eed4-47f2-aeae-12d071e0ce69"), // pancake (taspvp)
-		UUID.fromString("06e8982e-608e-4633-bc2b-6ea1af91b052")  // pancake (tasbattle)
-	);
-	
+	// proxy instance
 	private final ProxyServer server;
-    private final PermissionProvider permissionProvider;
+	
+	// plugin configuration
+	private String lobbyCommand;
+	private String[] lobbyAliases;
+	private String lobbyServer;
+	private String lobbyErrorMessage;
+	private List<String> lobbyEnabledServers;
+	private List<UUID> admins;
     
+	// permission provider
+	private PermissionProvider permissionProvider;
+	
     /**
      * Construct proxy plugin
      * @param server Proxy server instance
+     * @throws IOException Configuration could not be loaded
      */
 	@Inject
-	public ProxyPlugin(ProxyServer server) {
+	public ProxyPlugin(ProxyServer server, @DataDirectory Path dataDirectory) throws IOException {
 		this.server = server;
 		
+		// load configuration or regenerate defaults
+		var properties = new Properties();
+		var configFile = dataDirectory.resolve("config.xml");
+		if (Files.exists(configFile)) {
+			// load all properties
+			properties.loadFromXML(Files.newInputStream(configFile));
+			this.lobbyCommand = properties.getProperty("lobby_command");
+			this.lobbyAliases = properties.getProperty("lobby_aliases").split("\\\\,");
+			this.lobbyServer = properties.getProperty("lobby_server");
+			this.lobbyErrorMessage = properties.getProperty("lobby_error_message");
+			this.lobbyEnabledServers = Arrays.stream(properties.getProperty("lobby_enabled_servers").split("\\\\,")).toList();
+			this.admins = Arrays.stream(properties.getProperty("admin_uuids").split("\\\\,")).map(s -> UUID.fromString(s)).toList();
+		} else {
+			// set default properties and save
+			Files.createDirectories(dataDirectory);
+			properties.setProperty("lobby_command", "");
+			properties.setProperty("lobby_aliases", "");
+			properties.setProperty("lobby_server", "");
+			properties.setProperty("lobby_error_message", "");
+			properties.setProperty("lobby_enabled_servers", "");
+			properties.setProperty("admin_uuids", "");
+			properties.storeToXML(Files.newOutputStream(configFile, StandardOpenOption.CREATE), null);
+			throw new IOException("Configuration is not set up.");
+		}
+		
 		// create permission function
-		this.permissionProvider = new PermissionProvider() {
+		this.permissionProvider = subject -> {
+			if ((subject instanceof Player player && this.admins.contains(player.getUniqueId())) || subject instanceof ConsoleCommandSource) // grant all permissions to admins and the console
+				return PermissionFunction.ALWAYS_TRUE;
 			
-			@Override
-			public PermissionFunction createFunction(PermissionSubject subject) {
-				// grant all permissions to admins and the console
-				if ((subject instanceof Player player && ADMIN_UUIDS.contains(player.getUniqueId())) || subject instanceof ConsoleCommandSource)
-					return PermissionFunction.ALWAYS_TRUE;
-				
-				return PermissionFunction.ALWAYS_FALSE;
-			}
+			return PermissionFunction.ALWAYS_FALSE;
 		};
+		
 	}
 
 	/**
@@ -83,14 +100,14 @@ public class ProxyPlugin {
 		this.server.getEventManager().register(this, PermissionsSetupEvent.class, event -> event.setProvider(this.permissionProvider));
 		
 		// register lobby command
-		this.server.getCommandManager().register("lobby", (RawCommand) invocation -> {
+		this.server.getCommandManager().register(this.lobbyCommand, (RawCommand) invocation -> {
 			
-			if (invocation.source() instanceof Player player && LOBBY_ENABLED_SERVERS.contains(player.getCurrentServer().get().getServerInfo().getName()))
-				player.createConnectionRequest(this.server.getServer(LOBBY_SERVER).get()).fireAndForget();
+			if (invocation.source() instanceof Player player && this.lobbyEnabledServers.contains(player.getCurrentServer().get().getServerInfo().getName()))
+				player.createConnectionRequest(this.server.getServer(this.lobbyServer).get()).fireAndForget();
 			else
-				invocation.source().sendMessage(Component.text("§cYou cannot use that here."));
+				invocation.source().sendMessage(Component.text(this.lobbyErrorMessage));
 			
-		}, "hub", "l", "leave");
+		}, this.lobbyAliases);
 		
 	}
 	
