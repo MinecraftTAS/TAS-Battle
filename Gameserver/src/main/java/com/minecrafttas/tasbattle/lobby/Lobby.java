@@ -77,9 +77,9 @@ public class Lobby implements Listener {
 		});
 		inv.setItem(8, leaveItem);
 		
-		// TODO: setup config items here
-		
 		player.updateInventory(); // not taking any risks ._.
+
+		e.joinMessage(Component.text("§b» §a" + player.getName() + " §7joined the game"));
 	}
 
 	/**
@@ -91,7 +91,9 @@ public class Lobby implements Listener {
 		if (this.timer.isGameRunning())
 			return;
 		
-		this.timer.removePlayer(e.getPlayer());
+		var player = e.getPlayer();
+		this.timer.removePlayer(player);
+		e.quitMessage(Component.text("§b» §a" + player.getName() + " §7left the game"));
 	}
 
 	/**
