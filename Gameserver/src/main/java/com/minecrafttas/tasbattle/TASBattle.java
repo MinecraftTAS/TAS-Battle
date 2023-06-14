@@ -6,11 +6,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.minecrafttas.tasbattle.bedwars.Bedwars;
+import com.minecrafttas.tasbattle.ffa.FFA;
 import com.minecrafttas.tasbattle.gui.GuiHandler;
 import com.minecrafttas.tasbattle.lobby.Lobby;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
+
 import lombok.Getter;
 
 public class TASBattle extends JavaPlugin {
@@ -36,7 +37,7 @@ public class TASBattle extends JavaPlugin {
 		this.tickrateChanger = new TickrateChanger(this);
 		
 		// TODO: fix this
-		this.gameMode = new Bedwars(this);
+		this.gameMode = new FFA(this);
 		this.lobby = new Lobby(this, this.gameMode);
 	}
 	
