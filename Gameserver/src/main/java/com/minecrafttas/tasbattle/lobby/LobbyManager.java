@@ -3,7 +3,6 @@ package com.minecrafttas.tasbattle.lobby;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,7 +73,7 @@ public abstract class LobbyManager {
 	 * @return
 	 */
 	protected final Item createItem(String name, String lore, Material item) {
-		return new Item(ChatColor.GOLD + name, ChatColor.GRAY + lore + this.getItemBaseLore(), item);
+		return new Item("§6" + name, "§7" + lore + this.getItemBaseLore(), item);
 	}
 	
 	/**

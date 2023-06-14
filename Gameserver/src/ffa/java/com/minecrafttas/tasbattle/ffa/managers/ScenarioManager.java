@@ -3,7 +3,6 @@ package com.minecrafttas.tasbattle.ffa.managers;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import com.minecrafttas.tasbattle.gui.ListInventory.Item;
@@ -83,7 +82,7 @@ public class ScenarioManager extends LobbyManager {
 
 	@Override
 	protected String getItemBaseLore() {
-		return "\n\n" + ChatColor.AQUA + "Click to toggle!";
+		return "\n\n§bClick to toggle!";
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class ScenarioManager extends LobbyManager {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text(ChatColor.DARK_PURPLE + "Every FFA game can be customized with scenarios."), Component.text(ChatColor.DARK_PURPLE + "These are small additions to the rules that"), Component.text(ChatColor.DARK_PURPLE + "allow for unique and fun gameplay."));
+		return Arrays.asList(Component.text("§5Every FFA game can be customized with scenarios."), Component.text("§5These are small additions to the rules that"), Component.text("§5allow for unique and fun gameplay."));
 	}
 
 }
