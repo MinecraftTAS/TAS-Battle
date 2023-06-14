@@ -44,6 +44,14 @@ public class FFA implements GameMode {
 	@Override
 	public void startGameMode(List<Player> players) {
 		Bukkit.broadcast(Component.text("we can have fun now... woo"));
+		
+		// update players
+		for (var p : players) {
+			// prepare player
+			p.setGameMode(org.bukkit.GameMode.SURVIVAL);
+			p.getInventory().clear();
+			p.closeInventory();
+		}
 		// teleport players
 		SpreadplayersUtils.spreadplayers(players, this.world.getSpawnLocation(), 128.0);
 	}
