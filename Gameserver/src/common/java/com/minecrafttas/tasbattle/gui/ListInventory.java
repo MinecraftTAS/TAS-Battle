@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import lombok.Data;
-import lombok.Getter;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
@@ -46,9 +44,9 @@ public class ListInventory {
 			// make item stack
 			this.stack = new ItemStack(this.type);
 			this.stack.editMeta(meta -> {
-				meta.displayName(Component.text(ChatColor.WHITE + this.title));
+				meta.displayName(Component.text("§f" + this.title));
 				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-				meta.lore(Arrays.asList(this.description.split("\n")).stream().map(c -> Component.text(ChatColor.DARK_PURPLE + c)).collect(Collectors.toList()));
+				meta.lore(Arrays.asList(this.description.split("\n")).stream().map(c -> Component.text("§5" + c)).collect(Collectors.toList()));
 			});
 		}
 

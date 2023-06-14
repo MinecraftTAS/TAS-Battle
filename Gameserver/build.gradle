@@ -28,7 +28,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.28'
 	annotationProcessor 'org.projectlombok:lombok:1.18.28'
 	// Add paper mc api for compile time
-    compileOnly "io.papermc.paper:paper-api:1.19.1-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
 }
 
 // Configure source sets

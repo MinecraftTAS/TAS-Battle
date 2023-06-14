@@ -3,7 +3,6 @@ package com.minecrafttas.tasbattle.lobby;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -66,7 +65,7 @@ public class Lobby implements Listener {
 		for (LobbyManager manager : this.managers) {
 			var item = new ItemStack(manager.getItem());
 			item.editMeta(m -> {
-				m.displayName(Component.text(ChatColor.WHITE + manager.getInventoryTitle()));
+				m.displayName(Component.text("§f" + manager.getInventoryTitle()));
 				m.lore(manager.getItemLore());
 			});
 			inv.setItem(i++, item);
@@ -74,7 +73,7 @@ public class Lobby implements Listener {
 		
 		var leaveItem = new ItemStack(Material.RED_BED);
 		leaveItem.editMeta(m -> {
-			m.displayName(Component.text(ChatColor.RED + "Leave the game"));
+			m.displayName(Component.text("§cLeave the game"));
 		});
 		inv.setItem(8, leaveItem);
 		

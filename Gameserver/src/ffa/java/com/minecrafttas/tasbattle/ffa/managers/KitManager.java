@@ -3,7 +3,6 @@ package com.minecrafttas.tasbattle.ffa.managers;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import com.minecrafttas.tasbattle.gui.ListInventory.Item;
@@ -29,7 +28,7 @@ public class KitManager extends LobbyManager {
 
 	@Override
 	protected String getItemBaseLore() {
-		return "\n\n" + ChatColor.AQUA + "Click to select!";
+		return "\n\n§bClick to select!";
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class KitManager extends LobbyManager {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text(ChatColor.DARK_PURPLE + "Vote for a kit"), Component.text(ChatColor.DARK_PURPLE + "Every player will spawn with the same gear"));
+		return Arrays.asList(Component.text("§5Vote for a kit"), Component.text("§5Every player will spawn with the same gear"));
 	}
 
 }
