@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.RawCommand;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.permission.PermissionsSetupEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -16,6 +17,8 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import net.kyori.adventure.text.Component;
+
 /**
  * Proxy plugin class
  * @author Pancake
@@ -23,6 +26,19 @@ import com.velocitypowered.api.proxy.ProxyServer;
 @Plugin(name = "TASBattle Proxy Plugin", version = "${version}", id = "${modid}", authors = { "Pancake" }, 
 		url = "https://github.com/MinecraftTAS/TAS-Battle", description = "basic proxy management plugin for the tasbattle proxy server")
 public class ProxyPlugin {
+
+	private static final String LOBBY_SERVER = "lobby";
+	
+	private static final List<String> LOBBY_ENABLED_SERVERS = Arrays.asList(
+		"ffa",
+		"bedwars",
+		"skywars",
+		"juggernaut",
+		"knockffa",
+		"cores",
+		"survivalgames",
+		"speeduhc"
+	);
 	
 	private static final List<UUID> ADMIN_UUIDS = Arrays.asList(
 		UUID.fromString("f3112feb-00c1-4de8-9829-53b940342996"), // scribble
@@ -65,6 +81,17 @@ public class ProxyPlugin {
 	public void onProxyInitialization(ProxyInitializeEvent e) {
 		// update permission on setup
 		this.server.getEventManager().register(this, PermissionsSetupEvent.class, event -> event.setProvider(this.permissionProvider));
+		
+		// register lobby command
+		this.server.getCommandManager().register("lobby", (RawCommand) invocation -> {
+			
+			if (invocation.source() instanceof Player player && LOBBY_ENABLED_SERVERS.contains(player.getCurrentServer().get().getServerInfo().getName()))
+				player.createConnectionRequest(this.server.getServer(LOBBY_SERVER).get()).fireAndForget();
+			else
+				invocation.source().sendMessage(Component.text("§cYou cannot use that here."));
+			
+		}, "hub", "l", "leave");
+		
 	}
 	
 }
