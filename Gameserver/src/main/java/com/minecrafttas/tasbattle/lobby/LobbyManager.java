@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import com.minecrafttas.tasbattle.gui.ListInventory;
 import com.minecrafttas.tasbattle.gui.ListInventory.Item;
 
+import lombok.Getter;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
@@ -20,8 +21,13 @@ import net.kyori.adventure.text.Component;
  */
 public abstract class LobbyManager {
 	
+	@Getter
 	private HashMap<Player, ListInventory> inventories;
+	
+	@Getter
 	private String inventoryTitle;
+
+	@Getter
 	private boolean allowMultiple;
 	
 	/**
@@ -57,7 +63,7 @@ public abstract class LobbyManager {
 		if (inv == null)
 			return;
 		
-		inv.interact(clickedItem);
+		inv.interact(p, clickedItem);
 	}
 	
 	/**
@@ -68,17 +74,8 @@ public abstract class LobbyManager {
 	 * @return
 	 */
 	protected final Item createItem(String name, String lore, Material item) {
-		return new Item(ChatColor.GOLD + name, ChatColor.GRAY + lore + this.getItemBaseLore(), Material.RED_DYE);
+		return new Item(ChatColor.GOLD + name, ChatColor.GRAY + lore + this.getItemBaseLore(), item);
 	}
-	
-	/**
-	 * Get inventory title
-	 * @return Inventory title
-	 */
-	public final String getInventoryTitle() {
-		return this.inventoryTitle;
-	}
-	
 	
 	/**
 	 * Get items in inventory

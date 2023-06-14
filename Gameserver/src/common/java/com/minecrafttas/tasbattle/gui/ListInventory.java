@@ -16,7 +16,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
+import lombok.Data;
 import lombok.Getter;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -29,14 +32,11 @@ public class ListInventory {
 	 * Item visible in the list inventory
 	 * @author Pancake
 	 */
+	@Data
 	public static class Item {
-		@Getter
 		private String title;
-		@Getter
 		private String description;
-		@Getter
 		private Material type;
-		@Getter
 		private ItemStack stack;
 
 		public Item(String title, String description, Material type) {
@@ -80,7 +80,7 @@ public class ListInventory {
 	private boolean allowMultiple;
 
 	/**
-	 * Creates a new list inventory
+	 * Create list inventory
 	 * @param items
 	 */
 	public ListInventory(String title, List<Item> items, boolean allowMultiple) {
@@ -98,7 +98,7 @@ public class ListInventory {
 	}
 
 	/**
-	 * Opens the inventory to a player
+	 * Open inventory to player
 	 * @param p Player to open for
 	 */
 	public void openInventory(Player p) {
@@ -106,10 +106,11 @@ public class ListInventory {
 	}
 
 	/**
-	 * Interacts with the inventory
+	 * Interact with inventory
+	 * @param p Player
 	 * @param i Item Stack clicked
 	 */
-	public void interact(ItemStack i) {
+	public void interact(Player p, ItemStack i) {
 		var item = this.alias.remove(i);
 		if (item == null)
 			return;
@@ -118,7 +119,7 @@ public class ListInventory {
 		if (this.lastUpdated != null)
 			if (this.alias.get(this.lastUpdated) != null)
 				if (!this.allowMultiple && i != this.lastUpdated && this.entries.get(this.alias.get(this.lastUpdated)))
-					this.interact(this.lastUpdated);
+					this.interact(null, this.lastUpdated);
 		this.lastUpdated = i;
 
 		// toggle item
@@ -126,9 +127,23 @@ public class ListInventory {
 		if (this.entries.get(item)) {
 			meta.removeEnchant(Enchantment.LUCK);
 			this.entries.put(item, false);
+			if (p != null) { 
+				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 0.75f));
+				if (this.allowMultiple)
+					p.sendMessage(Component.text("§bYou disabled: ").append(i.getItemMeta().displayName()));
+				else
+					p.sendMessage(Component.text("§bYou unselected: ").append(i.getItemMeta().displayName()));
+			}
 		} else {
 			meta.addEnchant(Enchantment.LUCK, 1, true);
 			this.entries.put(item, true);
+			if (p != null) {
+				p.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 1f));
+				if (this.allowMultiple)
+					p.sendMessage(Component.text("§bYou enabled: ").append(i.getItemMeta().displayName()));
+				else
+					p.sendMessage(Component.text("§bYou selected: ").append(i.getItemMeta().displayName()));
+			}
 		}
 		i.setItemMeta(meta);
 		this.alias.put(i, item);
