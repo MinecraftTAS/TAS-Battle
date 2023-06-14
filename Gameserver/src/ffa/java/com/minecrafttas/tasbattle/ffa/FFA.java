@@ -14,11 +14,31 @@ import com.minecrafttas.tasbattle.lobby.LobbyManager;
 import net.kyori.adventure.text.Component;
 
 /**
- * FFA plugin
+ * FFA gamemode
  * @author Pancake
  */
 public class FFA implements GameMode {
 	
+	@Getter
+	private TASBattle plugin;
+	
+	@Getter
+	private World world;
+	
+	
+	/**
+	 * Initialize ffa gamemode
+	 * @param plugin Plugin
+	 */
+		this.plugin = plugin;
+	
+		// find available worlds
+		var serverDir = new File(".");
+		var availableWorlds = serverDir.listFiles((dir, name) -> name.startsWith("ffa-"));
+		// pick random world
+		var worldName = availableWorlds[(int) (Math.random() * availableWorlds.length)].getName();
+		this.world = WorldUtils.loadWorld(worldName);
+	}
 	@Override
 	public void startGameMode(List<Player> players) {
 		Bukkit.broadcast(Component.text("we can have fun now... woo"));
