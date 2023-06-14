@@ -1,16 +1,27 @@
 package com.minecrafttas.tasbattle.ffa;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.TASBattle.GameMode;
 import com.minecrafttas.tasbattle.ffa.managers.KitManager;
 import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager;
+import com.minecrafttas.tasbattle.ffa.utils.SpreadplayersUtils;
+import com.minecrafttas.tasbattle.gui.ListInventory.Item;
+import com.minecrafttas.tasbattle.loading.WorldUtils;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -25,6 +36,8 @@ public class FFA implements GameMode {
 	@Getter
 	private World world;
 	
+	private KitManager kitManager;
+	private ScenarioManager scenarioManager;
 	
 	/**
 	 * Initialize ffa gamemode
@@ -43,7 +56,13 @@ public class FFA implements GameMode {
 	
 	@Override
 	public void startGameMode(List<Player> players) {
-		Bukkit.broadcast(Component.text("we can have fun now... woo"));
+		// determine most voted kit
+		Item kit = this.kitManager.getInventories().values().stream().map(inv -> inv.getItems().get(0)).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
+		Bukkit.broadcast(Component.text("Kit: " + kit.getTitle()));
+
+		// determine all enabled scenarios
+		List<Item> scenarios = this.scenarioManager.getInventories().values().stream().map(inv -> inv.getItems()).flatMap(Collection::stream).toList();
+		Bukkit.broadcast(Component.text("Scenarios: " + Arrays.toString(scenarios.stream().map(e -> e.getTitle()).toArray())));
 		
 		// update players
 		for (var p : players) {
@@ -59,8 +78,8 @@ public class FFA implements GameMode {
 	@Override
 	public List<LobbyManager> createManagers() {
 		return Arrays.asList(
-			new KitManager(),
-			new ScenarioManager()
+			this.kitManager = new KitManager(),
+			this.scenarioManager = new ScenarioManager()
 		);
 	}
 	
