@@ -37,7 +37,6 @@ public class GameLogic implements Listener {
 		this.plugin = plugin;
 		this.world = world;
 		this.players = players;
-		
 	}
 
 	/**
