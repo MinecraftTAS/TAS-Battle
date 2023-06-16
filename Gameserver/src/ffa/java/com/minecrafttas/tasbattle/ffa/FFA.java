@@ -31,6 +31,8 @@ import net.kyori.adventure.text.Component;
  */
 public class FFA implements GameMode {
 	
+	public static final File FFA_KITS = new File("/home/tasbattle/preview/default/plugins/TAS-Battle/ffa");
+	
 	@Getter
 	private TASBattle plugin;
 	
@@ -45,10 +47,11 @@ public class FFA implements GameMode {
 	
 	@Getter
 	private GameLogic gameLogic;
-	
+		
 	/**
 	 * Initialize ffa gamemode
 	 * @param plugin Plugin
+	 * @param dev Development moed
 	 */
 	public FFA(TASBattle plugin) {
 		this.plugin = plugin;
