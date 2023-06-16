@@ -18,7 +18,7 @@ public class TASBattle extends JavaPlugin {
 	
 	public static interface GameMode {
 		abstract void startGameMode(List<Player> players);
-		abstract List<LobbyManager> createManagers();
+		abstract List<LobbyManager> createManagers(JavaPlugin plugin);
 	}
 	
 	@Getter

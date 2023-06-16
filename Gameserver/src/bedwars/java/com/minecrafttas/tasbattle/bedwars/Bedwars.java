@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.TASBattle.GameMode;
@@ -79,7 +80,7 @@ public class Bedwars implements GameMode {
 	}
 	
 	@Override
-	public List<LobbyManager> createManagers() {
+	public List<LobbyManager> createManagers(JavaPlugin plugin) {
 		return Arrays.asList();
 	}
 	
