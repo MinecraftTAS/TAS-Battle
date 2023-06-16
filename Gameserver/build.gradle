@@ -32,7 +32,7 @@ dependencies {
 }
 
 // Configure source sets
-sourceSets.main.java.srcDirs += ['src/common/java', 'src/ffa/java', 'src/bedwars/java']
+sourceSets.main.java.srcDirs += ['src/ffa/java', 'src/bedwars/java']
 
 // Upload plugin to server [login via key]
 task upload(type: Exec) {
