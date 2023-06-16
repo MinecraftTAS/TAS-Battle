@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -41,8 +40,12 @@ public class Lobby implements Listener {
 	 */
 	public Lobby(TASBattle plugin, GameMode gameMode) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
-		this.managers = gameMode.createManagers();
-		this.timer = new LobbyTimer(plugin, 5, 2, 3, gameMode::startGameMode);
+		this.managers = gameMode.createManagers(plugin);
+		this.timer = new LobbyTimer(plugin, 5, 2, 3, participants -> {
+			for (var manager : this.managers)
+				manager.setActive(false);
+			gameMode.startGameMode(participants);
+		});
 	}
 
 	/**
@@ -65,7 +68,7 @@ public class Lobby implements Listener {
 		for (LobbyManager manager : this.managers) {
 			var item = new ItemStack(manager.getItem());
 			item.editMeta(m -> {
-				m.displayName(Component.text("§f" + manager.getInventoryTitle()));
+				m.displayName(Component.text("§f" + manager.getName()));
 				m.lore(manager.getItemLore());
 			});
 			inv.setItem(i++, item);
@@ -115,28 +118,14 @@ public class Lobby implements Listener {
 		
 		for (LobbyManager manager : this.managers)
 			if (item.getType() == manager.getItem())
-				manager.openInventory(player);
+				manager.interact(player);
 		
 		if (item.getType() == Material.RED_BED)
 			player.kick(Component.text("You left the game."), Cause.SELF_INTERACTION);
 	}
 
-	/**
-	 * Handle configuration interaction
-	 * @param e Event
-	 */
-	@EventHandler
-	public void onClickEvent(InventoryClickEvent e) {
-		if (this.timer.isGameRunning())
-			return;
-		
-		for (LobbyManager manager : this.managers)
-			manager.onInteract((Player) e.getWhoClicked(), e.getCurrentItem());
-		
-		e.setCancelled(true);
-	}
-
 	// restrict basic player events
+	@EventHandler public void onClickEvent(InventoryClickEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); };
 	@EventHandler public void onPlayerBreak(BlockBreakEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 	@EventHandler public void onPlayerPlace(BlockPlaceEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 	@EventHandler public void onPlayerDrop(PlayerDropItemEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }

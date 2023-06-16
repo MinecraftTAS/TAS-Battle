@@ -4,31 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import com.minecrafttas.tasbattle.gui.ListInventory.Item;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
 import net.kyori.adventure.text.Component;
 
 public class KitManager extends LobbyManager {
 
-	public KitManager() {
-		super("Kits", false);
-	}
-
-	@Override
-	protected List<Item> getItems() {
-		return Arrays.asList(
-			this.createItem("Kit 1", "B", Material.DIAMOND_CHESTPLATE),
-			this.createItem("Kit 2", "D", Material.IRON_SWORD),
-			this.createItem("Kit 3", "C", Material.IRON_CHESTPLATE),
-			this.createItem("Kit 4", "A", Material.CHAINMAIL_BOOTS)
-		);
-	}
-
-	@Override
-	protected String getItemBaseLore() {
-		return "\n\n§bClick to select!";
+	public KitManager(JavaPlugin plugin) {
+		super(plugin);
 	}
 
 	@Override
@@ -38,7 +24,17 @@ public class KitManager extends LobbyManager {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text("§5Vote for a kit"), Component.text("§5Every player will spawn with the same gear"));
+		return Arrays.asList(Component.text(""), Component.text("§5The most voted kit will be equipped to"), Component.text("§5all players at the beginning of the game"));
+	}
+
+	@Override
+	public void interact(Player p) {
+		
+	}
+
+	@Override
+	protected String getName() {
+		return "Vote for a kit";
 	}
 
 }
