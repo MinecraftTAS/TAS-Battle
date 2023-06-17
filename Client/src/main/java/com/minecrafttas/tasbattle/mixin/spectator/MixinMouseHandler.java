@@ -22,7 +22,7 @@ public class MixinMouseHandler {
 	@Redirect(method = "turnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;turn(DD)V"))
 	public void redirect_turnPlayer(LocalPlayer player, double pitchD, double yawD) {
 		if (player.isSpectator())
-			TASBattle.getInstance().getSpectatorManager().onMouse(player, pitchD, yawD);
+			TASBattle.getInstance().getSpectatingSystem().onMouse(player, pitchD, yawD);
 		else
 			player.turn(pitchD, yawD);
 	}
@@ -34,7 +34,7 @@ public class MixinMouseHandler {
 	 */
 	@ModifyVariable(method = "onScroll", at = @At(value = "STORE"), index = 9, ordinal = 0)
 	public int hook_ScrollVar(int i) {
-		TASBattle.getInstance().getSpectatorManager().onScroll(i);
+		TASBattle.getInstance().getSpectatingSystem().onScroll(i);
 		return i;
 	}
 }
