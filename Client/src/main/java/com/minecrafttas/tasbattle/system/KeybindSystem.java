@@ -1,4 +1,4 @@
-package com.minecrafttas.tasbattle;
+package com.minecrafttas.tasbattle.system;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
+
+import com.minecrafttas.tasbattle.TASBattle;
 
 import lombok.Getter;
 import net.minecraft.client.KeyMapping;
