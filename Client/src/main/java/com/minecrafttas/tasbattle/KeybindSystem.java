@@ -8,8 +8,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
 
 import lombok.Getter;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
@@ -20,7 +18,6 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
  * Manages keybinds and their categories.
  * @author Pancake
  */
-@Environment(EnvType.CLIENT)
 public class KeybindSystem {
 
 	private static Map<KeyMapping, Boolean> keys = new HashMap<>();

@@ -6,8 +6,6 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import com.minecrafttas.tasbattle.TASBattle;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.components.SubtitleOverlay;
 
 /**
@@ -15,7 +13,6 @@ import net.minecraft.client.gui.components.SubtitleOverlay;
  * @author Scribble
  */
 @Mixin(SubtitleOverlay.class)
-@Environment(EnvType.CLIENT)
 public class MixinSubtitleOverlay {
 	/**
 	 * Slows down the render speed by multiplying with the Gamespeed
