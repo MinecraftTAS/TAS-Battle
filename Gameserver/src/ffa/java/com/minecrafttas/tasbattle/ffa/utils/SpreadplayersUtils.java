@@ -26,7 +26,7 @@ public class SpreadplayersUtils {
     			int x = (int) nextDouble(l.x()-r, l.x()+r);
     			int z = (int) nextDouble(l.z()-r, l.z()+r);
     			b = l.getWorld().getHighestBlockAt(x, z);
-    		} while (b.getType() == Material.BARRIER);
+    		} while (b.getType() == Material.BARRIER || b.getType() == Material.AIR || b.getType() == Material.VOID_AIR || b.getType() == Material.WATER);
     		
     		p.setFallDistance(0.0f);
     		p.teleport(b.getLocation().add(0, 1, 0));
