@@ -1,4 +1,6 @@
-package com.minecrafttas.tasbattle;
+package com.minecrafttas.tasbattle.system;
+
+import com.minecrafttas.tasbattle.TASBattle;
 
 import lombok.Getter;
 import net.minecraft.client.Minecraft;

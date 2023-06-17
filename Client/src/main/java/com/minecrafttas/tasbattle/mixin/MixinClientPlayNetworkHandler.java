@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.TickrateChanger;
+import com.minecrafttas.tasbattle.system.TickrateChanger;
 
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;

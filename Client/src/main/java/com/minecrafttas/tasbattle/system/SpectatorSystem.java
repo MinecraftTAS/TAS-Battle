@@ -1,8 +1,9 @@
-package com.minecrafttas.tasbattle;
+package com.minecrafttas.tasbattle.system;
 
 import java.util.Arrays;
 import java.util.List;
 
+import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.mixin.spectator.MixinMouseHandler;
 
 import net.minecraft.client.Minecraft;
@@ -14,7 +15,7 @@ import net.minecraft.world.entity.Entity;
  * Client-side spectating module
  * @author Scribble
  */
-public class SpectatorManager {
+public class SpectatorSystem {
 	
 	public static enum SpectatorMode {
 		FIXED, // Forces the player to always look at the spectatingEntity
@@ -31,7 +32,7 @@ public class SpectatorManager {
 	/**
 	 * Initialize spectator manager
 	 */
-	public SpectatorManager() {
+	public SpectatorSystem() {
 		this.mode = SpectatorMode.NONE;
 		this.distance = 5;
 	}

@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.minecrafttas.tasbattle.KeybindSystem;
 import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.TickrateChanger;
+import com.minecrafttas.tasbattle.system.KeybindSystem;
+import com.minecrafttas.tasbattle.system.TickrateChanger;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
