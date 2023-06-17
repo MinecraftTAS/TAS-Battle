@@ -24,7 +24,6 @@ public class MixinClientPlayNetworkHandler {
 	 */
 	@Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void hookCustomPayloadEvent(ClientboundCustomPayloadPacket packet, CallbackInfo ci) {
-		System.out.println(packet.getIdentifier());
 		if (!packet.getIdentifier().equals(TickrateChanger.IDENTIFIER))
 			return;
 			
