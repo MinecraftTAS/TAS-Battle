@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -132,5 +133,6 @@ public class Lobby implements Listener {
 	@EventHandler public void onPlayerConsume(PlayerItemConsumeEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 	@EventHandler public void onEntityDamage(EntityDamageEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 	@EventHandler public void onEntityPickup(EntityPickupItemEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
+	@EventHandler public void onHungerLoss(FoodLevelChangeEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 
 }
