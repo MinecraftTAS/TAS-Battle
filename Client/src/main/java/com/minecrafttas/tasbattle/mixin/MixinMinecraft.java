@@ -1,6 +1,9 @@
 package com.minecrafttas.tasbattle.mixin;
 
+import java.nio.charset.StandardCharsets;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -8,10 +11,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecrafttas.tasbattle.KeybindSystem;
 import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TickrateChanger;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -57,5 +66,16 @@ public class MixinMinecraft {
 			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
 			this.player.connection.send(new ServerboundCustomPayloadPacket(TickrateChanger.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
 		}
+		
+		// redirect multiplayer screen to main menu
+		else if (s instanceof JoinMultiplayerScreen) {
+			((Minecraft) (Object) this).setScreen(new TitleScreen());
+			ci.cancel();
+		} 
+		
+		// reset tickrate when entering menu
+		else if (s instanceof TitleScreen)
+			TASBattle.getInstance().getTickrateChanger().changeTickrate(20.0f);
+
 	}
 }
