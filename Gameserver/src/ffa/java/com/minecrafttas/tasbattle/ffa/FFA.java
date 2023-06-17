@@ -82,11 +82,11 @@ public class FFA implements GameMode {
 			Collections.shuffle(kits);
 			kit = kits.get(0);
 		}
-		Bukkit.broadcast(Component.text("§b» §7Selected kit: ").append(Component.text(kit.getName())));
+		Bukkit.broadcast(Component.text("§b» §7Selected kit: §f").append(Component.text(kit.getName())));
 
 		// determine all enabled scenarios
 		var scenarios = this.scenarioManager.getEnabled();
-		Bukkit.broadcast(Component.text("§b» §7Enabled scenarios: §6" + Arrays.toString(scenarios.stream().map(e -> e.getTitle()).toArray())));
+		Bukkit.broadcast(Component.text("§b» §7Enabled scenarios: §f" + scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", "))));
 		
 		// update players
 		for (var p : players) {
