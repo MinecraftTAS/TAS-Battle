@@ -48,7 +48,7 @@ public class MixinMinecraft {
 	 */
 	@Redirect(method = "handleKeybinds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V", ordinal = 1))
 	public void redirect_handleKeyboard(Minecraft mc, Screen screen) {
-		if(TASBattle.getInstance().getSpectatorManager().isSpectating() && mc.player.isSpectator())
+		if(TASBattle.getInstance().getSpectatingSystem().isSpectating() && mc.player.isSpectator())
 			return;
 
 		mc.setScreen(screen);

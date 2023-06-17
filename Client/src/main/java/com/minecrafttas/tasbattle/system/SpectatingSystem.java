@@ -15,7 +15,7 @@ import net.minecraft.world.entity.Entity;
  * Client-side spectating module
  * @author Scribble
  */
-public class SpectatorSystem {
+public class SpectatingSystem {
 	
 	public static enum SpectatorMode {
 		FIXED, // Forces the player to always look at the spectatingEntity
@@ -32,7 +32,7 @@ public class SpectatorSystem {
 	/**
 	 * Initialize spectator manager
 	 */
-	public SpectatorSystem() {
+	public SpectatingSystem() {
 		this.mode = SpectatorMode.NONE;
 		this.distance = 5;
 	}
@@ -145,7 +145,7 @@ public class SpectatorSystem {
 	 * @param i Scroll amount
 	 */
 	public void onScroll(int i) {
-		this.distance -= i;
+		this.distance = Math.min(Math.max(this.distance - i, 1), 15);
 	}
 	
 	public boolean isSpectating() {

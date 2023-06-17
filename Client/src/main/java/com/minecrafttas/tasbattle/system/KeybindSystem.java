@@ -25,13 +25,13 @@ public class KeybindSystem {
 	private static Map<KeyMapping, Boolean> keys = new HashMap<>();
 	private static Keybind[] keybinds = {
 		new Keybind("Start/Stop spectating", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> { // Spectate previous player
-			TASBattle.getInstance().getSpectatorManager().cycleSpectate();
+			TASBattle.getInstance().getSpectatingSystem().cycleSpectate();
 		}),
 		new Keybind("Spectate next player", "TAS Battle", GLFW.GLFW_KEY_E, true, () -> { //Spectate next player
-			TASBattle.getInstance().getSpectatorManager().spectateNextPlayer();
+			TASBattle.getInstance().getSpectatingSystem().spectateNextPlayer();
 		}),
 		new Keybind("Spectate previous player", "TAS Battle", GLFW.GLFW_KEY_Q, true, () -> { //Spectate previous player
-			TASBattle.getInstance().getSpectatorManager().spectatePreviousPlayer();
+			TASBattle.getInstance().getSpectatingSystem().spectatePreviousPlayer();
 		})
 	};
 
