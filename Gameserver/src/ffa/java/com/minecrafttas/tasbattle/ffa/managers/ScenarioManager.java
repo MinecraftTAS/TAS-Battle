@@ -113,7 +113,7 @@ public class ScenarioManager extends LobbyManager {
 		// update votes
 		if (this.enabled.contains(scenario)) {
 			this.enabled.remove(scenario);
-			Bukkit.broadcast(Component.text("§b» §7" + player.getName() + " disabled §f").append(Component.text("§7" + scenario.getTitle())));
+			Bukkit.broadcast(Component.text("§b» §7" + player.getName() + " disabled ").append(Component.text("§f" + scenario.getTitle())));
 			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 0.75f));
 			
 			item.editMeta(meta -> {
@@ -125,7 +125,7 @@ public class ScenarioManager extends LobbyManager {
 			this.scenarios.put(scenario, item);
 		} else {
 			this.enabled.add(scenario);
-			Bukkit.broadcast(Component.text("§b» §7" + player.getName() + " enabled §f").append(Component.text("§7" + scenario.getTitle())));
+			Bukkit.broadcast(Component.text("§b» §7" + player.getName() + " enabled ").append(Component.text("§f" + scenario.getTitle())));
 			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 1f));
 		
 			item.editMeta(meta -> {

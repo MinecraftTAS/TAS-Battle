@@ -104,6 +104,8 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 			}
 
 		}.runTaskLater(this.plugin, 8 * 20));
+		
+		this.updatePlayer(e.getPlayer());
 	}
 	
 	/**
