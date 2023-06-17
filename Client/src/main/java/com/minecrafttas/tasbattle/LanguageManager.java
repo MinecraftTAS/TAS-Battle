@@ -44,7 +44,10 @@ public class LanguageManager {
 		InputStream langfile = getFromResourceManager(); // First check if a resourcepack is loaded and if it has a language file
 
 		if (langfile == null) {
-			langfile = getFromResources(); // If that fails, load data from the resources
+			langfile = getFromResources(currentCode); // If that fails, load data from the resources
+		}
+		if (langfile == null) {
+			langfile = getFromResources("en_us");
 		}
 		if (langfile != null) {
 			Map<String, String> oldMap = locale.storage; // getStorage is immutiable so we have to make it mutable again
@@ -60,8 +63,8 @@ public class LanguageManager {
 		this.currentCode = code;
 	}
 
-	private InputStream getFromResources() {
-		InputStream resource = getClass().getResourceAsStream(String.format("/assets/%s/lang/%s.json", assetDirName, currentCode));
+	private InputStream getFromResources(String code) {
+		InputStream resource = getClass().getResourceAsStream(String.format("/assets/%s/lang/%s.json", assetDirName, code));
 		return resource;
 	}
 
