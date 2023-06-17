@@ -15,6 +15,7 @@
   	"MixinClientPlayNetworkHandler",
   	"MixinMinecraft",
   	"MixinOptions",
+  	"MixinRealmsNotificationsScreen",
   	"MixinTitleScreen",
   ],
   "injectors": {
