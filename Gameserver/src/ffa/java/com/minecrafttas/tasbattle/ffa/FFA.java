@@ -1,22 +1,24 @@
 package com.minecrafttas.tasbattle.ffa;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.TASBattle.GameMode;
 import com.minecrafttas.tasbattle.ffa.components.GameLogic;
 import com.minecrafttas.tasbattle.ffa.managers.KitManager;
+import com.minecrafttas.tasbattle.ffa.managers.KitManager.Kit;
 import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager;
 import com.minecrafttas.tasbattle.ffa.utils.SpreadplayersUtils;
 import com.minecrafttas.tasbattle.loading.WorldUtils;
@@ -30,8 +32,6 @@ import net.kyori.adventure.text.Component;
  * @author Pancake
  */
 public class FFA implements GameMode {
-	
-	public static final File FFA_KITS = new File("/home/tasbattle/preview/default/plugins/TAS-Battle/ffa");
 	
 	@Getter
 	private TASBattle plugin;
@@ -55,6 +55,7 @@ public class FFA implements GameMode {
 	 */
 	public FFA(TASBattle plugin) {
 		this.plugin = plugin;
+		this.kitManager = new KitManager(plugin);
 		
 		// find available worlds
 		var serverDir = new File(".");
@@ -67,13 +68,20 @@ public class FFA implements GameMode {
 	@Override
 	public void startGameMode(List<Player> players) {
 		// determine most voted kit
-		var kitPair = this.kitManager.getVotes().values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream().max(Map.Entry.comparingByValue());
-		ItemStack kit;
-		if (kitPair.isPresent())
+		var kitVotes = new ArrayList<>(this.kitManager.getVotes().values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream().toList());
+		Collections.shuffle(kitVotes);
+		var kitPair = kitVotes.stream().max(Map.Entry.comparingByValue());
+		
+		// find kit for game
+		Kit kit;
+		if (kitPair.isPresent()) {
 			kit = kitPair.get().getKey();
-		else
-			kit = this.kitManager.getInventory().getItem(0); // FIXME: replace with kit class later and randomize 
-		Bukkit.broadcast(Component.text("§b» §7Selected kit: ").append(kit.getItemMeta().displayName()));
+		} else {
+			var kits = new ArrayList<>(this.kitManager.getKits().keySet().stream().toList());
+			Collections.shuffle(kits);
+			kit = kits.get(0);
+		}
+		Bukkit.broadcast(Component.text("§b» §7Selected kit: ").append(Component.text(kit.getName())));
 
 		// TODO: rewrite this
 //		// determine all enabled scenarios
@@ -96,10 +104,17 @@ public class FFA implements GameMode {
 	}
 
 	@Override
-	public List<LobbyManager> createManagers(JavaPlugin plugin) {
+	public List<LobbyManager> createManagers() {
 		return Arrays.asList(
-			this.kitManager = new KitManager(plugin)/*,*/
+			this.kitManager
 //			this.scenarioManager = new ScenarioManager()
+		);
+	}
+
+	@Override
+	public List<Pair<String, CommandHandler>> createCommands() {
+		return Arrays.asList(
+			Pair.of("ffa", this.kitManager)
 		);
 	}
 	
