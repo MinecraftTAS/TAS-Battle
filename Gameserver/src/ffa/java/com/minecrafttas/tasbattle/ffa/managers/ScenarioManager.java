@@ -18,7 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.minecrafttas.tasbattle.ffa.scenarios.EmptyScenario;
+import com.minecrafttas.tasbattle.ffa.scenarios.DisableDropsScenario;
+import com.minecrafttas.tasbattle.ffa.scenarios.ShowHealthScenario;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
 import lombok.AllArgsConstructor;
@@ -71,9 +72,8 @@ public class ScenarioManager extends LobbyManager {
 		this.inventory = Bukkit.createInventory(null, 54, Component.text("Scenarios"));
 		
 		var scenarioList = Arrays.asList(
-			new EmptyScenario(plugin, "Test scenario 1", new String[] {"a", "b", "c"}, Material.STONE),
-			new EmptyScenario(plugin, "Test scenario 2", new String[] {"a", "b", "c"}, Material.OAK_LOG),
-			new EmptyScenario(plugin, "Test scenario 3", new String[] {"a", "b", "c"}, Material.DIAMOND)
+			new ShowHealthScenario(),
+			new DisableDropsScenario(plugin)
 		);
 		
 		for (var scenario : scenarioList) { // TODO: add scenarios
