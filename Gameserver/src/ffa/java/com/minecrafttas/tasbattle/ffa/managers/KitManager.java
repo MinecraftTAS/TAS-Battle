@@ -176,7 +176,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			return;
 		
 		// find kit clicked
-		Kit kit = this.kits.inverse().get(item);
+		var kit = this.kits.inverse().get(item);
 
 		if (kit == null)
 			return;
@@ -190,7 +190,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			var itemKit = this.kits.inverse().get(itemStack);
 			
 			// calculate votes for item
-			int voteCount = 0;
+			var voteCount = 0;
 			for (var vote : this.votes.entrySet())
 				if (vote.getValue().equals(this.kits.inverse().get(itemStack)))
 					voteCount++;

@@ -56,6 +56,7 @@ public class FFA implements GameMode {
 	public FFA(TASBattle plugin) {
 		this.plugin = plugin;
 		this.kitManager = new KitManager(plugin);
+		this.scenarioManager = new ScenarioManager(plugin);
 		
 		// find available worlds
 		var serverDir = new File(".");
@@ -83,10 +84,9 @@ public class FFA implements GameMode {
 		}
 		Bukkit.broadcast(Component.text("§b» §7Selected kit: ").append(Component.text(kit.getName())));
 
-		// TODO: rewrite this
-//		// determine all enabled scenarios
-//		List<Item> scenarios = this.scenarioManager.getInventories().values().stream().map(inv -> inv.getItems()).flatMap(Collection::stream).toList();
-//		Bukkit.broadcast(Component.text("§b» §7Enabeld scenarios: §6" + Arrays.toString(scenarios.stream().map(e -> e.getTitle()).toArray())));
+		// determine all enabled scenarios
+		var scenarios = this.scenarioManager.getEnabled();
+		Bukkit.broadcast(Component.text("§b» §7Enabled scenarios: §6" + Arrays.toString(scenarios.stream().map(e -> e.getTitle()).toArray())));
 		
 		// update players
 		for (var p : players) {
@@ -101,13 +101,15 @@ public class FFA implements GameMode {
 		
 		// create game logic
 		this.gameLogic = new GameLogic(this.plugin, this.world, players);
+		for (var scenario : scenarios)
+			scenario.gameStart(players);
 	}
 
 	@Override
 	public List<LobbyManager> createManagers() {
 		return Arrays.asList(
-			this.kitManager
-//			this.scenarioManager = new ScenarioManager()
+			this.kitManager,
+			this.scenarioManager
 		);
 	}
 

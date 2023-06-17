@@ -1,88 +1,162 @@
 package com.minecrafttas.tasbattle.ffa.managers;
 
-public class ScenarioManager /*extends LobbyManager */{
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-//	/**
-//	 * Abstract scenario of the ffa game
-//	 * @author Pancake
-//	 */
-//	public abstract class AbstractScenario {
-//
-//		/**
-//		 * Title of the scenario
-//		 */
-//		private String title;
-//
-//		/**
-//		 * Description of the scenario
-//		 */
-//		private String description;
-//
-//		/**
-//		 * Creates a new scenario to the game
-//		 * @param title Title of the scenario
-//		 * @param description Description of the scenario
-//		 */
-//		public AbstractScenario(String title, String description) {
-//			this.title = title;
-//			this.description = description;
-//		}
-//
-//		/**
-//		 * Called when the game starts
-//		 */
-//		public abstract void gameStart();
-//
-//		/**
-//		 * Called when the game ends
-//		 */
-//		public abstract void gameEnd();
-//
-//		/**
-//		 * Returns the title of the scenario
-//		 * @return Title of the scenario
-//		 */
-//		public String getTitle() {
-//			return this.title;
-//		}
-//
-//		/**
-//		 * Returns the description of the scenario
-//		 * @return Description of the scenario
-//		 */
-//		public String getDescription() {
-//			return this.description;
-//		}
-//
-//	}
-//	
-//	public ScenarioManager() {
-//		super("Scenarios", true);
-//	}
-//
-//	@Override
-//	protected List<Item> getItems() {
-//		return Arrays.asList(
-//			this.createItem("20 Hearts", "Every player has 20 hearts instead of 10", Material.RED_DYE),
-//			this.createItem("Strength", "Every player has Strength I", Material.IRON_SWORD),
-//			this.createItem("Dynamic speed", "Only decreases the game speed when players are close", Material.CLOCK),
-//			this.createItem("No drops", "Players and blocks do not drop", Material.GRASS_BLOCK)
-//		);
-//	}
-//
-//	@Override
-//	protected String getItemBaseLore() {
-//		return "\n\n§bClick to toggle!";
-//	}
-//
-//	@Override
-//	protected Material getItem() {
-//		return Material.COMPASS;
-//	}
-//
-//	@Override
-//	protected List<Component> getItemLore() {
-//		return Arrays.asList(Component.text("§5Every FFA game can be customized with scenarios."), Component.text("§5These are small additions to the rules that"), Component.text("§5allow for unique and fun gameplay."));
-//	}
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.minecrafttas.tasbattle.ffa.scenarios.EmptyScenario;
+import com.minecrafttas.tasbattle.lobby.LobbyManager;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.Sound.Source;
+import net.kyori.adventure.text.Component;
+
+/**
+ * FFA Scenario Manager
+ * @author Pancake
+ */
+public class ScenarioManager extends LobbyManager {
+
+	/**
+	 * Abstract scenario
+	 * @author Pancake
+	 */
+	@Getter
+	@AllArgsConstructor
+	@EqualsAndHashCode
+	public static abstract class AbstractScenario implements Listener {
+		
+		private String title;
+		private String[] description;
+		private Material type;
+		
+		public abstract void gameStart(List<Player> participants);
+		
+	}
+	
+	@Getter
+	private Inventory inventory;
+
+	@Getter
+	private BiMap<AbstractScenario, ItemStack> scenarios;
+	
+	@Getter
+	private List<AbstractScenario> enabled;
+	
+	/**
+	 * Initialize scenario manager
+	 * @param plugin Plugin
+	 */
+	public ScenarioManager(JavaPlugin plugin) {
+		super(plugin);
+		this.enabled = new ArrayList<>();
+		this.scenarios = HashBiMap.create();
+		this.inventory = Bukkit.createInventory(null, 54, Component.text("Scenarios"));
+		
+		var scenarioList = Arrays.asList(
+			new EmptyScenario(plugin, "Test scenario 1", new String[] {"a", "b", "c"}, Material.STONE),
+			new EmptyScenario(plugin, "Test scenario 2", new String[] {"a", "b", "c"}, Material.OAK_LOG),
+			new EmptyScenario(plugin, "Test scenario 3", new String[] {"a", "b", "c"}, Material.DIAMOND)
+		);
+		
+		for (var scenario : scenarioList) { // TODO: add scenarios
+			var item = new ItemStack(scenario.getType());
+			item.editMeta(meta -> {
+				meta.displayName(Component.text("§r§f" + scenario.getTitle()));
+				var lore = new ArrayList<Component>();
+				lore.add(Component.text("§cThis scenario is disabled"));
+				lore.add(Component.text(""));
+				Arrays.stream(scenario.getDescription()).forEach(c -> lore.add(Component.text(c)));
+				meta.lore(lore);
+				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			});
+			this.scenarios.put(scenario, item);
+			this.inventory.addItem(item);
+		}
+	}
+
+	/**
+	 * Handle inventory click and toggle scenario
+	 * @param e Event
+	 */
+	@EventHandler
+	public void onClick(InventoryClickEvent e) {
+		var player = (Player) e.getWhoClicked();
+		var item = e.getCurrentItem();
+
+		if (e.getInventory() != this.inventory || !this.isActive() || item == null)
+			return;
+		
+		// find scenario clicked
+		var scenario = this.scenarios.inverse().get(item);
+
+		if (scenario == null)
+			return;
+		
+		// update votes
+		if (this.enabled.contains(scenario)) {
+			this.enabled.remove(scenario);
+			Bukkit.broadcast(Component.text("§b» §a" + player.getName() + " §cdisabled ").append(Component.text("§7" + scenario.getTitle())));
+			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 0.75f));
+			
+			item.editMeta(meta -> {
+				meta.removeEnchant(Enchantment.LUCK);
+				var lore = new ArrayList<>(meta.lore());
+				lore.set(0, Component.text("§cThis scenario is disabled"));
+				meta.lore(lore);
+			});
+			this.scenarios.put(scenario, item);
+		} else {
+			this.enabled.add(scenario);
+			Bukkit.broadcast(Component.text("§b» §a" + player.getName() + " §aenabled ").append(Component.text("§7" + scenario.getTitle())));
+			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 1f));
+		
+			item.editMeta(meta -> {
+				meta.addEnchant(Enchantment.LUCK, 10, true);
+				var lore = new ArrayList<>(meta.lore());
+				lore.set(0, Component.text("§aThis scenario is enabled"));
+				meta.lore(lore);
+			});
+			this.scenarios.put(scenario, item);
+		}
+		
+	}
+	
+	@Override
+	protected Material getItem() {
+		return Material.COMPASS;
+	}
+
+	@Override
+	protected List<Component> getItemLore() {
+		return Arrays.asList(Component.text(""), Component.text("§5Every FFA game can be customized with scenarios."), Component.text("§5Scenarios are small additions to the game that"), Component.text("§5allow for unique and fun gameplay."));
+	}
+	
+	@Override
+	public void interact(Player p) {
+		p.openInventory(this.inventory);
+	}
+	
+	@Override
+	protected String getName() {
+		return "Toggle scenarios";
+	}
 
 }
