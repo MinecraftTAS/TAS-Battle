@@ -14,12 +14,7 @@ commands:
     tickrate:
         usage: /tickrate <tickrate>
         description: Updates the tickrate
-    saveffakit:
-        usage: /saveffakit <name> <material> <description...>
-        description: Saves an ffa kit
-    delffakit:
-        usage: /delffakit <filename>
-        description: Deletes an ffa kit
-    loadffakit:
-        usage: /loadffakit <filename>
-        description: 
+    ffa:
+        usage: /ffa <save/load/delete>
+        description: FFA commands
+
