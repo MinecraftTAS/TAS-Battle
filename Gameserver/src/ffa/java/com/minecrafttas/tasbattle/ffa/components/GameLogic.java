@@ -4,13 +4,17 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -37,6 +41,8 @@ public class GameLogic implements Listener {
 		this.plugin = plugin;
 		this.world = world;
 		this.players = players;
+		
+		plugin.getTickrateChanger().setTickrate(4.0f);
 	}
 
 	/**
@@ -140,6 +146,30 @@ public class GameLogic implements Listener {
 		} else {
 			e.quitMessage(Component.text("§b» §a" + p.getName() + " §7stopped spectating"));
 		}
+	}
+	
+	/**
+	 * Handle chest open event (player interact)
+	 * @param e Event
+	 */
+	@EventHandler
+	public void onChestOpen(PlayerInteractEvent e) {
+		if (e.getClickedBlock() != null && (e.getClickedBlock().getType() == Material.CHEST || e.getClickedBlock().getType() == Material.TRAPPED_CHEST))
+			e.setCancelled(true);
+	}
+	
+	/**
+	 * Handle chest explode event (entity/block explode)
+	 * @param e Event
+	 */
+	@EventHandler
+	public void onBlockExplode(EntityExplodeEvent e) {
+		e.blockList().removeIf(c -> (c.getType() == Material.CHEST || c.getType() == Material.TRAPPED_CHEST));
+	}
+	
+	@EventHandler
+	public void onEntityExplode(BlockExplodeEvent e) {
+		e.blockList().removeIf(c -> (c.getType() == Material.CHEST || c.getType() == Material.TRAPPED_CHEST));
 	}
 	
 }
