@@ -5,27 +5,32 @@ import org.apache.logging.log4j.Logger;
 
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 
+/**
+ * TAS Battle mod class
+ */
 public class TASBattle implements ModInitializer{
-
-	@Getter
-	private static boolean isDevEnvironment=false;
 	
 	public static final Logger LOGGER = LogManager.getLogger("TAS Battle");
+
+	@Getter
+	private static TASBattle instance;
 	
+	@Getter
 	public TickrateChanger tickrateChanger;
 	
+	@Getter
 	public SpectatorManager spectatorManager;
 	
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Initialized TAS Battle");
-		isDevEnvironment = FabricLoader.getInstance().isDevelopmentEnvironment();
+		instance = this;
+
+		// initialize modules
+		this.tickrateChanger = new TickrateChanger();
+		this.spectatorManager = new SpectatorManager();
 		
-		tickrateChanger = new TickrateChanger();
-		
-		spectatorManager = new SpectatorManager();
+		LOGGER.info("TAS Battle has been initialized");
 	}
 	
 }

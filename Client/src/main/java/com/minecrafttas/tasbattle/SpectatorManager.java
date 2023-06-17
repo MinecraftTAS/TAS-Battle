@@ -5,118 +5,36 @@ import java.util.List;
 
 import com.minecrafttas.tasbattle.mixin.spectator.MixinMouseHandler;
 
-import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
 /**
- * Adds custom spectating modes. This is clientside only
+ * Client-side spectating module
  * @author Scribble
- *
  */
 public class SpectatorManager {
-
-	@Getter
-	private static SpectatorManager instance;
-
-	/**
-	 * The entity that is spectated by the player
-	 */
+	
+	public static enum SpectatorMode {
+		FIXED, // Forces the player to always look at the spectatingEntity
+		ORBIT, // Forces the position and angle to the spactatingEntity. By moving the mouse, the player can orbit around the spectatingEntity
+		NONE; // If spectating should be disabled
+	}
+	
 	private Entity spectatedEntity;
-
-	/**
-	 * The current specatting mode of the manager
-	 * 
-	 * @see SpectatorMode
-	 */
-	private SpectatorMode mode = SpectatorMode.None;
-	
-	public SpectatorManager() {
-		instance = this;
-	}
-
-	/**
-	 * Toggles between the {@link SpectatorMode#FixedAngle} mode and {@link SpectatorMode#None}
-	 */
-	public void cycleSpectate() {
-		List<SpectatorMode> modes = SpectatorMode.valueList();
-		setMode(nextObject(modes, mode));
-		TASBattle.LOGGER.info("Cycling spectate to {}", mode);
-	}
-	
-	/**
-	 * Sets the {@link #mode} and runs initializing code for that mode.
-	 * @param mode The {@link SpectatorMode} that should be set to {@link #mode}
-	 */
-	public void setMode(SpectatorMode mode) {
-		if(mode == SpectatorMode.None) {
-			spectatedEntity = null;
-			this.mode = mode;
-			return;
-		}
-		
-		if (spectatedEntity == null) {
-			spectatedEntity = getNearestSpectatedEntity();
-		}
-		if (spectatedEntity != null) {
-			this.mode = mode;
-		}
-	}
-
-	private Entity getNearestSpectatedEntity() {
-		Entity nearestEntity = getNearestPlayer(100); // Get the nearest player
-		
-		if(nearestEntity == null && TASBattle.isDevEnvironment()) {	// If indev, fall back to the nearest entity if no player was found
-			nearestEntity = getNearestEntity(100);
-		}
-		
-		if(nearestEntity != null) {
-			return nearestEntity;
-		}
-		return null;
-	}
-	
-	/**
-	 * Selects the next player/entity in range as the {@link #spectatedEntity}
-	 */
-	public void spectateNextPlayer() {
-		Minecraft mc = Minecraft.getInstance();
-		List<AbstractClientPlayer> playerList = mc.level.players();
-		playerList.removeIf(player -> player.isSpectator()); // Remove spectators from the list
-
-		if (!playerList.isEmpty()) {
-			spectatedEntity = nextObject(playerList, spectatedEntity);
-		} else if (TASBattle.isDevEnvironment()) {
-			List<Entity> entitiesList = mc.level.getEntities(mc.player, mc.player.getBoundingBox().inflate(100));
-			spectatedEntity = nextObject(entitiesList, spectatedEntity);
-		}
-	}
-
-	/**
-	 * Selects the previous player/entity in range as the {@link #spectatedEntity}
-	 */
-	public void spectatePreviousPlayer() {
-		Minecraft mc = Minecraft.getInstance();
-		List<AbstractClientPlayer> playerList = mc.level.players();
-		playerList.removeIf(player -> player.isSpectator()); // Remove spectators from the list
-
-		if (!playerList.isEmpty()) {
-			spectatedEntity = previousObject(playerList, spectatedEntity);
-		} else if (TASBattle.isDevEnvironment()) {
-			List<Entity> entities = mc.level.getEntities(mc.player, mc.player.getBoundingBox().inflate(100));
-			spectatedEntity = previousObject(entities, spectatedEntity);
-		}
-	}
-
+	private SpectatorMode mode;
 	private Double anglePitch;
 	private Double angleYaw;
+	private int distance;
 	
-	private int distance = 5;
+	/**
+	 * Initialize spectator manager
+	 */
+	public SpectatorManager() {
+		this.mode = SpectatorMode.NONE;
+		this.distance = 5;
+	}
 	
 	/**
 	 * Main update loop of the spectator manager
@@ -127,37 +45,112 @@ public class SpectatorManager {
 	 */
 	public void onMouse(LocalPlayer player, double pitchD, double yawD) {
 		switch (this.mode) {
-		case FixedAngle:
-			if(this.spectatedEntity!=null) {
-				player.lookAt(Anchor.EYES, spectatedEntity.getEyePosition());
-				break;
-			}
-		case Orbit:
-			if(this.spectatedEntity!=null) {
-				if(this.anglePitch == null) {
-					anglePitch = (double) player.getXRot();
+			case FIXED:
+				if(this.spectatedEntity != null) {
+					player.lookAt(Anchor.EYES, this.spectatedEntity.getEyePosition());
+					break;
 				}
-				if(angleYaw == null) {
-					angleYaw = (double) player.getYRot();
+			case ORBIT:
+				if(this.spectatedEntity != null) {
+					if (this.anglePitch == null)
+						this.anglePitch = (double) player.getXRot();
+					
+					if(this.angleYaw == null)
+						this.angleYaw = (double) player.getYRot();
+					
+					this.anglePitch -= pitchD/200f;
+					this.angleYaw -= yawD/200f;
+					
+					double posY = this.distance * Math.sin(this.angleYaw) + this.spectatedEntity.getY();
+					double hyp = this.distance * Math.cos(this.angleYaw);
+					double posX = hyp*Math.sin(this.anglePitch) + this.spectatedEntity.getX();
+					double posZ = hyp*Math.cos(this.anglePitch) + this.spectatedEntity.getZ();
+					
+					player.lookAt(Anchor.EYES, this.spectatedEntity.getEyePosition());
+					player.setPos(posX, posY, posZ);
+					break;
 				}
-				anglePitch -= pitchD/200f;
-				angleYaw -= yawD/200f;
-				
-				double posY = distance*Math.sin(angleYaw) + spectatedEntity.getY();
-				double hyp = distance* Math.cos(angleYaw);
-				double posX = hyp*Math.sin(anglePitch) + spectatedEntity.getX();
-				double posZ = hyp*Math.cos(anglePitch) + spectatedEntity.getZ();
-				
-				player.lookAt(Anchor.EYES, spectatedEntity.getEyePosition());
-				player.setPos(posX, posY, posZ);
+			default:
+				player.turn(pitchD, yawD);
 				break;
-			}
-		default:
-			player.turn(pitchD, yawD);
-			break;
 		}
 	}
+	
+	/**
+	 * Update spectating mode
+	 * @param mode New spectating mode
+	 */
+	public void setMode(SpectatorMode mode) {
+		if(mode == SpectatorMode.NONE) {
+			this.spectatedEntity = null;
+			this.mode = mode;
+			return;
+		}
+		
+		if (this.spectatedEntity == null)
+			this.spectatedEntity = this.getNearestPlayer();
+		
+		if (this.spectatedEntity != null)
+			this.mode = mode;
+	}
+	
+	/**
+	 * Cycle between spectating modes
+	 */
+	public void cycleSpectate() {
+		this.setMode(this.nextObject(Arrays.asList(SpectatorMode.values()), this.mode));
+		TASBattle.LOGGER.info("Cycling spectate to {}", this.mode);
+	}
+	
+	/**
+	 * Spectate next player
+	 */
+	public void spectateNextPlayer() {
+		var mc = Minecraft.getInstance();
+		
+		// get spectatable players
+		var playerList = mc.level.players();
+		playerList.removeIf(player -> player.isSpectator()); 
 
+		if (!playerList.isEmpty())
+			this.spectatedEntity = this.nextObject(playerList, this.spectatedEntity);
+	}
+
+	/**
+	 * Spectate previous player
+	 */
+	public void spectatePreviousPlayer() {
+		var mc = Minecraft.getInstance();
+		
+		// get spectatable players
+		var playerList = mc.level.players();
+		playerList.removeIf(player -> player.isSpectator()); 
+
+		if (!playerList.isEmpty())
+			this.spectatedEntity = this.previousObject(playerList, this.spectatedEntity);
+	}
+
+	/**
+	 * Get nearest player
+	 * @return Nearest player or null
+	 */
+	private Entity getNearestPlayer() {
+		Minecraft mc = Minecraft.getInstance();
+		return mc.level.getNearestPlayer(mc.player, 128);
+	}
+
+	/**
+	 * Update distance to spectating entity
+	 * @param i Scroll amount
+	 */
+	public void onScroll(int i) {
+		this.distance -= i;
+	}
+	
+	public boolean isSpectating() {
+		return this.mode != SpectatorMode.NONE;
+	}
+	
 	/**
 	 * Retrieves the next object out of a list. Wraps back to the start once the end of the list is reached
 	 * @param list The list to cycle through
@@ -166,11 +159,11 @@ public class SpectatorManager {
 	 */
 	private <T> T nextObject(List<? extends T> list, T currentObject) {
 		int index = list.indexOf(currentObject);
-		if (list.size() > index + 1) {
+		if (list.size() > index + 1)
 			return list.get(index + 1);
-		} else if (list.size() == index + 1) {
+		else if (list.size() == index + 1)
 			return list.get(0);
-		}
+
 		return currentObject;
 	}
 	
@@ -181,52 +174,13 @@ public class SpectatorManager {
 	 * @return The previous object before the currentObject
 	 */
 	private <T> T previousObject(List<? extends T> list, T currentObject) {
-		int index = list.indexOf(spectatedEntity);
-		if (0 <= index - 1) {
+		int index = list.indexOf(currentObject);
+		if (0 <= index - 1)
 			return list.get(index - 1);
-		} else if (-1 == index - 1) {
+		else if (-1 == index - 1)
 			return list.get(list.size() - 1);
-		}
-		return currentObject;
-	}
-	
-	public boolean isSpectating() {
-		return mode != SpectatorMode.None;
-	}
-	
-	public static enum SpectatorMode {
-		/**
-		 * Forces the player to always look at the spectatingEntity
-		 */
-		FixedAngle,
-		/**
-		 * Forces the position and angle to the spactatingEntity. By moving the mouse, the player can orbit around the spectatingEntity
-		 */
-		Orbit,
-		/**
-		 * If spectating should be disabled
-		 */
-		None;
-		
-		public static List<SpectatorMode> valueList(){
-			return Arrays.asList(values());
-		}
-	}
-	
-	private Entity getNearestPlayer(int radius) {
-		Minecraft mc = Minecraft.getInstance();
-		LocalPlayer player = mc.player;
-		return mc.level.getNearestPlayer(player, radius);
-	}
-	
-	private Entity getNearestEntity(int radius) {
-		Minecraft mc = Minecraft.getInstance();
-		LocalPlayer player = mc.player;
-		return mc.level.getNearestEntity(LivingEntity.class, TargetingConditions.DEFAULT, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(radius));
-	}
 
-	public void onScroll(int i) {
-		distance += (i*-1);
+		return currentObject;
 	}
 	
 }

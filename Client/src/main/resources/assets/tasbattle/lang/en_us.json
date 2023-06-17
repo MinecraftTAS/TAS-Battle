@@ -1,7 +1,0 @@
-{ 
-	"keybind.tasbattle.spectate": "Start/Stop spectating",
-	"keybind.tasbattle.spectatenext": "Spectate next player",
-	"keybind.tasbattle.spectateprev": "Spectate previous player",
-	
-	"keybind.category.tasbattle.tasbattle": "TAS Battle"
-}
