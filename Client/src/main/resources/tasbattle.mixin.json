@@ -6,16 +6,15 @@
   "mixins": [
   ],
   "client": [
-  	"MixinTitleScreen",
+  	"spectator.MixinMouseHandler",
   	"tickratechanger.MixinItemRenderer",
   	"tickratechanger.MixinLevelRenderer",
   	"tickratechanger.MixinSoundEngine",
   	"tickratechanger.MixinSubtitleOverlay",
   	"tickratechanger.MixinToastInstance",
   	"MixinMinecraft",
-  	"spectator.MixinMouseHandler",
-  	"HookOptions",
-  	"MixinLanguageManager"
+  	"MixinOptions",
+  	"MixinTitleScreen",
   ],
   "injectors": {
     "defaultRequire": 1

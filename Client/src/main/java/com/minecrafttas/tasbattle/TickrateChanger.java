@@ -3,10 +3,11 @@ package com.minecrafttas.tasbattle;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 
+/**
+ * Main tickrate changer
+ * @author Pancake
+ */
 public class TickrateChanger {
-
-	@Getter
-	private static TickrateChanger instance;
 	
 	@Getter
 	private float tickrate = 20;
@@ -19,28 +20,30 @@ public class TickrateChanger {
 	
 	private long systemTimeSinceTC = System.currentTimeMillis(); // system time passed since last tickrate change
 	private long gameTime = System.currentTimeMillis(); // game time passed (since last tickrate update)
-	
-	public TickrateChanger() {
-		instance = this;
-	}
-	
+
+	/**
+	 * Change client tickrate
+	 * @param tickrate Tickrate
+	 */
 	public void changeTickrate(float tickrate) {
-		if(tickrate<=0 || tickrate > 1000) return;
-		TASBattle.LOGGER.debug("Changing tickrate to {}", tickrate);
+		if(tickrate < 0.1f || tickrate > 100.0f)
+			return;
 		
-		long millis = System.currentTimeMillis();
+		var millis = System.currentTimeMillis();
 
 		// calculate time passed without tickrate changing
-		long timePassed = millis - this.systemTimeSinceTC;
+		var timePassed = millis - this.systemTimeSinceTC;
 		this.gameTime += (long) (timePassed * this.gamespeed);
 		this.systemTimeSinceTC = millis;
 		
-		this.tickrate=tickrate;
-		this.gamespeed = tickrate/20;
-		this.msPerTick = (long) (1000L/tickrate);
+		this.tickrate = tickrate;
+		this.gamespeed = tickrate / 20.0f;
+		this.msPerTick = (long) (1000L / tickrate);
 		
-		Minecraft mc = Minecraft.getInstance();
-		mc.timer.msPerTick = msPerTick;
+		var mc = Minecraft.getInstance();
+		mc.timer.msPerTick = this.msPerTick;
+		
+		TASBattle.LOGGER.debug("Tickrate changed to {}", tickrate);
 	}
 	
 	/**

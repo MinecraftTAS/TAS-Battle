@@ -21,7 +21,7 @@ import net.minecraft.client.Options;
  */
 @Mixin(Options.class)
 @Environment(EnvType.CLIENT)
-public class HookOptions {
+public class MixinOptions {
 
 	/**
 	 * List of Key Mappings that are being registered once loaded

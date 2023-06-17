@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
 
+import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
@@ -22,110 +23,73 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 @Environment(EnvType.CLIENT)
 public class KeybindSystem {
 
-	/**
-	 * List of keybinds
-	 */
+	private static Map<KeyMapping, Boolean> keys = new HashMap<>();
 	private static Keybind[] keybinds = {
-		new Keybind("keybind.tasbattle.spectate", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_R, true, () -> { // Spectate previous player //TAS Battle
-			SpectatorManager.getInstance().cycleSpectate();
+		new Keybind("Start/Stop spectating", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> { // Spectate previous player
+			TASBattle.getInstance().getSpectatorManager().cycleSpectate();
 		}),
-		new Keybind("keybind.tasbattle.spectatenext", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_E, true, () -> { //Spectate next player //TAS Battle
-			SpectatorManager.getInstance().spectateNextPlayer();
+		new Keybind("Spectate next player", "TAS Battle", GLFW.GLFW_KEY_E, true, () -> { //Spectate next player
+			TASBattle.getInstance().getSpectatorManager().spectateNextPlayer();
 		}),
-		new Keybind("keybind.tasbattle.spectateprev", "keybind.category.tasbattle.tasbattle", GLFW.GLFW_KEY_Q, true, () -> { //Spectate previous player //TAS Battle
-			SpectatorManager.getInstance().spectatePreviousPlayer();
+		new Keybind("Spectate previous player", "TAS Battle", GLFW.GLFW_KEY_Q, true, () -> { //Spectate previous player
+			TASBattle.getInstance().getSpectatorManager().spectatePreviousPlayer();
 		})
 	};
 
-	/**
-	 * Represents a keybind
-	 * @author Pancake
-	 */
+	@Getter
 	private static class Keybind {
 
-		/**
-		 * Minecraft key mapping
-		 */
 		private KeyMapping keyMapping;
-
-		/**
-		 * Category of the keybind in the controls menu
-		 */
 		private String category;
-
-		/**
-		 * Should the keybind only be available if mc.level is not null
-		 */
 		private boolean isInGame;
-
-		/**
-		 * Will be run when the keybind is pressed
-		 */
 		private Runnable onKeyDown;
 
-		/**
-		 * Initializes a keybind
-		 * @param name Name of the keybind
-		 * @param category Category of the keybind
-		 * @param defaultKey Default key of the keybind
-		 * @param isInGame Should the keybind only be available if mc.level is not null
-		 * @param onKeyDown Will be run when the keybind is pressed
-		 */
 		public Keybind(String name, String category, int defaultKey, boolean isInGame, Runnable onKeyDown) {
 			this.keyMapping = new KeyMapping(name, defaultKey, category);
 			this.category = category;
 			this.isInGame = isInGame;
 			this.onKeyDown = onKeyDown;
 		}
-
-		/**
-		 * Returns the minecraft key mapping
-		 * @return Minecraft key mapping
-		 */
-		public KeyMapping getKeyMapping() {
-			return this.keyMapping;
-		}
-
+		
 	}
 
 	/**
-	 * Initializes the keybind Manager, registers categories and key binds.
+	 * Initialize keybind Manager, register categories and kebinds.
+	 * @param keyMappings KeyMappings array
 	 */
 	public static KeyMapping[] onKeybindInitialize(KeyMapping[] keyMappings) {
-		// Initialize categories
+		// initialize categories
 		Map<String, Integer> categories = KeyMapping.CATEGORY_SORT_ORDER;
 		for (int i = 0; i < keybinds.length; i++)
 			if (!categories.containsKey(keybinds[i].category))
 				categories.put(keybinds[i].category, i + 8);
-		// Add keybinds
+		
+		// add keybinds
 		return ArrayUtils.addAll(keyMappings, Arrays.asList(keybinds).stream().map(Keybind::getKeyMapping).toArray(KeyMapping[]::new)); // convert Keybind array to KeyMapping on the fly
 	}
 
 	/**
-	 * Watches for key presses and triggers sub events.
-	 * @param mc Instance of minecraft
+	 * Watch for key presses and trigger keybinds
+	 * @param mc Instance of Minecraft
 	 */
 	public static void onGameLoop(Minecraft mc) {
 		for (Keybind keybind : keybinds) {
 			if (keybind.isInGame && mc.level == null || !isKeyDown(mc, keybind.getKeyMapping()))
 				continue;
+			
 			keybind.onKeyDown.run();
 		}
 	}
+	
 
 	/**
-	 * Map of pressed/non-pressed keys.
-	 */
-	private static Map<KeyMapping, Boolean> keys = new HashMap<>();
-
-	/**
-	 * Checks whether a key has been pressed recently.
+	 * Check whether key has been pressed recently.
 	 * @param mc Instance of minecraft
 	 * @param map Key mappings to check
 	 * @return Key has been pressed recently
 	 */
 	private static boolean isKeyDown(Minecraft mc, KeyMapping map) {
-		// Check if in a text field
+		// check if in a text field
 		Screen screen = mc.screen;
 		if (screen != null && ((screen.getFocused() instanceof EditBox && ((EditBox) screen.getFocused()).canConsumeInput()) || screen.getFocused() instanceof RecipeBookComponent))
 			return false;
