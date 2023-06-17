@@ -43,7 +43,6 @@ public class TASBattle extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new GuiHandler(), this);
 		this.tickrateChanger = new TickrateChanger(this);
 		
-		
 		this.gameMode = switch (System.getProperty("mode")) {
 			case "ffa": yield new FFA(this);
 			case "bedwars": yield new Bedwars(this);
