@@ -11,12 +11,17 @@ import com.minecrafttas.tasbattle.TASBattle;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * This mixin hooks the minecraft class game loop
  */
 @Mixin(Minecraft.class)
 public class MixinMinecraft {
+	
+	@Shadow
+	private LocalPlayer player;
 	
 	/**
 	 * Hook game loop method
@@ -38,5 +43,19 @@ public class MixinMinecraft {
 			return;
 
 		mc.setScreen(screen);
+	}
+	
+	/**
+	 * Modify return screen and trigger event
+	 * @param s Screen
+	 * @param ci Callback Info
+	 */
+	@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
+	public void onSetScreen(Screen s, CallbackInfo ci) {
+		// send verification packet on server connect
+		if (s == null && this.player != null) {
+			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
+			this.player.connection.send(new ServerboundCustomPayloadPacket(TickrateChanger.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
+		}
 	}
 }

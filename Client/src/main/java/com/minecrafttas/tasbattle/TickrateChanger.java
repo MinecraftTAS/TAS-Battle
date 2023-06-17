@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle;
 
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Main tickrate changer
@@ -9,6 +10,10 @@ import net.minecraft.client.Minecraft;
  */
 public class TickrateChanger {
 	
+	// don't touch this miran
+	
+	public static final ResourceLocation IDENTIFIER = new ResourceLocation("tickratechanger", "data");
+
 	@Getter
 	private float tickrate = 20;
 	
