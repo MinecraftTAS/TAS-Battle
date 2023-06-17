@@ -1,5 +1,6 @@
 package com.minecrafttas.tasbattle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,6 +10,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.minecrafttas.tasbattle.bedwars.Bedwars;
 import com.minecrafttas.tasbattle.ffa.FFA;
 import com.minecrafttas.tasbattle.gui.GuiHandler;
 import com.minecrafttas.tasbattle.lobby.Lobby;
@@ -32,8 +34,6 @@ public class TASBattle extends JavaPlugin {
 	private GameMode gameMode;
 	@Getter
 	private Lobby lobby;
-	@Getter
-	private boolean developmentMode;
 	
 	/**
 	 * Enable TAS Battle mod
@@ -43,15 +43,22 @@ public class TASBattle extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new GuiHandler(), this);
 		this.tickrateChanger = new TickrateChanger(this);
 		
-		// TODO: fix this
-//		this.developmentMode = true;
-		this.gameMode = new FFA(this);
+		
+		this.gameMode = switch (System.getProperty("mode")) {
+			case "ffa": yield new FFA(this);
+			case "bedwars": yield new Bedwars(this);
+			default: throw new IllegalArgumentException("Unsupported gamemode");
+		};
+				
 		for (var pair : this.gameMode.createCommands()) {
 			this.getCommand(pair.getKey()).setExecutor(pair.getValue());
 			this.getCommand(pair.getKey()).setTabCompleter(pair.getValue());
 		}
-//		this.gameMode.startGameMode(Bukkit.getOnlinePlayers().stream().map(p -> (Player) p).toList());
-		this.lobby = new Lobby(this, this.gameMode);
+		
+		if (System.getProperty("dev") == null)
+			this.lobby = new Lobby(this, this.gameMode);
+		else
+			this.gameMode.startGameMode(new ArrayList<>());
 	}
 	
 }
