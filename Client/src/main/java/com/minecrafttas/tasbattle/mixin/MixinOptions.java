@@ -10,8 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecrafttas.tasbattle.KeybindSystem;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 
@@ -20,7 +18,6 @@ import net.minecraft.client.Options;
  * @author Pancake
  */
 @Mixin(Options.class)
-@Environment(EnvType.CLIENT)
 public class MixinOptions {
 
 	/**

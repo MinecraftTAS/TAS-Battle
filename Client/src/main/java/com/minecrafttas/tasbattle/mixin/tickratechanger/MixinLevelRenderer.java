@@ -6,8 +6,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import com.minecrafttas.tasbattle.TASBattle;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.LevelRenderer;
 
 /**
@@ -15,7 +13,6 @@ import net.minecraft.client.renderer.LevelRenderer;
  * @author Pancake
  */
 @Mixin(LevelRenderer.class)
-@Environment(EnvType.CLIENT)
 public class MixinLevelRenderer {
 
 	/**

@@ -6,15 +6,11 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import com.minecrafttas.tasbattle.TASBattle;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 /**
  * This mixin slows down the toast to the tickrate
  * @author Pancake
  */
 @Mixin(targets = "net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance")
-@Environment(EnvType.CLIENT)
 public class MixinToastInstance {
 
 	/**
