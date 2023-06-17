@@ -83,7 +83,7 @@ public class ScenarioManager extends LobbyManager {
 				var lore = new ArrayList<Component>();
 				lore.add(Component.text("§cThis scenario is disabled"));
 				lore.add(Component.text(""));
-				Arrays.stream(scenario.getDescription()).forEach(c -> lore.add(Component.text(c)));
+				Arrays.stream(scenario.getDescription()).forEach(c -> lore.add(Component.text("§r§5" + c)));
 				meta.lore(lore);
 				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			});
@@ -113,7 +113,7 @@ public class ScenarioManager extends LobbyManager {
 		// update votes
 		if (this.enabled.contains(scenario)) {
 			this.enabled.remove(scenario);
-			Bukkit.broadcast(Component.text("§b» §a" + player.getName() + " §cdisabled ").append(Component.text("§7" + scenario.getTitle())));
+			Bukkit.broadcast(Component.text("§b» §7" + player.getName() + " disabled §f").append(Component.text("§7" + scenario.getTitle())));
 			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 0.75f));
 			
 			item.editMeta(meta -> {
@@ -125,7 +125,7 @@ public class ScenarioManager extends LobbyManager {
 			this.scenarios.put(scenario, item);
 		} else {
 			this.enabled.add(scenario);
-			Bukkit.broadcast(Component.text("§b» §a" + player.getName() + " §aenabled ").append(Component.text("§7" + scenario.getTitle())));
+			Bukkit.broadcast(Component.text("§b» §7" + player.getName() + " enabled §f").append(Component.text("§7" + scenario.getTitle())));
 			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 1f));
 		
 			item.editMeta(meta -> {
@@ -146,7 +146,7 @@ public class ScenarioManager extends LobbyManager {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text(""), Component.text("§5Every FFA game can be customized with scenarios."), Component.text("§5Scenarios are small additions to the game that"), Component.text("§5allow for unique and fun gameplay."));
+		return Arrays.asList(Component.text(""), Component.text("§r§5Every FFA game can be customized with scenarios."), Component.text("§r§5Scenarios are small additions to the game that"), Component.text("§r§5allow for unique and fun gameplay."));
 	}
 	
 	@Override
