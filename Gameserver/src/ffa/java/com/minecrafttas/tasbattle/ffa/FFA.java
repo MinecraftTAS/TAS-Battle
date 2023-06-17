@@ -1,6 +1,7 @@
 package com.minecrafttas.tasbattle.ffa;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -94,6 +95,12 @@ public class FFA implements GameMode {
 			p.setGameMode(org.bukkit.GameMode.SURVIVAL);
 			p.getInventory().clear();
 			p.closeInventory();
+			try {
+				kit.deserializeKit(p.getInventory());
+			} catch (IOException _e) {
+				Bukkit.broadcast(Component.text("§b» §cAn error occured while deserializing the kit."));
+				_e.printStackTrace();
+			}
 		}
 		
 		// teleport players
