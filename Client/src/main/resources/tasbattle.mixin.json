@@ -12,6 +12,7 @@
   	"tickratechanger.MixinSoundEngine",
   	"tickratechanger.MixinSubtitleOverlay",
   	"tickratechanger.MixinToastInstance",
+  	"MixinAbstractClientPlayer",
   	"MixinClientPlayNetworkHandler",
   	"MixinEntityRenderer",
   	"MixinMinecraft",
