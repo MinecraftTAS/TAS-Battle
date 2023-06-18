@@ -1,6 +1,8 @@
 package com.minecrafttas.tasbattle;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -12,6 +14,8 @@ import java.util.UUID;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.RawCommand;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.PluginMessageEvent;
+import com.velocitypowered.api.event.connection.PluginMessageEvent.ForwardResult;
 import com.velocitypowered.api.event.permission.PermissionsSetupEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.permission.PermissionFunction;
@@ -21,6 +25,8 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 
 import net.kyori.adventure.text.Component;
 
@@ -32,6 +38,8 @@ import net.kyori.adventure.text.Component;
 		url = "https://github.com/MinecraftTAS/TAS-Battle", description = "basic proxy management plugin for the tasbattle proxy server")
 public class ProxyPlugin {
 
+	public static final ChannelIdentifier TASBATTLE_DATA = MinecraftChannelIdentifier.create("tasbattle", "data");
+	
 	// proxy instance
 	private final ProxyServer server;
 	
@@ -42,6 +50,8 @@ public class ProxyPlugin {
 	private String lobbyErrorMessage;
 	private List<String> lobbyEnabledServers;
 	private List<UUID> admins;
+	private String tags; // player:tag,player...
+	private String capes; // player:url,player...
     
 	// permission provider
 	private PermissionProvider permissionProvider;
@@ -67,6 +77,8 @@ public class ProxyPlugin {
 			this.lobbyErrorMessage = properties.getProperty("lobby_error_message");
 			this.lobbyEnabledServers = Arrays.stream(properties.getProperty("lobby_enabled_servers").split("\\\\,")).toList();
 			this.admins = Arrays.stream(properties.getProperty("admin_uuids").split("\\\\,")).map(s -> UUID.fromString(s)).toList();
+			this.tags = properties.getProperty("tags");
+			this.capes = properties.getProperty("capes");
 		} else {
 			// set default properties and save
 			Files.createDirectories(dataDirectory);
@@ -76,6 +88,8 @@ public class ProxyPlugin {
 			properties.setProperty("lobby_error_message", "");
 			properties.setProperty("lobby_enabled_servers", "");
 			properties.setProperty("admin_uuids", "");
+			properties.setProperty("tags", "");
+			properties.setProperty("capes", "");
 			properties.storeToXML(Files.newOutputStream(configFile, StandardOpenOption.CREATE), null);
 			throw new IOException("Configuration is not set up.");
 		}
@@ -109,6 +123,26 @@ public class ProxyPlugin {
 			
 		}, this.lobbyAliases);
 		
+		// register plugin message
+		this.server.getChannelRegistrar().register(TASBATTLE_DATA);
+	}
+	
+	/**
+	 * Send tas battle data to client on plugin message
+	 * @param e Plugin message event
+	 */
+	@Subscribe
+	public void onPluginMessage(PluginMessageEvent e) {
+		if (!TASBATTLE_DATA.getId().equals(e.getIdentifier().getId()) || this.tags == null || this.capes == null)
+			return;
+
+		// send tas battle data to client
+		var bytes = (this.tags + "\\n" /* thanks gradle */ + this.capes).getBytes(StandardCharsets.UTF_8);
+		var byteBuffer = ByteBuffer.allocate(4 + bytes.length);
+		byteBuffer.putInt(bytes.length);
+		byteBuffer.put(bytes);
+		((Player) e.getSource()).sendPluginMessage(TASBATTLE_DATA, byteBuffer.array());
+		e.setResult(ForwardResult.handled());
 	}
 	
 }
