@@ -12,15 +12,21 @@ import net.minecraft.resources.ResourceLocation;
 
 /**
  * Data class for tas battle
+ * @author Pancake
  */
-@Getter
 public class DataSystem {
 
 	public static final ResourceLocation IDENTIFIER = new ResourceLocation("tasbattle", "data");
 
+	@Getter
 	private Map<UUID, String> tags;
+	
+	@Getter
 	private Map<UUID, URL> capes;
 	
+	/**
+	 * Initialize data system
+	 */
 	public DataSystem() {
 		this.tags = new HashMap<>();
 		this.capes = new HashMap<>();
