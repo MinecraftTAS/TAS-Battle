@@ -1,4 +1,4 @@
-package com.minecrafttas.tasbattle.mixin;
+package com.minecrafttas.tasbattle.mixin.hooks;
 
 import java.nio.charset.StandardCharsets;
 
@@ -19,7 +19,7 @@ import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
  * @author Pancake
  */
 @Mixin(ClientPacketListener.class)
-public class MixinClientPlayNetworkHandler {
+public class HookClientPlayNetworkHandler {
 
 	/**
 	 * Update client tickrate when receiving custom payload

@@ -1,4 +1,4 @@
-package com.minecrafttas.tasbattle.mixin;
+package com.minecrafttas.tasbattle.mixin.cosmetics;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

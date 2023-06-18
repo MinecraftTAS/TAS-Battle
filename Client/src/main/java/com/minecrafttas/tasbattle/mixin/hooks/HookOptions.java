@@ -1,4 +1,4 @@
-package com.minecrafttas.tasbattle.mixin;
+package com.minecrafttas.tasbattle.mixin.hooks;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +18,7 @@ import net.minecraft.client.Options;
  * @author Pancake
  */
 @Mixin(Options.class)
-public class MixinOptions {
+public class HookOptions {
 
 	/**
 	 * List of Key Mappings that are being registered once loaded

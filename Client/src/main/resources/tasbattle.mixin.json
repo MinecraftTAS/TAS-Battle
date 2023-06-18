@@ -6,19 +6,19 @@
   "mixins": [
   ],
   "client": [
+  	"cosmetics.MixinAbstractClientPlayer",
+  	"cosmetics.MixinEntityRenderer",
+  	"gui.MixinRealmsNotificationsScreen",
+  	"gui.MixinTitleScreen",
+    "hooks.HookClientPlayNetworkHandler",
+    "hooks.HookOptions",
   	"spectator.MixinMouseHandler",
   	"tickratechanger.MixinItemRenderer",
   	"tickratechanger.MixinLevelRenderer",
   	"tickratechanger.MixinSoundEngine",
   	"tickratechanger.MixinSubtitleOverlay",
   	"tickratechanger.MixinToastInstance",
-  	"MixinAbstractClientPlayer",
-  	"MixinClientPlayNetworkHandler",
-  	"MixinEntityRenderer",
-  	"MixinMinecraft",
-  	"MixinOptions",
-  	"MixinRealmsNotificationsScreen",
-  	"MixinTitleScreen",
+  	"MixinMinecraft"
   ],
   "injectors": {
     "defaultRequire": 1
