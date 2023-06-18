@@ -18,6 +18,9 @@ public class MixinMouseHandler {
 	 */
 	@ModifyVariable(method = "onScroll", at = @At(value = "STORE"), index = 9, ordinal = 0)
 	public int hook_ScrollVar(int i) {
+		if (!TASBattle.getInstance().spectatingSystem.isSpectating())
+			return i;
+		
 		TASBattle.getInstance().getSpectatingSystem().onScroll(i);
 		return i;
 	}
