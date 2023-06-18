@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.system.DataSystem;
 import com.minecrafttas.tasbattle.system.KeybindSystem;
 import com.minecrafttas.tasbattle.system.TickrateChanger;
 
@@ -64,7 +65,9 @@ public class MixinMinecraft {
 		// send verification packet on server connect
 		if (s == null && this.player != null) {
 			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
+			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(DataSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
 			this.player.connection.send(new ServerboundCustomPayloadPacket(TickrateChanger.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
+			this.player.connection.send(new ServerboundCustomPayloadPacket(DataSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
 		}
 		
 		// redirect multiplayer screen to main menu

@@ -3,6 +3,7 @@ package com.minecrafttas.tasbattle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.minecrafttas.tasbattle.system.DataSystem;
 import com.minecrafttas.tasbattle.system.SpectatingSystem;
 import com.minecrafttas.tasbattle.system.TickrateChanger;
 
@@ -25,6 +26,9 @@ public class TASBattle implements ModInitializer{
 	@Getter
 	public SpectatingSystem spectatingSystem;
 	
+	@Getter
+	public DataSystem dataSystem;
+	
 	@Override
 	public void onInitialize() {
 		instance = this;
@@ -32,6 +36,7 @@ public class TASBattle implements ModInitializer{
 		// initialize modules
 		this.tickrateChanger = new TickrateChanger();
 		this.spectatingSystem = new SpectatingSystem();
+		this.dataSystem = new DataSystem();
 		
 		LOGGER.info("TAS Battle has been initialized");
 	}
