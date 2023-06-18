@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -32,6 +33,9 @@ public class MixinMinecraft {
 	
 	@Shadow
 	private LocalPlayer player;
+	
+	@Unique
+	private boolean registered;
 	
 	/**
 	 * Hook game loop method
@@ -63,7 +67,8 @@ public class MixinMinecraft {
 	@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
 	public void onSetScreen(Screen s, CallbackInfo ci) {
 		// send verification packet on server connect
-		if (s == null && this.player != null) {
+		if (s == null && this.player != null && !this.registered) {
+			this.registered = true;
 			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
 			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(DataSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
 			this.player.connection.send(new ServerboundCustomPayloadPacket(TickrateChanger.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
@@ -77,8 +82,9 @@ public class MixinMinecraft {
 		} 
 		
 		// reset tickrate when entering menu
-		else if (s instanceof TitleScreen)
+		else if (s instanceof TitleScreen) {
 			TASBattle.getInstance().getTickrateChanger().changeTickrate(20.0f);
-
+			this.registered = false;
+		}
 	}
 }

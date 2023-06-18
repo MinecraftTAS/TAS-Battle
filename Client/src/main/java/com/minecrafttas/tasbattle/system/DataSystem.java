@@ -41,6 +41,9 @@ public class DataSystem {
 	 * @throws Exception Malformed data
 	 */
 	public void parseData(String data) throws Exception {
+		this.tags.clear();
+		this.capes.clear();
+		
 		var mc = Minecraft.getInstance();
 		
 		var frags = data.split("\n");
