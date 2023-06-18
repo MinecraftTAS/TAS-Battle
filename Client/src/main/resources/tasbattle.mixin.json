@@ -13,6 +13,7 @@
   	"tickratechanger.MixinSubtitleOverlay",
   	"tickratechanger.MixinToastInstance",
   	"MixinClientPlayNetworkHandler",
+  	"MixinEntityRenderer",
   	"MixinMinecraft",
   	"MixinOptions",
   	"MixinRealmsNotificationsScreen",
