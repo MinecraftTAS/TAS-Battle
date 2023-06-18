@@ -13,6 +13,7 @@
     "hooks.HookClientPlayNetworkHandler",
     "hooks.HookOptions",
   	"spectator.MixinMouseHandler",
+  	"spectator.MixinCamera",
   	"tickratechanger.MixinItemRenderer",
   	"tickratechanger.MixinLevelRenderer",
   	"tickratechanger.MixinSoundEngine",

@@ -4,11 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.mixin.spectator.MixinMouseHandler;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
+import net.minecraft.network.protocol.game.ServerboundTeleportToEntityPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -25,8 +26,6 @@ public class SpectatingSystem {
 	
 	private Entity spectatedEntity;
 	private SpectatorMode mode;
-	private Double anglePitch;
-	private Double angleYaw;
 	private int distance;
 	
 	/**
@@ -39,40 +38,71 @@ public class SpectatingSystem {
 	
 	/**
 	 * Main update loop of the spectator manager
-	 * @param player The player that is spectating
-	 * @param pitchD The pitch delta of the mouse, used when turning the player
-	 * @param yawD The yaw delta of the mouse, used when turning the player
-	 * @see MixinMouseHandler#redirect_turnPlayer(LocalPlayer, double, double)
+	 * @param p Local player
+	 * @param c Camera
+	 * @param f Partial ticks
 	 */
-	public void onMouse(LocalPlayer player, double pitchD, double yawD) {
+	public void onCamera(LocalPlayer p, Camera c, float f) {
 		switch (this.mode) {
 			case FIXED:
-				if(this.spectatedEntity != null) {
-					player.lookAt(Anchor.EYES, this.spectatedEntity.getEyePosition());
-					break;
-				}
+				var entityPos = this.spectatedEntity.getEyePosition();
+				var playerX = Mth.lerp(f, p.xo, p.getX());
+				var playerY = Mth.lerp(f, p.yo, p.getY()) + p.getEyeHeight();
+				var playerZ = Mth.lerp(f, p.zo, p.getZ());
+
+				var xOff = entityPos.x - playerX;
+				var yOff = entityPos.y - playerY;
+				var zOff = entityPos.z - playerZ;
+
+				var y = Math.sqrt(xOff * xOff + zOff * zOff);
+				var xRot = Mth.wrapDegrees((float) (-Mth.atan2(yOff, y) * 57.2957763671875));
+				var yRot = Mth.wrapDegrees((float) (Mth.atan2(zOff, xOff) * 57.2957763671875) - 90.0f);
+
+				p.setXRot(xRot);
+				p.setYRot(yRot);
+				c.setRotation(yRot, xRot);
+				c.setPosition(playerX, playerY, playerZ);
+				break;
 			case ORBIT:
-				if(this.spectatedEntity != null) {
-					if (this.anglePitch == null)
-						this.anglePitch = (double) player.getXRot();
-					
-					if(this.angleYaw == null)
-						this.angleYaw = (double) player.getYRot();
-					
-					this.anglePitch -= pitchD/200f;
-					this.angleYaw -= yawD/200f;
-					
-					double posY = this.distance * Math.sin(this.angleYaw) + this.spectatedEntity.getY();
-					double hyp = this.distance * Math.cos(this.angleYaw);
-					double posX = hyp*Math.sin(this.anglePitch) + this.spectatedEntity.getX();
-					double posZ = hyp*Math.cos(this.anglePitch) + this.spectatedEntity.getZ();
-					
-					player.lookAt(Anchor.EYES, this.spectatedEntity.getEyePosition());
-					player.setPos(posX, posY, posZ);
-					break;
-				}
+				var anglePitch = p.getYRot() / 65.0;
+				var angleYaw = -p.getXRot() / 65.0;
+				
+				var posY = this.distance * Math.sin(angleYaw) + this.spectatedEntity.getY();
+				var hyp = this.distance * Math.cos(angleYaw);
+				var posX = hyp * Math.sin(anglePitch) + this.spectatedEntity.getX();
+				var posZ = hyp * Math.cos(anglePitch) + this.spectatedEntity.getZ();
+				
+				p.setPos(posX, posY, posZ);
+				
+				var entityPos2 = this.spectatedEntity.getEyePosition();
+
+				var xOff2 = entityPos2.x - posX;
+				var yOff2 = entityPos2.y - posY;
+				var zOff2 = entityPos2.z - posZ;
+
+				var y2 = Math.sqrt(xOff2 * xOff2 + zOff2 * zOff2);
+				var xRot2 = Mth.wrapDegrees((float) (-Mth.atan2(yOff2, y2) * 57.2957763671875));
+				var yRot2 = Mth.wrapDegrees((float) (Mth.atan2(zOff2, xOff2) * 57.2957763671875) - 90.0f);
+
+				c.setRotation(yRot2, xRot2);
+				c.setPosition(posX, posY, posZ);
+				
+				break;
+				
+//			case ORBIT:
+//				if(this.spectatedEntity != null) {
+
+//					
+//					double posY = this.distance * Math.sin(this.angleYaw) + this.spectatedEntity.getY();
+//					double hyp = this.distance * Math.cos(this.angleYaw);
+//					double posX = hyp*Math.sin(this.anglePitch) + this.spectatedEntity.getX();
+//					double posZ = hyp*Math.cos(this.anglePitch) + this.spectatedEntity.getZ();
+//					
+//					player.lookAt(Anchor.EYES, this.spectatedEntity.getEyePosition());
+//					player.setPos(posX, posY, posZ);
+//					break;
+//				}
 			default:
-				player.turn(pitchD, yawD);
 				break;
 		}
 	}
@@ -82,6 +112,8 @@ public class SpectatingSystem {
 	 * @param mode New spectating mode
 	 */
 	public void setMode(SpectatorMode mode) {
+		var mc = Minecraft.getInstance();
+		
 		if(mode == SpectatorMode.NONE) {
 			this.spectatedEntity = null;
 			this.mode = mode;
@@ -91,8 +123,11 @@ public class SpectatingSystem {
 		if (this.spectatedEntity == null)
 			this.spectatedEntity = this.getNearestPlayer();
 		
-		if (this.spectatedEntity != null)
+		if (this.spectatedEntity != null) {
 			this.mode = mode;
+			mc.player.connection.send(new ServerboundTeleportToEntityPacket(this.spectatedEntity.getUUID()));
+		}
+
 	}
 	
 	/**
@@ -113,8 +148,11 @@ public class SpectatingSystem {
 		var playerList = mc.level.players();
 		playerList.removeIf(player -> player.isSpectator()); 
 
-		if (!playerList.isEmpty())
+		if (!playerList.isEmpty()) {
 			this.spectatedEntity = this.nextObject(playerList, this.spectatedEntity);
+			if (this.isSpectating())
+				mc.player.connection.send(new ServerboundTeleportToEntityPacket(this.spectatedEntity.getUUID()));
+		}
 	}
 
 	/**
@@ -127,8 +165,11 @@ public class SpectatingSystem {
 		var playerList = mc.level.players();
 		playerList.removeIf(player -> player.isSpectator()); 
 
-		if (!playerList.isEmpty())
+		if (!playerList.isEmpty()) {
 			this.spectatedEntity = this.previousObject(playerList, this.spectatedEntity);
+			if (this.isSpectating())
+				mc.player.connection.send(new ServerboundTeleportToEntityPacket(this.spectatedEntity.getUUID()));
+		}
 	}
 
 	/**
