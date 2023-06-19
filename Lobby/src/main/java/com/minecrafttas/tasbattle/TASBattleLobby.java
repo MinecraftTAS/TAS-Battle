@@ -6,6 +6,8 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
@@ -17,6 +19,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 public class TASBattleLobby extends JavaPlugin implements Listener {
@@ -27,7 +31,10 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	@Getter
 	private DimensionChanger dimensionChanger;
 
-	@Getter
+	private Location location;
+	private UUID uuid;
+	private String name;
+
 	private Slime actionSlime;
 
 	/**
@@ -35,29 +42,39 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	 */
 	@Override
 	public void onEnable() {
+		Bukkit.getPluginManager().registerEvents(this, this);
+
 		this.tickrateChanger = new TickrateChanger(this);
 		this.dimensionChanger = new DimensionChanger(this);
 
-		var world = Bukkit.getWorlds().get(0);
-		var loc = new Location(world, 0.5, 100.5, -7.5);
+		// load configuration
+		var config = new YamlConfiguration();
+		try {
+			config.load(new File(this.getDataFolder(), "lobby.yml"));
+		} catch (IOException | InvalidConfigurationException e) {
+			System.err.println("Unable to load lobby configuration");
+			e.printStackTrace();
+		}
 
-		// get rid of action slimes
-		world.getNearbyEntities(loc, 5, 5, 5, null).forEach(e -> e.remove());
+		// delete previous action slimes
+		var world = Bukkit.getWorld(config.getString("world"));
+		world.getEntitiesByClass(Slime.class).forEach(e -> e.remove());
 
 		// spawn action slime
-		this.actionSlime = (Slime) world.spawnEntity(loc, EntityType.SLIME);
+		this.location = new Location(world, config.getDouble("posX"), config.getDouble("posY") + .5, config.getDouble("posZ"));
+		this.uuid = UUID.fromString(config.getString("uuid"));
+		this.name = config.getString("name");
+		this.actionSlime = (Slime) world.spawnEntity(location, EntityType.SLIME);
 		this.actionSlime.customName(Component.text("Action Slime"));
 		this.actionSlime.setAI(false);
 		this.actionSlime.setInvulnerable(true);
 		this.actionSlime.setSize(5);
 		this.actionSlime.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 0, false, false));
-
-		Bukkit.getPluginManager().registerEvents(this, this);
 	}
 
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent e) {
-		var raytrace = e.getPlayer().rayTraceEntities(2);
+		var raytrace = e.getPlayer().rayTraceEntities(3);
 		if (raytrace == null || raytrace.getHitEntity() != this.actionSlime)
 			return;
 
@@ -94,12 +111,12 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 		var player = playerListClass.getMethod("getPlayer", UUID.class).invoke(playerList, e.getPlayer().getUniqueId());
 		// var level = player.getLevel();
 		var level = entityClass.getMethod("getLevel").invoke(player);
-		// var gameProfile = new GameProfile(UUID.fromString("b8abdafc-5002-40df-ab68-63206ea4c7e8"), "TASBot");
-		var gameProfile = gameProfileClass.getConstructors()[0].newInstance(UUID.fromString("b8abdafc-5002-40df-ab68-63206ea4c7e8"), "TASBot");
+		// var gameProfile = new GameProfile(this.uuid, this.name);
+		var gameProfile = gameProfileClass.getConstructors()[0].newInstance(this.uuid, this.name);
 		// var fakePlayer = new ServerPlayer(mcserver, (ServerLevel) player.level, profile);
 		var fakePlayer = serverPlayerClass.getConstructors()[0].newInstance(mcserver, level, gameProfile);
-		// fakePlayer.setPosRaw(0.5, 101.0, -7.5);
-		entityClass.getMethod("setPosRaw", double.class, double.class, double.class).invoke(fakePlayer, 0.5, 101.0, -7.5);
+		// fakePlayer.setPosRaw(this.location.x(), this.location.y(), this.location.z());
+		entityClass.getMethod("setPosRaw", double.class, double.class, double.class).invoke(fakePlayer, this.location.x(), this.location.y(), this.location.z());
 		// var playerInfo = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer);
 		var playerInfo = playerInfoClass.getConstructors()[1].newInstance(playerInfoActionClass.getEnumConstants()[0], fakePlayer);
 		// var addPlayer = new ClientboundAddPlayerPacket(fakePlayer);
