@@ -1,10 +1,9 @@
-package com.minecrafttas.tasbattle.tickratechanger;
+package com.minecrafttas.tasbattle.managers;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.minecrafttas.tasbattle.TASBattleGameserver;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,6 +17,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
+import com.minecrafttas.tasbattle.TASBattleLobby;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -30,14 +31,14 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	private static final String TRC_CHANNEL = "tickratechanger:data";
 
 	private HashMap<UUID, BukkitTask> verificationTimers = new HashMap<>();
-	private TASBattleGameserver plugin;
+	private TASBattleLobby plugin;
 	private float tickrate;
 	
 	/**
 	 * Initialize tickrate changer
 	 * @param plugin Plugin
 	 */
-	public TickrateChanger(TASBattleGameserver plugin) {
+	public TickrateChanger(TASBattleLobby plugin) {
 		this.plugin = plugin;
 
 		// register plugin channels
