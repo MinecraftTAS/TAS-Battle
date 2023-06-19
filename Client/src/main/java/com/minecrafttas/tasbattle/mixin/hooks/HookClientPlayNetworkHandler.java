@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle.mixin.hooks;
 
 import java.nio.charset.StandardCharsets;
 
+import com.minecrafttas.tasbattle.system.DimensionSystem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,6 +40,9 @@ public class HookClientPlayNetworkHandler {
 			} catch (Exception e) {
 				TASBattle.LOGGER.error("Invalid data from server: {}", e);
 			}
+			ci.cancel();
+		} else if (packet.getIdentifier().equals(DimensionSystem.IDENTIFIER)) {
+			TASBattle.getInstance().getDimensionSystem().changeDimension();
 			ci.cancel();
 		}
 	}

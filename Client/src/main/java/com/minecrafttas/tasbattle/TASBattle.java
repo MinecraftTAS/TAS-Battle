@@ -1,5 +1,6 @@
 package com.minecrafttas.tasbattle;
 
+import com.minecrafttas.tasbattle.system.DimensionSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +29,10 @@ public class TASBattle implements ModInitializer{
 	
 	@Getter
 	public DataSystem dataSystem;
-	
+
+	@Getter
+	private DimensionSystem dimensionSystem;
+
 	@Override
 	public void onInitialize() {
 		instance = this;
@@ -37,6 +41,7 @@ public class TASBattle implements ModInitializer{
 		this.tickrateChanger = new TickrateChanger();
 		this.spectatingSystem = new SpectatingSystem();
 		this.dataSystem = new DataSystem();
+		this.dimensionSystem = new DimensionSystem();
 		
 		LOGGER.info("TAS Battle has been initialized");
 	}

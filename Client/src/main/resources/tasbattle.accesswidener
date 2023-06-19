@@ -12,3 +12,6 @@ accessible method net/minecraft/client/Camera setPosition (Lnet/minecraft/world/
 accessible method net/minecraft/client/Camera setPosition (DDD)V
 accessible method net/minecraft/client/Camera getPosition ()Lnet/minecraft/world/phys/Vec3;
 accessible method net/minecraft/client/Camera setRotation (FF)V
+
+accessible field net/minecraft/client/multiplayer/ClientLevel effects Lnet/minecraft/client/renderer/DimensionSpecialEffects;
+mutable field net/minecraft/client/multiplayer/ClientLevel effects Lnet/minecraft/client/renderer/DimensionSpecialEffects;
