@@ -15,7 +15,7 @@ import com.minecrafttas.tasbattle.ffa.FFA;
 import com.minecrafttas.tasbattle.gui.GuiHandler;
 import com.minecrafttas.tasbattle.lobby.Lobby;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
-import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
+import com.minecrafttas.tasbattle.managers.TickrateChanger;
 
 import lombok.Getter;
 

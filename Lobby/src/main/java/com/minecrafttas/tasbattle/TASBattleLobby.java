@@ -1,6 +1,7 @@
 package com.minecrafttas.tasbattle;
 
 import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
+import com.minecrafttas.tasbattle.managers.TickrateChanger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
