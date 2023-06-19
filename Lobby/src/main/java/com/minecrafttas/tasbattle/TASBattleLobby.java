@@ -72,9 +72,47 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	 * @param e Player join event
 	 */
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		e.getPlayer().setHealth(0.0); // immediately kill player for end override to become active
+	public void onPlayerJoin(PlayerJoinEvent e) throws Exception {
 		e.joinMessage(null);
+
+		/* Spawn player npc */
+
+		// get classes for reflection
+		var mcserverClass = Class.forName("net.minecraft.server.MinecraftServer");
+		var playerListClass = Class.forName("net.minecraft.server.players.PlayerList");
+		var gameProfileClass = Class.forName("com.mojang.authlib.GameProfile");
+		var serverPlayerClass = Class.forName("net.minecraft.server.level.ServerPlayer");
+		var entityClass = Class.forName("net.minecraft.world.entity.Entity");
+		var playerInfoActionClass = Class.forName("net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket$Action");
+		var playerInfoClass = Class.forName("net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket");
+		var addPlayerClass = Class.forName("net.minecraft.network.protocol.game.ClientboundAddPlayerPacket");
+		var connectionClass = Class.forName("net.minecraft.server.network.ServerGamePacketListenerImpl");
+		var packetClass = Class.forName("net.minecraft.network.protocol.Packet");
+
+		// var mcserver = MinecraftServer.getServer();
+		var mcserver = mcserverClass.getMethod("getServer").invoke(null);
+		// var playerList = mcserver.getPlayerList();
+		var playerList = mcserverClass.getMethod("getPlayerList").invoke(mcserver);
+		// var player = playerList.getPlayer(e.getPlayer.getUniqueId());
+		var player = playerListClass.getMethod("getPlayer", UUID.class).invoke(playerList, e.getPlayer().getUniqueId());
+		// var level = player.getLevel();
+		var level = entityClass.getMethod("getLevel").invoke(player);
+		// var gameProfile = new GameProfile(UUID.fromString("b8abdafc-5002-40df-ab68-63206ea4c7e8"), "TASBot");
+		var gameProfile = gameProfileClass.getConstructors()[0].newInstance(UUID.fromString("b8abdafc-5002-40df-ab68-63206ea4c7e8"), "TASBot");
+		// var fakePlayer = new ServerPlayer(mcserver, (ServerLevel) player.level, profile);
+		var fakePlayer = serverPlayerClass.getConstructors()[0].newInstance(mcserver, level, gameProfile);
+		// fakePlayer.setPosRaw(0.5, 101.0, -7.5);
+		entityClass.getMethod("setPosRaw", double.class, double.class, double.class).invoke(fakePlayer, 0.5, 101.0, -7.5);
+		// var playerInfo = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer);
+		var playerInfo = playerInfoClass.getConstructors()[1].newInstance(playerInfoActionClass.getEnumConstants()[0], fakePlayer);
+		// var addPlayer = new ClientboundAddPlayerPacket(fakePlayer);
+		var addPlayer = addPlayerClass.getConstructors()[0].newInstance(fakePlayer);
+		// var connection = player.connection;
+		var connection = serverPlayerClass.getField("connection").get(player);
+		// connection.send(playerInfo); connection.send(addPlayer);
+		var connectionSendMethod = connectionClass.getMethod("send", packetClass);
+		connectionSendMethod.invoke(connection, playerInfo);
+		connectionSendMethod.invoke(connection, addPlayer);
 	}
 
 	/**
