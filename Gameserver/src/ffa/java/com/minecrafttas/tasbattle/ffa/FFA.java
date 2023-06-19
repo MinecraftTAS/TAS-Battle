@@ -10,13 +10,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.TASBattle.GameMode;
+import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode;
 import com.minecrafttas.tasbattle.ffa.components.GameLogic;
 import com.minecrafttas.tasbattle.ffa.managers.KitManager;
 import com.minecrafttas.tasbattle.ffa.managers.KitManager.Kit;
@@ -35,7 +35,7 @@ import net.kyori.adventure.text.Component;
 public class FFA implements GameMode {
 	
 	@Getter
-	private TASBattle plugin;
+	private TASBattleGameserver plugin;
 	
 	@Getter
 	private World world;
@@ -54,7 +54,7 @@ public class FFA implements GameMode {
 	 * @param plugin Plugin
 	 * @param dev Development moed
 	 */
-	public FFA(TASBattle plugin) {
+	public FFA(TASBattleGameserver plugin) {
 		this.plugin = plugin;
 		this.kitManager = new KitManager(plugin);
 		this.scenarioManager = new ScenarioManager(plugin);

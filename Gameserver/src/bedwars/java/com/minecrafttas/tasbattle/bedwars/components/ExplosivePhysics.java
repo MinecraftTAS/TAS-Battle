@@ -3,6 +3,7 @@ package com.minecrafttas.tasbattle.bedwars.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -19,14 +20,12 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
-import com.minecrafttas.tasbattle.TASBattle;
-
 /**
  * Physics of all explosive items
  */
 public class ExplosivePhysics implements Listener {
 
-	private TASBattle plugin;
+	private TASBattleGameserver plugin;
 	private PlacementRules placementRules;
 	private List<Player> timeout;
 	
@@ -35,7 +34,7 @@ public class ExplosivePhysics implements Listener {
 	 * @param plugin Plugin
 	 * @param placementRules Placement rules
 	 */
-	public ExplosivePhysics(TASBattle plugin, PlacementRules placementRules) {
+	public ExplosivePhysics(TASBattleGameserver plugin, PlacementRules placementRules) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.plugin = plugin;
 		this.placementRules = placementRules;

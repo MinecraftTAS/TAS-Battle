@@ -29,7 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.minecrafttas.tasbattle.TASBattle.GameMode.CommandHandler;
+import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode.CommandHandler;
 import com.minecrafttas.tasbattle.ffa.utils.SerializationUtils;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
@@ -121,7 +121,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 		
 	}
 	
-	public static final File FFA_KITS = new File("/home/tasbattle/preview/default/plugins/TAS-Battle/ffa");
+	public static final File FFA_KITS = new File("/home/tasbattle/preview/default/plugins/TAS-Battle-Gameserver/ffa");
 	
 	@Getter
 	private Inventory inventory;

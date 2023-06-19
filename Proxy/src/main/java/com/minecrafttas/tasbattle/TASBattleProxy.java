@@ -34,12 +34,12 @@ import net.kyori.adventure.text.Component;
  * Proxy plugin class
  * @author Pancake
  */
-@Plugin(name = "TASBattle Proxy Plugin", version = "${version}", id = "${modid}", authors = { "Pancake" }, 
-		url = "https://github.com/MinecraftTAS/TAS-Battle", description = "basic proxy management plugin for the tasbattle proxy server")
-public class ProxyPlugin {
+@Plugin(name = "TAS-Battle-Proxy", version = "1.0.0-SNAPSHOT", id = "proxy", authors = { "Pancake" },
+		url = "https://github.com/MinecraftTAS/TAS-Battle", description = "tas battle proxy plugin")
+public class TASBattleProxy {
 
 	public static final ChannelIdentifier TASBATTLE_DATA = MinecraftChannelIdentifier.create("tasbattle", "data");
-	
+
 	// proxy instance
 	private final ProxyServer server;
 	
@@ -62,7 +62,7 @@ public class ProxyPlugin {
      * @throws IOException Configuration could not be loaded
      */
 	@Inject
-	public ProxyPlugin(ProxyServer server, @DataDirectory Path dataDirectory) throws IOException {
+	public TASBattleProxy(ProxyServer server, @DataDirectory Path dataDirectory) throws IOException {
 		this.server = server;
 		
 		// load configuration or regenerate defaults
@@ -72,11 +72,11 @@ public class ProxyPlugin {
 			// load all properties
 			properties.loadFromXML(Files.newInputStream(configFile));
 			this.lobbyCommand = properties.getProperty("lobby_command");
-			this.lobbyAliases = properties.getProperty("lobby_aliases").split("\\\\,");
+			this.lobbyAliases = properties.getProperty("lobby_aliases").split("\\,");
 			this.lobbyServer = properties.getProperty("lobby_server");
 			this.lobbyErrorMessage = properties.getProperty("lobby_error_message");
-			this.lobbyEnabledServers = Arrays.stream(properties.getProperty("lobby_enabled_servers").split("\\\\,")).toList();
-			this.admins = Arrays.stream(properties.getProperty("admin_uuids").split("\\\\,")).map(s -> UUID.fromString(s)).toList();
+			this.lobbyEnabledServers = Arrays.stream(properties.getProperty("lobby_enabled_servers").split("\\,")).toList();
+			this.admins = Arrays.stream(properties.getProperty("admin_uuids").split("\\,")).map(s -> UUID.fromString(s)).toList();
 			this.tags = properties.getProperty("tags");
 			this.capes = properties.getProperty("capes");
 		} else {
@@ -137,7 +137,7 @@ public class ProxyPlugin {
 			return;
 
 		// send tas battle data to client
-		var bytes = (this.tags + "\\n" /* thanks gradle */ + this.capes).getBytes(StandardCharsets.UTF_8);
+		var bytes = (this.tags + '\n' + this.capes).getBytes(StandardCharsets.UTF_8);
 		var byteBuffer = ByteBuffer.allocate(4 + bytes.length);
 		byteBuffer.putInt(bytes.length);
 		byteBuffer.put(bytes);

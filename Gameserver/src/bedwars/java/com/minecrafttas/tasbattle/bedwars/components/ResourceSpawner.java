@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
-import com.minecrafttas.tasbattle.TASBattle;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -78,7 +78,7 @@ public class ResourceSpawner implements Listener {
 	 * @param plugin Plugin
 	 * @param world World
 	 */
-	public ResourceSpawner(TASBattle plugin, World world) {
+	public ResourceSpawner(TASBattleGameserver plugin, World world) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.world = world;
 		this.armorStandUpdates = new ArrayList<>();

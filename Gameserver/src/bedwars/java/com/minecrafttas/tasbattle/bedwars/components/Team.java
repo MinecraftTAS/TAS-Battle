@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 
 /**
  * Team
@@ -30,7 +30,7 @@ public class Team implements Listener {
 	 * @param players Participating players
 	 * @param world Game world
 	 */
-	public Team(TASBattle plugin, List<Player> players, World world) {
+	public Team(TASBattleGameserver plugin, List<Player> players, World world) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.world = world;
 		

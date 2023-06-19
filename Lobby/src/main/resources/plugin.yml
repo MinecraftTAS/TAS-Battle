@@ -1,12 +1,12 @@
 # Plugin specific
-name: TAS-Battle-Gameserver
+name: TAS-Battle-Lobby
 version: 1.0.0-SNAPSHOT
-description: tas battle gameserver plugin
+description: tas batte lobby plugin
 author: Pancake
 website: https://minecrafttas.com/tas-battle/
 
 # Implementation specific
-main: com.minecrafttas.tasbattle.TASBattleGameserver
+main: com.minecrafttas.tasbattle.TASBattleLobby
 load: POSTWORLD
 api-version: 1.19
 
@@ -14,7 +14,3 @@ commands:
     tickrate:
         usage: /tickrate <tickrate>
         description: Updates the tickrate
-    ffa:
-        usage: /ffa <save/load/delete>
-        description: FFA commands
-

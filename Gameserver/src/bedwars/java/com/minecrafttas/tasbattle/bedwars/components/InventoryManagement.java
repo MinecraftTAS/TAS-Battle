@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,7 +17,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
-import com.minecrafttas.tasbattle.TASBattle;
 
 /**
  * Inventory management for controlling items in inventory
@@ -52,7 +52,7 @@ public class InventoryManagement implements Listener {
 	 * @param plugin Plugin
 	 * @param players Players
 	 */
-	public InventoryManagement(TASBattle plugin, List<Player> players) {
+	public InventoryManagement(TASBattleGameserver plugin, List<Player> players) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.players = players;
 		this.pickaxeTiers = new HashMap<>();

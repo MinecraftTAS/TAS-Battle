@@ -11,7 +11,7 @@ group = "${project.mod_group}"
 
 repositories {
 	maven { url = 'https://maven.mgnet.work' }
-	maven { url 'https://jitpack.io' }
+	maven { url = 'https://jitpack.io' }
 	maven { url = 'https://nexus.covers1624.net/repository/maven-releases/'}
 }
 
@@ -20,15 +20,27 @@ loom {
 	accessWidenerPath = file('src/main/resources/tasbattle.accesswidener')
 	
 	// add log4jconfig
-	//log4jConfigs.from(file('log4j.xml'))
+	log4jConfigs.from(file('log4j.xml'))
 	
 	runs {
-	    clientLogin {
+	    run_instance1 {
 	         inherit runs.client
-	         programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+	         programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient', '--launch_profile', 'instance1'
 	         mainClass.set 'net.covers1624.devlogin.DevLogin'
 	         ideConfigGenerated true
 	    }
+		run_instance2 {
+			inherit runs.client
+			programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient', '--launch_profile', 'instance2'
+			mainClass.set 'net.covers1624.devlogin.DevLogin'
+			ideConfigGenerated true
+		}
+		run_instance3 {
+			inherit runs.client
+			programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient', '--launch_profile', 'instance3'
+			mainClass.set 'net.covers1624.devlogin.DevLogin'
+			ideConfigGenerated true
+		}
 	}
 }
 

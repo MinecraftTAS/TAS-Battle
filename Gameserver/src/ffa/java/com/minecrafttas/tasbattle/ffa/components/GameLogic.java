@@ -19,14 +19,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
 public class GameLogic implements Listener {
 
-	private TASBattle plugin;
+	private TASBattleGameserver plugin;
 	private World world;
 	private List<Player> players;
 	
@@ -36,7 +36,7 @@ public class GameLogic implements Listener {
 	 * @param world World
 	 * @param player Participating players
 	 */
-	public GameLogic(TASBattle plugin, World world, List<Player> players) {
+	public GameLogic(TASBattleGameserver plugin, World world, List<Player> players) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.plugin = plugin;
 		this.world = world;

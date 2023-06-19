@@ -6,9 +6,9 @@ plugins {
 
 // Update plugin information
 base {
-	group = project.group
-	archivesBaseName = project.modid
-	version = project.version
+	group = "com.minecrafttas.tasbattle"
+	archivesName = "proxy"
+	version = "1.0.0-SNAPSHOT"
 }
 
 // Compile for java 19
@@ -23,47 +23,28 @@ repositories {
 // Add velocity api
 dependencies {
 	// Add velocity api for compile time and as annotation processor
-    compileOnly "com.velocitypowered:velocity-api:${velocity_version}"
-    annotationProcessor "com.velocitypowered:velocity-api:${velocity_version}"
+    compileOnly "com.velocitypowered:velocity-api:3.2.0-SNAPSHOT"
+    annotationProcessor "com.velocitypowered:velocity-api:3.2.0-SNAPSHOT"
     
 	// Add lombok processor
-	compileOnly "org.projectlombok:lombok:${project.lombok_version}"
-	annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
-}
-
-task clearGeneratedResources(type: Delete) {
-    delete "$buildDir/generated/java"
-}
-
-// Create a custom task for replacing properties
-task replaceProperties(type: Copy) {
-	from "src/main/java"
-    into "$buildDir/generated/java"
-    
-    expand('modid': project.modid, 'version': project.version)
-}
-
-compileJava {
-	dependsOn 'clearGeneratedResources'
-	dependsOn 'replaceProperties'
-	compileJava.source = "$buildDir/generated/java"
-	exclude "src/main/java"
+	compileOnly "org.projectlombok:lombok:1.18.28"
+	annotationProcessor "org.projectlombok:lombok:1.18.28"
 }
 
 // Upload plugin to server [login via key]
-task upload(type: Exec) {
+tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put ${project.modid}-${project.version}.jar | sftp -oPort=13524 pancake@mgnet.work".split(" ")
+	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${project.version}.jar | sftp -oPort=13524 pancake@mgnet.work".split(" ")
 }
 
 // Copy plugin to proxy server
-task copyPlugin(type: Exec) {
+tasks.register('copyPlugin', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "ssh -p 13524 pancake@mgnet.work echo ${pancake_password} | sudo -S -u root cp /home/pancake/${project.modid}-${project.version}.jar /home/tasbattle/proxy/plugins/${project.modid}-${project.version}.jar".split(" ")
+	commandLine "ssh -p 13524 pancake@mgnet.work echo ${pancake_password} | sudo -S -u root cp /home/pancake/${base.archivesName.get()}-${project.version}.jar /home/tasbattle/proxy/plugins/${base.archivesName.get()}-${project.version}.jar".split(" ")
 }
 
 // Restart proxy server
-task restartServer(type: Exec) {
+tasks.register('restartServer', Exec) {
 	workingDir "${buildDir}/libs"
 	commandLine "ssh -p 13524 pancake@mgnet.work echo ${pancake_password} | sudo -S -u root systemctl restart tasbattle-proxy".split(" ")
 }
