@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle.mixin;
 
 import java.nio.charset.StandardCharsets;
 
+import com.minecrafttas.tasbattle.system.DimensionSystem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -70,9 +71,11 @@ public class MixinMinecraft {
 		if (s == null && this.player != null && !this.registered) {
 			this.registered = true;
 			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
-			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(DataSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
+			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
+			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(DimensionSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
 			this.player.connection.send(new ServerboundCustomPayloadPacket(TickrateChanger.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
 			this.player.connection.send(new ServerboundCustomPayloadPacket(DataSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
+			this.player.connection.send(new ServerboundCustomPayloadPacket(DimensionSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
 		}
 		
 		// redirect multiplayer screen to main menu
