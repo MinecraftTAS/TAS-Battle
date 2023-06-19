@@ -35,7 +35,8 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	private UUID uuid;
 	private String name;
 
-	private Slime actionSlime;
+	@Getter
+	private BasicRestrictions basicRestrictions;
 
 	/**
 	 * Enable tasbattle lobby mod
@@ -47,7 +48,7 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 		this.tickrateChanger = new TickrateChanger(this);
 		this.dimensionChanger = new DimensionChanger(this);
 
-		// load configuration
+		this.basicRestrictions = new BasicRestrictions(this);
 		var config = new YamlConfiguration();
 		try {
 			config.load(new File(this.getDataFolder(), "lobby.yml"));
