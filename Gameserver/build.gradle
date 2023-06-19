@@ -9,8 +9,16 @@ plugins {
 // Update plugin info
 base {
 	group = "com.minecrafttas.tasbattle"
-	version = "1.0.0-SNAPSHOT"
 	archivesName = "gameserver"
+	version = "1.0.0-SNAPSHOT"
+}
+
+// Compile with UTF-8
+compileJava.options.encoding = 'UTF-8'
+
+// Compile for java 20
+java {
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_20
 }
 
 // Add repositories required for project
