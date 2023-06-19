@@ -19,7 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
-import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 import com.minecrafttas.tasbattle.bedwars.components.shop.ItemShop;
 
 import net.kyori.adventure.text.Component;
@@ -39,7 +39,7 @@ public class TeamShop implements Listener {
 	 * @param invMng Inventory management
 	 * @param world Game world
 	 */
-	public TeamShop(TASBattle plugin, InventoryManagement invMng, World world) {
+	public TeamShop(TASBattleGameserver plugin, InventoryManagement invMng, World world) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.invMng = invMng;
 		this.world = world;

@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 
 /**
  * Rules for placing and breaking blocks
@@ -23,7 +23,7 @@ public class PlacementRules implements Listener {
 	 * Initialize placement rules
 	 * @param plugin Plugin
 	 */
-	public PlacementRules(TASBattle plugin) {
+	public PlacementRules(TASBattleGameserver plugin) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.placedBlocks = new ArrayList<>();
 	}

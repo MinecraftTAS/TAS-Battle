@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.TASBattle.GameMode;
+import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode;
 import com.minecrafttas.tasbattle.bedwars.components.ExplosivePhysics;
 import com.minecrafttas.tasbattle.bedwars.components.InventoryManagement;
 import com.minecrafttas.tasbattle.bedwars.components.PlacementRules;
@@ -28,7 +28,7 @@ import lombok.Getter;
 public class Bedwars implements GameMode {
 	
 	@Getter
-	private TASBattle plugin;
+	private TASBattleGameserver plugin;
 	
 	@Getter
 	private World world;
@@ -55,7 +55,7 @@ public class Bedwars implements GameMode {
 	 * Initialize bedwars gamemode
 	 * @param plugin Plugin
 	 */
-	public Bedwars(TASBattle plugin) {
+	public Bedwars(TASBattleGameserver plugin) {
 		this.plugin = plugin;
 		
 		// find available worlds

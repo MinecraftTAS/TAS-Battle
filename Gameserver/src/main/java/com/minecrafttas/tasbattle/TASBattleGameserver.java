@@ -19,7 +19,7 @@ import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
 
 import lombok.Getter;
 
-public class TASBattle extends JavaPlugin {
+public class TASBattleGameserver extends JavaPlugin {
 	
 	public static interface GameMode {
 		public static interface CommandHandler extends CommandExecutor, TabCompleter {}
@@ -27,7 +27,7 @@ public class TASBattle extends JavaPlugin {
 		abstract List<LobbyManager> createManagers();
 		abstract List<Pair<String, CommandHandler>> createCommands();
 	}
-	
+
 	@Getter
 	private TickrateChanger tickrateChanger;
 	@Getter

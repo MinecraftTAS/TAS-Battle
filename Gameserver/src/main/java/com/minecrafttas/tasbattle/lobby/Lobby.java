@@ -20,8 +20,8 @@ import org.bukkit.event.player.PlayerKickEvent.Cause;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.TASBattle.GameMode;
+import com.minecrafttas.tasbattle.TASBattleGameserver;
+import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode;
 
 import net.kyori.adventure.text.Component;
 
@@ -39,7 +39,7 @@ public class Lobby implements Listener {
 	 * @param plugin Plugin
 	 * @param gameMode Game mode
 	 */
-	public Lobby(TASBattle plugin, GameMode gameMode) {
+	public Lobby(TASBattleGameserver plugin, GameMode gameMode) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.managers = gameMode.createManagers();
 		this.timer = new LobbyTimer(plugin, 15, 2, 3, participants -> {
