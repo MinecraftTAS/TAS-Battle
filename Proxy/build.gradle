@@ -11,8 +11,13 @@ base {
 	version = "1.0.0-SNAPSHOT"
 }
 
-// Compile for java 19
-java.targetCompatibility = java.sourceCompatibility = JavaVersion.VERSION_19
+// Compile with UTF-8
+compileJava.options.encoding = 'UTF-8'
+
+// Compile for java 20
+java {
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_20
+}
 
 // Add repositories required for project
 repositories {
