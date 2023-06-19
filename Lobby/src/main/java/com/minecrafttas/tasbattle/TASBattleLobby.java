@@ -1,6 +1,6 @@
 package com.minecrafttas.tasbattle;
 
-import com.minecrafttas.tasbattle.tickratechanger.TickrateChanger;
+import com.minecrafttas.tasbattle.managers.DimensionChanger;
 import com.minecrafttas.tasbattle.managers.TickrateChanger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -15,12 +15,16 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	@Getter
 	private TickrateChanger tickrateChanger;
 
+	@Getter
+	private DimensionChanger dimensionChanger;
+
 	/**
 	 * Enable tasbattle lobby mod
 	 */
 	@Override
 	public void onEnable() {
 		this.tickrateChanger = new TickrateChanger(this);
+		this.dimensionChanger = new DimensionChanger(this);
 		Bukkit.getPluginManager().registerEvents(this, this);
 
 		try {
