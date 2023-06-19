@@ -1,9 +1,8 @@
 package com.minecrafttas.tasbattle.managers;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.UUID;
-
+import com.minecrafttas.tasbattle.TASBattleLobby;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,10 +16,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import com.minecrafttas.tasbattle.TASBattleLobby;
-
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Tickrate Changer module
@@ -112,7 +110,7 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	 * Cancel verification timer for player on plugin message
 	 */
 	@Override
-	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+	public void onPluginMessageReceived(@NotNull String channel, Player player, byte[] message) {
 		if (this.verificationTimers.containsKey(player.getUniqueId()))
 			this.verificationTimers.remove(player.getUniqueId()).cancel();
 
