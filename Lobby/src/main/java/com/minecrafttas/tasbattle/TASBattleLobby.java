@@ -1,9 +1,6 @@
 package com.minecrafttas.tasbattle;
 
-import com.minecrafttas.tasbattle.managers.BasicRestrictions;
-import com.minecrafttas.tasbattle.managers.DimensionChanger;
-import com.minecrafttas.tasbattle.managers.EntityManager;
-import com.minecrafttas.tasbattle.managers.TickrateChanger;
+import com.minecrafttas.tasbattle.managers.*;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -23,6 +20,9 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	@Getter
 	private BasicRestrictions basicRestrictions;
 
+	@Getter
+	private ServerManagement serverManagement;
+
 	/**
 	 * Enable tasbattle lobby mod
 	 */
@@ -34,6 +34,7 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 		this.dimensionChanger = new DimensionChanger(this);
 		this.entityManager = new EntityManager(this);
 		this.basicRestrictions = new BasicRestrictions(this);
+		this.serverManagement = new ServerManagement(this);
 	}
 
 }
