@@ -38,7 +38,7 @@ public class HookClientPlayNetworkHandler {
 				data.readBytes(bytes);
 				TASBattle.getInstance().getDataSystem().parseData(new String(bytes, StandardCharsets.UTF_8));
 			} catch (Exception e) {
-				TASBattle.LOGGER.error("Invalid data from server: {}", e);
+				TASBattle.LOGGER.error("Invalid data from server!", e);
 			}
 			ci.cancel();
 		} else if (packet.getIdentifier().equals(DimensionSystem.IDENTIFIER)) {
