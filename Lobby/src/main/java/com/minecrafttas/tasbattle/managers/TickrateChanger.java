@@ -70,8 +70,7 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 			gamespeed.setAccessible(true);
 			gamespeed.setFloat(null, tickrate / 20.0f);
 		} catch (NoSuchFieldException | SecurityException | ClassNotFoundException | IllegalArgumentException | IllegalAccessException e) {
-			System.err.println("Unable to update server tickrate");
-			e.printStackTrace();
+			this.plugin.getSLF4JLogger().error("Unable to update server tickrate!", e);
 		}
 		
 		// update client tickrate
