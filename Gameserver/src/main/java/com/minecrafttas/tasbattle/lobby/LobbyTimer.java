@@ -51,7 +51,7 @@ class LobbyTimer {
 	 */
 	private void advance() {
 		// Advance timer
-		if (this.players.size() >= this.maxPlayers && this.time > 30)
+		if (this.players.size() >= this.maxPlayers && this.time > 20)
 			this.forceStart();
 		else if (this.players.size() < this.minPlayers)
 			this.time = this.startTime;
@@ -76,7 +76,7 @@ class LobbyTimer {
 	 * Update countdown to 30 seconds
 	 */
 	public void forceStart() {
-		this.time = 30;
+		this.time = 20;
 	}
 
 	/**
