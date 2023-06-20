@@ -17,4 +17,7 @@ commands:
     ffa:
         usage: /ffa <save/load/delete>
         description: FFA commands
+    forcestart:
+        usage: /forcestart <force>
+        description: Forcestarts the game
 

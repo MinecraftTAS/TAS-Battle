@@ -4,19 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Timer for launching the game
  * @author Pancake
  */
-class LobbyTimer {
+class LobbyTimer implements CommandExecutor {
 	
 	private List<Player> players = new ArrayList<>();
+
+	private List<Player> forcestart = new ArrayList<>();
 
 	private BukkitTask task;
 	private int startTime, time;
@@ -36,7 +44,9 @@ class LobbyTimer {
 		this.minPlayers = minPlayers;
 		this.maxPlayers = maxPlayers;
 		this.start = start;
-		
+
+		plugin.getCommand("forcestart").setExecutor(this);
+
 		// Run advance() every second
 		this.task = new BukkitRunnable() {
 			@Override
@@ -76,7 +86,7 @@ class LobbyTimer {
 	 * Update countdown to 30 seconds
 	 */
 	public void forceStart() {
-		this.time = 20;
+		this.time = 15;
 	}
 
 	/**
@@ -101,6 +111,35 @@ class LobbyTimer {
 	 */
 	public boolean isGameRunning() {
 		return this.task.isCancelled();
+	}
+
+	/**
+	 * Forcestart timer
+	 * @param sender Source of the command
+	 * @param command Command which was executed
+	 * @param label Alias of the command which was used
+	 * @param args Passed command arguments
+	 * @return Success
+	 */
+	@Override
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		if (this.time < 15)
+			return true;
+
+		if (args.length == 1 && args[0].equals("force") && sender.isOp()) {
+			Bukkit.broadcast(Component.text("§b» §7Lobby has been force started."));
+			this.forceStart();
+		} else if (!this.forcestart.contains((Player) sender)) {
+			Bukkit.broadcast(Component.text("§b» §a" + sender.getName() + "§7 voted for forcestart."));
+			this.forcestart.add((Player) sender);
+
+			if (this.forcestart.size() >= this.players.size()) {
+				Bukkit.broadcast(Component.text("§b» §7Lobby has been force started."));
+				this.forceStart();
+			}
+		}
+
+		return true;
 	}
 
 }
