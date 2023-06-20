@@ -29,7 +29,8 @@ public class GameLogic implements Listener {
 	private TASBattleGameserver plugin;
 	private World world;
 	private List<Player> players;
-	
+	private boolean finished;
+
 	/**
 	 * Initialize game logic
 	 * @param plugin Plugin
@@ -88,8 +89,9 @@ public class GameLogic implements Listener {
 			Bukkit.broadcast(Component.text("§b» §a" + p.getName() + "§7 won the game!"));
 			p.showTitle(Title.title(Component.text("§cYou won!"), Component.empty()));
 		}
-		
+
 		// crash server in 16 ticks
+		this.finished = true;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> Runtime.getRuntime().halt(0), 16L);
 	}
 	
@@ -139,7 +141,12 @@ public class GameLogic implements Listener {
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent e) {
 		var p = e.getPlayer();
-		
+
+		// early exit server
+		if (Bukkit.getOnlinePlayers().size() == 1 && this.finished)
+			Runtime.getRuntime().halt(0);
+
+		// eliminate player from game
 		if (this.players.contains(p)) {
 			this.removePlayer(e.getPlayer());
 			e.quitMessage(null);
