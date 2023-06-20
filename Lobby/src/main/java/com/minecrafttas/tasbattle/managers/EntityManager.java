@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -73,12 +74,13 @@ public class EntityManager implements Listener {
      * @param e Player interact event
      */
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent e) {
-        var raytrace = e.getPlayer().rayTraceEntities(3);
+    public void onPlayerInteract(PlayerInteractEvent e) throws IOException {
+        var player = e.getPlayer();
+        var raytrace = player.rayTraceEntities(3);
         if (raytrace == null || raytrace.getHitEntity() != this.actionSlime)
             return;
 
-        Bukkit.broadcast(Component.text("i win!"));
+        this.plugin.getServerManagement().joinServer(player);
     }
 
     /**
