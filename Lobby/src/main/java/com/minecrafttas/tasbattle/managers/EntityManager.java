@@ -43,11 +43,8 @@ public class EntityManager implements Listener {
             var config = new YamlConfiguration();
             config.load(new File(plugin.getDataFolder(), "lobby.yml"));
 
-            // delete previous action slimes
-            var world = Bukkit.getWorld(config.getString("world"));
-            world.getEntitiesByClass(Slime.class).forEach(e -> e.remove());
-
             // spawn action slime
+            var world = Bukkit.getWorld(config.getString("world"));
             this.location = new Location(world, config.getDouble("posX"), config.getDouble("posY") + .5, config.getDouble("posZ"));
             this.uuid = UUID.fromString(config.getString("uuid"));
             this.name = config.getString("name");
@@ -57,6 +54,12 @@ public class EntityManager implements Listener {
             this.actionSlime.setInvulnerable(true);
             this.actionSlime.setSize(5);
             this.actionSlime.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 0, false, false));
+
+
+            // delete previous action slimes
+            for (var entity : world.getChunkAt(this.location).getEntities())
+                if (entity instanceof Slime && entity != this.actionSlime)
+                    entity.remove();
 
         } catch (Exception e) {
             System.err.println("Unable to load lobby configuration");
@@ -85,6 +88,8 @@ public class EntityManager implements Listener {
      */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) throws Exception {
+        var paperPlayer = e.getPlayer();
+
         // get classes for reflection
         var mcserverClass = Class.forName("net.minecraft.server.MinecraftServer");
         var playerListClass = Class.forName("net.minecraft.server.players.PlayerList");
@@ -101,8 +106,8 @@ public class EntityManager implements Listener {
         var mcserver = mcserverClass.getMethod("getServer").invoke(null);
         // var playerList = mcserver.getPlayerList();
         var playerList = mcserverClass.getMethod("getPlayerList").invoke(mcserver);
-        // var player = playerList.getPlayer(e.getPlayer.getUniqueId());
-        var player = playerListClass.getMethod("getPlayer", UUID.class).invoke(playerList, e.getPlayer().getUniqueId());
+        // var player = playerList.getPlayer(paperPlayer.getUniqueId());
+        var player = playerListClass.getMethod("getPlayer", UUID.class).invoke(playerList, paperPlayer.getUniqueId());
         // var level = player.getLevel();
         var level = entityClass.getMethod("getLevel").invoke(player);
         // var gameProfile = new GameProfile(this.uuid, this.name);
@@ -121,6 +126,11 @@ public class EntityManager implements Listener {
         var connectionSendMethod = connectionClass.getMethod("send", packetClass);
         connectionSendMethod.invoke(connection, playerInfo);
         connectionSendMethod.invoke(connection, addPlayer);
+
+        // turn player around since npcs spawn that way
+        var paperPlayerLoc = paperPlayer.getLocation();
+        paperPlayerLoc.setYaw(-180.0f);
+        paperPlayer.teleport(paperPlayerLoc);
     }
 
 }
