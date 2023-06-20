@@ -134,6 +134,12 @@ public class SpectatingSystem {
 	 * Cycle between spectating modes
 	 */
 	public void cycleSpectate() {
+		var mc = Minecraft.getInstance();
+		if (!mc.player.isSpectator()) {
+			this.mode = SpectatorMode.NONE;
+			return;
+		}
+
 		this.setMode(this.nextObject(Arrays.asList(SpectatorMode.values()), this.mode));
 		TASBattle.LOGGER.info("Cycling spectate to {}", this.mode);
 	}
@@ -142,6 +148,9 @@ public class SpectatingSystem {
 	 * Spectate next player
 	 */
 	public void spectateNextPlayer() {
+		if (!this.isSpectating())
+			return;
+
 		var mc = Minecraft.getInstance();
 		
 		// get spectatable players
@@ -159,6 +168,9 @@ public class SpectatingSystem {
 	 * Spectate previous player
 	 */
 	public void spectatePreviousPlayer() {
+		if (!this.isSpectating())
+			return;
+
 		var mc = Minecraft.getInstance();
 		
 		// get spectatable players
