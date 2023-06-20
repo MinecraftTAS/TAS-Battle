@@ -63,7 +63,7 @@ public class EntityManager implements Listener {
                     entity.remove();
 
         } catch (Exception e) {
-            System.err.println("Unable to load lobby configuration");
+            this.plugin.getSLF4JLogger().error("Unable to read lobby configuration!", e);
             e.printStackTrace();
         }
 

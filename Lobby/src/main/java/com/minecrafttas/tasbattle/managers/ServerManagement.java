@@ -38,8 +38,7 @@ public class ServerManagement implements Listener {
 
                 this.activateServer();
             } catch (Exception e) {
-                System.err.println("Unable to check for active server!");
-                e.printStackTrace();
+                this.plugin.getSLF4JLogger().error("Unable to check for active server!", e);
             }
         }, 10L, 10L);
 
@@ -73,7 +72,7 @@ public class ServerManagement implements Listener {
         var server = SERVERS[0];
         Runtime.getRuntime().exec(("systemctl --user start " + server + "-preview").split(" "));
         this.activeServer = server;
-        System.out.println("Active server has been changed to " + server + ".");
+        this.plugin.getSLF4JLogger().info("Active server has been changed to {}",  this.activeServer);
     }
 
     /**
