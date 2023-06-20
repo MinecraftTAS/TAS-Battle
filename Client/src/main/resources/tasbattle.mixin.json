@@ -10,6 +10,7 @@
   	"cosmetics.MixinEntityRenderer",
   	"gui.MixinRealmsNotificationsScreen",
   	"gui.MixinTitleScreen",
+    "hooks.HookClientHandshakePacketListenerImpl",
     "hooks.HookClientPlayNetworkHandler",
     "hooks.HookOptions",
   	"spectator.MixinMouseHandler",

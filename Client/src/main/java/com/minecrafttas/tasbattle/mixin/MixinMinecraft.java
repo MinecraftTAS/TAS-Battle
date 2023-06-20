@@ -27,16 +27,13 @@ import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * This mixin hooks the minecraft class game loop
+ * This mixin hooks the minecraft class game loop and modifies other aspects of the minecraft class
  */
 @Mixin(Minecraft.class)
 public class MixinMinecraft {
 	
 	@Shadow
 	private LocalPlayer player;
-	
-	@Unique
-	private boolean registered;
 	
 	/**
 	 * Hook game loop method
@@ -61,33 +58,20 @@ public class MixinMinecraft {
 	}
 	
 	/**
-	 * Modify return screen and trigger event
+	 * Modify return screen
 	 * @param s Screen
 	 * @param ci Callback Info
 	 */
 	@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
 	public void onSetScreen(Screen s, CallbackInfo ci) {
-		// send verification packet on server connect
-		if (s == null && this.player != null && !this.registered) {
-			this.registered = true;
-			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
-			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
-			this.player.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(DimensionSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
-			this.player.connection.send(new ServerboundCustomPayloadPacket(TickrateChanger.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
-			this.player.connection.send(new ServerboundCustomPayloadPacket(DataSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
-			this.player.connection.send(new ServerboundCustomPayloadPacket(DimensionSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
-		}
-		
 		// redirect multiplayer screen to main menu
-		else if (s instanceof JoinMultiplayerScreen) {
+		if (s instanceof JoinMultiplayerScreen) {
 			((Minecraft) (Object) this).setScreen(new TitleScreen());
 			ci.cancel();
-		} 
-		
-		// reset tickrate when entering menu
-		else if (s instanceof TitleScreen) {
-			TASBattle.getInstance().getTickrateChanger().changeTickrate(20.0f);
-			this.registered = false;
 		}
+
+		// reset tickrate when entering menu
+		else if (s instanceof TitleScreen)
+			TASBattle.getInstance().getTickrateChanger().changeTickrate(20.0f);
 	}
 }
