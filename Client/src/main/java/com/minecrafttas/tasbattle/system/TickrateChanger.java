@@ -17,16 +17,16 @@ public class TickrateChanger {
 	public static final ResourceLocation IDENTIFIER = new ResourceLocation("tickratechanger", "data");
 
 	@Getter
-	private float tickrate = 20;
+	private float tickrate = 20.0f;
 	
 	@Getter
-	private float gamespeed = 1;
+	private float gamespeed = 1.0f;
 	
 	@Getter
 	private long msPerTick = 50;
 	
 	private long systemTimeSinceTC = System.currentTimeMillis(); // system time passed since last tickrate change
-	private long gameTime = System.currentTimeMillis(); // game time passed (since last tickrate update)
+	private long gameTime = 0; // game time passed (since last tickrate update)
 
 	/**
 	 * Change client tickrate
