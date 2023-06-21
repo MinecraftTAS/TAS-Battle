@@ -83,7 +83,7 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	 * Update tickrate for player
 	 * @param p
 	 */
-	private void updatePlayer(Player p) {
+	public void updatePlayer(Player p) {
 		p.sendPluginMessage(plugin, TickrateChanger.TRC_CHANNEL, ByteBuffer.allocate(4).putFloat(this.tickrate).array());
 	}
 

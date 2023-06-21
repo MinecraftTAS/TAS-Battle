@@ -37,7 +37,6 @@ public class WorldUtils {
 		w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		w.setGameRule(GameRule.DO_ENTITY_DROPS, false);
 		w.setGameRule(GameRule.DO_FIRE_TICK, false);
-		w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 		w.setGameRule(GameRule.DO_INSOMNIA, false);
 		w.setGameRule(GameRule.DO_MOB_LOOT, false);
 		w.setGameRule(GameRule.DO_MOB_SPAWNING, false);

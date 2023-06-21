@@ -8,6 +8,7 @@
   "client": [
   	"cosmetics.MixinAbstractClientPlayer",
   	"cosmetics.MixinEntityRenderer",
+    "gui.MixinDeathScreen",
   	"gui.MixinRealmsNotificationsScreen",
   	"gui.MixinTitleScreen",
     "hooks.HookClientAdvancements",

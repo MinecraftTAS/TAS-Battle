@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -100,16 +101,19 @@ public class GameLogic implements Listener {
 	 * @param e Event
 	 */
 	@EventHandler
-	public void onPlayerDeath(PlayerRespawnEvent e) {
-		var respawnLocation = this.world.getSpawnLocation();
+	public void onPlayerDeath(PlayerDeathEvent e) {
 		var p = e.getPlayer();
-		
-		// update respawn location and play sound
-		e.setRespawnLocation(respawnLocation);
-		p.setGameMode(GameMode.SPECTATOR);
-		p.playSound(respawnLocation, Sound.ENTITY_ENDERMAN_SCREAM, SoundCategory.PLAYERS, 0.6f, 1f);
-		
+		p.playSound(e.getPlayer().getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, SoundCategory.PLAYERS, 0.6f, 1f);
 		this.removePlayer(p);
+	}
+
+	@EventHandler
+	public void onPlayerRespawn(PlayerRespawnEvent e) {
+		var respawnLocation = this.world.getSpawnLocation();
+		var player = e.getPlayer();
+		e.setRespawnLocation(respawnLocation);
+		player.setGameMode(GameMode.SPECTATOR);
+		this.plugin.getTickrateChanger().updatePlayer(player);
 	}
 	
 	/**
