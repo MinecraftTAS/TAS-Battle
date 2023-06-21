@@ -1,8 +1,10 @@
 package com.minecrafttas.tasbattle;
 
 import com.minecrafttas.tasbattle.managers.*;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,6 +37,11 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 		this.entityManager = new EntityManager(this);
 		this.basicRestrictions = new BasicRestrictions(this);
 		this.serverManagement = new ServerManagement(this);
+	}
+
+	@EventHandler
+	public void cancelChat(AsyncChatEvent e) {
+		e.setCancelled(true);
 	}
 
 }
