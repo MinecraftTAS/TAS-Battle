@@ -97,10 +97,14 @@ public class EntityManager implements Listener {
         var playerListClass = Class.forName("net.minecraft.server.players.PlayerList");
         var gameProfileClass = Class.forName("com.mojang.authlib.GameProfile");
         var serverPlayerClass = Class.forName("net.minecraft.server.level.ServerPlayer");
+        var playerClass = Class.forName("net.minecraft.world.entity.player.Player");
         var entityClass = Class.forName("net.minecraft.world.entity.Entity");
+        var synchedEntityDataClass = Class.forName("net.minecraft.network.syncher.SynchedEntityData");
+        var synchedEntityDataDataItemClass = Class.forName("net.minecraft.network.syncher.SynchedEntityData$DataItem");
         var playerInfoActionClass = Class.forName("net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket$Action");
         var playerInfoClass = Class.forName("net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket");
         var addPlayerClass = Class.forName("net.minecraft.network.protocol.game.ClientboundAddPlayerPacket");
+        var changeSkinClass = Class.forName("net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket");
         var connectionClass = Class.forName("net.minecraft.server.network.ServerGamePacketListenerImpl");
         var packetClass = Class.forName("net.minecraft.network.protocol.Packet");
 
@@ -118,16 +122,35 @@ public class EntityManager implements Listener {
         var fakePlayer = serverPlayerClass.getConstructors()[0].newInstance(mcserver, level, gameProfile);
         // fakePlayer.setPosRaw(this.location.x(), this.location.y(), this.location.z());
         entityClass.getMethod("setPosRaw", double.class, double.class, double.class).invoke(fakePlayer, this.location.x(), this.location.y(), this.location.z());
+        // var fakePlayerId = fakePlayer.getId();
+        var fakePlayerId = entityClass.getMethod("getId").invoke(fakePlayer);
+        // var synchedEntityData = fakePlayer.getEntityData();
+        var synchedEntityData = entityClass.getMethod("getEntityData").invoke(fakePlayer);
+        // var dataValues = synchedEntityData.getNonDefaultValues();
+        var dataValues = synchedEntityDataClass.getMethod("getNonDefaultValues").invoke(synchedEntityData);
+        // var DATA_PLAYER_MODE_CUSTOMISATION = Player.DATA_PLAYER_MODE_CUSTOMISATION;
+        var DATA_PLAYER_MODE_CUSTOMISATION_field = playerClass.getDeclaredField("DATA_PLAYER_MODE_CUSTOMISATION");
+        DATA_PLAYER_MODE_CUSTOMISATION_field.setAccessible(true);
+        var DATA_PLAYER_MODE_CUSTOMISATION = DATA_PLAYER_MODE_CUSTOMISATION_field.get(null);
+        // var synchedEntityDataDataItem = new DataItem(DATA_PLAYER_MODE_CUSTOMISATION, 0b11111111);
+        var synchedEntityDataDataItem = synchedEntityDataDataItemClass.getConstructors()[0].newInstance(DATA_PLAYER_MODE_CUSTOMISATION, (byte) 0b11111111);
+        // var synchedEntityDataDataValue = synchedEntityDataDataItem.value();
+        var synchedEntityDataDataValue = synchedEntityDataDataItemClass.getMethod("value").invoke(synchedEntityDataDataItem);
+        // dataValues.add(synchedEntityDataDataValue);
+        dataValues.getClass().getMethod("add", Object.class).invoke(dataValues, synchedEntityDataDataValue);
         // var playerInfo = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer);
         var playerInfo = playerInfoClass.getConstructors()[1].newInstance(playerInfoActionClass.getEnumConstants()[0], fakePlayer);
         // var addPlayer = new ClientboundAddPlayerPacket(fakePlayer);
         var addPlayer = addPlayerClass.getConstructors()[0].newInstance(fakePlayer);
+        // var changeSkin = new ClientboundSetEntityDataPacket(fakePlayerId, dataValues);
+        var changeSkin = changeSkinClass.getConstructors()[1].newInstance(fakePlayerId, dataValues);
         // var connection = player.connection;
         var connection = serverPlayerClass.getField("connection").get(player);
-        // connection.send(playerInfo); connection.send(addPlayer);
+        // connection.send(playerInfo); connection.send(addPlayer); connection.send(changeSkin);
         var connectionSendMethod = connectionClass.getMethod("send", packetClass);
         connectionSendMethod.invoke(connection, playerInfo);
         connectionSendMethod.invoke(connection, addPlayer);
+        connectionSendMethod.invoke(connection, changeSkin);
 
         // turn player around since npcs spawn that way
         var paperPlayerLoc = paperPlayer.getLocation();
