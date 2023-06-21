@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,8 +20,9 @@ import com.minecrafttas.tasbattle.lobby.LobbyManager;
 import com.minecrafttas.tasbattle.managers.TickrateChanger;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
-public class TASBattleGameserver extends JavaPlugin {
+public class TASBattleGameserver extends JavaPlugin implements CommandExecutor {
 	
 	public static interface GameMode {
 		public static interface CommandHandler extends CommandExecutor, TabCompleter {}
@@ -49,7 +52,9 @@ public class TASBattleGameserver extends JavaPlugin {
 			case "bedwars": yield new Bedwars(this);
 			default: throw new IllegalArgumentException("Unsupported gamemode");
 		};
-				
+
+		this.getCommand("halt").setExecutor(this);
+
 		for (var pair : this.gameMode.createCommands()) {
 			this.getCommand(pair.getKey()).setExecutor(pair.getValue());
 			this.getCommand(pair.getKey()).setTabCompleter(pair.getValue());
@@ -60,5 +65,20 @@ public class TASBattleGameserver extends JavaPlugin {
 		else
 			this.gameMode.startGameMode(new ArrayList<>());
 	}
-	
+
+	/**
+	 * Halt gameserver on /halt
+	 * @param sender Source of the command
+	 * @param command Command which was executed
+	 * @param label Alias of the command which was used
+	 * @param args Passed command arguments
+	 * @return Command success
+	 */
+	@Override
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		if (sender.isOp())
+			Runtime.getRuntime().halt(0);
+
+		return true;
+	}
 }
