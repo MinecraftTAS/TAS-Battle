@@ -21,7 +21,7 @@ public class MixinItemRenderer {
 	 */
 	@Redirect(method = "setupGlintTexturing", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
 	private static long modifyGlintTexturing() {
-		return (long) TASBattle.getInstance().getTickrateChanger().getMilliseconds();
+		return TASBattle.getInstance().getTickrateChanger().getMilliseconds();
 	}
 	
 }
