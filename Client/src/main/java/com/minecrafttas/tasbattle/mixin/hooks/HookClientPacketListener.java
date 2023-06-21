@@ -3,9 +3,12 @@ package com.minecrafttas.tasbattle.mixin.hooks;
 import java.nio.charset.StandardCharsets;
 
 import com.minecrafttas.tasbattle.system.DimensionSystem;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecrafttas.tasbattle.TASBattle;
@@ -20,7 +23,7 @@ import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
  * @author Pancake
  */
 @Mixin(ClientPacketListener.class)
-public class HookClientPlayNetworkHandler {
+public class HookClientPacketListener {
 
 	/**
 	 * Update client tickrate when receiving custom payload
@@ -46,5 +49,14 @@ public class HookClientPlayNetworkHandler {
 			ci.cancel();
 		}
 	}
+
+	/**
+	 * Disable insecure chat toast
+	 */
+	@Redirect(method = "handleServerData", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/toasts/ToastComponent;addToast(Lnet/minecraft/client/gui/components/toasts/Toast;)V"))
+	public void hookHandleServerDataToast(ToastComponent toastComponent, Toast toast) {
+		// don't show
+	}
+
 
 }
