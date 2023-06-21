@@ -122,8 +122,8 @@ public class FFA implements GameMode {
 
 	@Override
 	public List<Pair<String, CommandHandler>> createCommands() {
-		return Arrays.asList(
-			Pair.of("ffa", this.kitManager)
+		return List.of(
+				Pair.of("ffa", this.kitManager)
 		);
 	}
 	

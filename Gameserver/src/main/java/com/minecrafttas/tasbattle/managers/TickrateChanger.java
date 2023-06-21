@@ -111,7 +111,7 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	 * Cancel verification timer for player on plugin message
 	 */
 	@Override
-	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+	public void onPluginMessageReceived(@NotNull String channel, Player player, byte[] message) {
 		if (this.verificationTimers.containsKey(player.getUniqueId()))
 			this.verificationTimers.remove(player.getUniqueId()).cancel();
 

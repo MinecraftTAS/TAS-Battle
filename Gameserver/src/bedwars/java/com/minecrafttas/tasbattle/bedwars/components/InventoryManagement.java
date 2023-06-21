@@ -1,10 +1,6 @@
 package com.minecrafttas.tasbattle.bedwars.components;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import com.minecrafttas.tasbattle.TASBattleGameserver;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,7 +12,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.destroystokyo.paper.event.server.ServerTickStartEvent;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Inventory management for controlling items in inventory
@@ -196,7 +195,7 @@ public class InventoryManagement implements Listener {
 	// set tier methods
 	public boolean increasePickaxeTier(Player p) { this.pickaxeTiers.put(p, Math.min(3, this.pickaxeTiers.getOrDefault(p, -1) + 1)); return true; }
 	public boolean increaseAxeTier(Player p) { this.axeTiers.put(p, Math.min(3, this.axeTiers.getOrDefault(p, -1) + 1)); return true; }
-	public boolean increaseShearsTier(Player p) { this.shearsTiers.put(p, 0); return true; }
+	public void increaseShearsTier(Player p) { this.shearsTiers.put(p, 0); }
 	public void setArmorTier(Player p, int tier) { this.armorTiers.put(p, tier); }
 	
 }
