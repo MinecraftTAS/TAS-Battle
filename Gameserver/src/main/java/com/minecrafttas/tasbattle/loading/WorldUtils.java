@@ -1,8 +1,5 @@
 package com.minecrafttas.tasbattle.loading;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -11,6 +8,8 @@ import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class WorldUtils {
 
@@ -24,7 +23,7 @@ public class WorldUtils {
 		var w = WorldCreator.name(name)
 			.generator(new ChunkGenerator() {})
 			.biomeProvider(new BiomeProvider() {
-				@Override public @NotNull List<Biome> getBiomes(@NotNull WorldInfo worldInfo) { return Arrays.asList(Biome.THE_VOID); }
+				@Override public @NotNull List<Biome> getBiomes(@NotNull WorldInfo worldInfo) { return List.of(Biome.THE_VOID); }
 				@Override public @NotNull Biome getBiome(@NotNull WorldInfo worldInfo, int x, int y, int z) { return Biome.THE_VOID; }
 			})
 			.createWorld();

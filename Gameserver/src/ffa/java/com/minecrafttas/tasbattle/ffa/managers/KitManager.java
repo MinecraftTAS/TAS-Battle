@@ -38,6 +38,7 @@ import lombok.Getter;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * FFA Kit manager
@@ -211,7 +212,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 	 * Handle /ffa command
 	 */
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 		if (!sender.isOp())
 			return true;
 		
@@ -305,7 +306,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 	 * Handle /ffa tab completion
 	 */
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 		if (args.length == 0)
 			return Arrays.asList("save", "load", "delete");
 		
@@ -315,7 +316,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 		if (args[args.length-1].startsWith("minecraft:"))
 			return Arrays.stream(Material.values()).filter(i -> i.toString().startsWith(args[args.length-1].replace("minecraft:", ""))).map(f -> f.toString().toLowerCase()).toList();
 
-		return Arrays.asList("");
+		return List.of("");
 	}
 
 	

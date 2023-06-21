@@ -1,17 +1,16 @@
 package com.minecrafttas.tasbattle.system;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import com.minecrafttas.tasbattle.TASBattle;
 import com.mojang.blaze3d.platform.NativeImage;
-
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Data class for tas battle
@@ -56,7 +55,7 @@ public class DataSystem {
 			var capeFrags = cape.split("\\:");
 			var loc = new ResourceLocation("tasbattle", "cape_" + capeFrags[0]);
 			this.capes.put(UUID.fromString(capeFrags[0]), loc);
-			mc.getTextureManager().register(loc, new DynamicTexture(NativeImage.read(new URL("https://data.mgnet.work/" + capeFrags[1]).openStream())));
+			mc.getTextureManager().register(loc, new DynamicTexture(NativeImage.read(URI.create("https://data.mgnet.work/" + capeFrags[1]).toURL().openStream())));
 		}
 		
 		TASBattle.LOGGER.info("Parsed " + this.tags.size() + " tags and " + this.capes.size() + " capes.");

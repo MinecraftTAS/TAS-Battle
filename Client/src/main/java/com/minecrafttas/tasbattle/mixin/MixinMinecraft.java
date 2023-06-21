@@ -1,39 +1,23 @@
 package com.minecrafttas.tasbattle.mixin;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-
-import com.minecrafttas.tasbattle.system.DimensionSystem;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.impl.ModContainerImpl;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.system.DataSystem;
 import com.minecrafttas.tasbattle.system.KeybindSystem;
-import com.minecrafttas.tasbattle.system.TickrateChanger;
-
-import io.netty.buffer.Unpooled;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
-import net.minecraft.resources.ResourceLocation;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.io.FileOutputStream;
+import java.net.URI;
+import java.nio.file.Files;
 
 /**
  * This mixin hooks the minecraft class game loop and modifies other aspects of the minecraft class
@@ -86,7 +70,7 @@ public class MixinMinecraft {
 
 	@Inject(method = "destroy", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Ljava/lang/System;exit(I)V"))
 	public void onClose(CallbackInfo ci) {
-		var mod = ((ModContainerImpl) FabricLoader.getInstance().getModContainer("tasbattle").get()).getOrigin().getPaths().get(0);
+		var mod = FabricLoader.getInstance().getModContainer("tasbattle").get().getOrigin().getPaths().get(0);
 		if (Files.isDirectory(mod))
 			return;
 

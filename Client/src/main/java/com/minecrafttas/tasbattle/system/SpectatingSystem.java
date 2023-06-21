@@ -1,16 +1,15 @@
 package com.minecrafttas.tasbattle.system;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.minecrafttas.tasbattle.TASBattle;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundTeleportToEntityPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Client-side spectating module
@@ -21,7 +20,7 @@ public class SpectatingSystem {
 	public static enum SpectatorMode {
 		FIXED, // Forces the player to always look at the spectatingEntity
 		ORBIT, // Forces the position and angle to the spactatingEntity. By moving the mouse, the player can orbit around the spectatingEntity
-		NONE; // If spectating should be disabled
+		NONE // If spectating should be disabled
 	}
 	
 	private Entity spectatedEntity;
@@ -88,20 +87,6 @@ public class SpectatingSystem {
 				c.setPosition(posX, posY, posZ);
 				
 				break;
-				
-//			case ORBIT:
-//				if(this.spectatedEntity != null) {
-
-//					
-//					double posY = this.distance * Math.sin(this.angleYaw) + this.spectatedEntity.getY();
-//					double hyp = this.distance * Math.cos(this.angleYaw);
-//					double posX = hyp*Math.sin(this.anglePitch) + this.spectatedEntity.getX();
-//					double posZ = hyp*Math.cos(this.anglePitch) + this.spectatedEntity.getZ();
-//					
-//					player.lookAt(Anchor.EYES, this.spectatedEntity.getEyePosition());
-//					player.setPos(posX, posY, posZ);
-//					break;
-//				}
 			default:
 				break;
 		}

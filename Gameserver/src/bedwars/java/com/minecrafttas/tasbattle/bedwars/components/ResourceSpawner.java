@@ -38,7 +38,7 @@ public class ResourceSpawner implements Listener {
 	// TODO: no stack, no more than 4
 	
 	@RequiredArgsConstructor
-	public class Spawner {
+	public static class Spawner {
 		
 		@NonNull private Location loc;
 		@NonNull private Integer[] tiers;
@@ -127,7 +127,7 @@ public class ResourceSpawner implements Listener {
 			this.createArmorStand(loc.add(0, .7, 0), "§2Emerald", null, null);
 			this.createArmorStand(loc.add(0, .3, 0), null, e -> e.customName(Component.text("§eTier §c" + spawner.currentTier)), null);
 			this.createArmorStand(loc.add(0, -.6, 0), null, e -> {
-				e.customName(Component.text("§eSpawns in §c" + ((int) ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20)) + " §eseconds"));
+				e.customName(Component.text("§eSpawns in §c" + ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20) + " §eseconds"));
 				e.setRotation(e.getLocation().getYaw() + 1, e.getLocation().getPitch());
 			}, Material.EMERALD_BLOCK);
 		}
@@ -138,7 +138,7 @@ public class ResourceSpawner implements Listener {
 			this.createArmorStand(loc.add(0, .7, 0), "§bDiamond", null, null);
 			this.createArmorStand(loc.add(0, .3, 0), null, e -> e.customName(Component.text("§eTier §c" + spawner.currentTier)), null);
 			this.createArmorStand(loc.add(0, -.6, 0), null, e -> {
-				e.customName(Component.text("§eSpawns in §c" + ((int) ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20)) + " §eseconds"));
+				e.customName(Component.text("§eSpawns in §c" + ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20) + " §eseconds"));
 				e.setRotation(e.getLocation().getYaw() + 1, e.getLocation().getPitch());
 			}, Material.DIAMOND_BLOCK);
 		}

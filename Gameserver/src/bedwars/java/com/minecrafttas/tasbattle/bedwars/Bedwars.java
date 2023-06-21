@@ -1,25 +1,17 @@
 package com.minecrafttas.tasbattle.bedwars;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
 import com.minecrafttas.tasbattle.TASBattleGameserver;
+import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode;
+import com.minecrafttas.tasbattle.bedwars.components.*;
+import com.minecrafttas.tasbattle.loading.WorldUtils;
+import com.minecrafttas.tasbattle.lobby.LobbyManager;
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode;
-import com.minecrafttas.tasbattle.bedwars.components.ExplosivePhysics;
-import com.minecrafttas.tasbattle.bedwars.components.InventoryManagement;
-import com.minecrafttas.tasbattle.bedwars.components.PlacementRules;
-import com.minecrafttas.tasbattle.bedwars.components.ResourceSpawner;
-import com.minecrafttas.tasbattle.bedwars.components.Team;
-import com.minecrafttas.tasbattle.bedwars.components.TeamShop;
-import com.minecrafttas.tasbattle.loading.WorldUtils;
-import com.minecrafttas.tasbattle.lobby.LobbyManager;
-
-import lombok.Getter;
+import java.io.File;
+import java.util.List;
 
 /**
  * Bedwars gamemode
@@ -81,12 +73,12 @@ public class Bedwars implements GameMode {
 	
 	@Override
 	public List<LobbyManager> createManagers() {
-		return Arrays.asList();
+		return List.of();
 	}
 
 	@Override
 	public List<Pair<String, CommandHandler>> createCommands() {
-		return Arrays.asList();
+		return List.of();
 	}
 	
 }

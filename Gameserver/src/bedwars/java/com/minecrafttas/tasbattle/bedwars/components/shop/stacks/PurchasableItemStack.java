@@ -1,20 +1,18 @@
 package com.minecrafttas.tasbattle.bedwars.components.shop.stacks;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import com.minecrafttas.tasbattle.gui.ClickableInventory.Interaction;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Purchasable item stack in shop inventory
@@ -50,7 +48,7 @@ public class PurchasableItemStack extends ItemStack {
 		this.priceAmount = amount;
 		this.editMeta(e -> {
 			e.displayName(Component.text("§f" + name));
-			e.lore(Arrays.asList(Component.text("§7Cost: " + price.getDisplayName().replace("_", amount + ""))));
+			e.lore(List.of(Component.text("§7Cost: " + price.getDisplayName().replace("_", amount + ""))));
 		});
 	}
 	
@@ -82,7 +80,7 @@ public class PurchasableItemStack extends ItemStack {
 			
 			// find and sort materials
 			var itemStacks = new ArrayList<>(items.values());
-			Collections.sort(itemStacks, (o1, o2) -> o2.getAmount() - o1.getAmount());
+			itemStacks.sort((o1, o2) -> o2.getAmount() - o1.getAmount());
 			Collections.reverse(itemStacks);
 			
 			if (available >= this.priceAmount && this.reward(p)) {

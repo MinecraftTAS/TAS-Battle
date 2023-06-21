@@ -72,9 +72,7 @@ public class ExplosivePhysics implements Listener {
 	public void onBlockExplode(EntityExplodeEvent e) {
 		e.setYield(0.3f);
 		var blockList = e.blockList();
-		for (var block : new ArrayList<>(blockList))
-			if (!this.placementRules.isPlacedByPlayer(block.getLocation()) || (e.getEntityType() == EntityType.FIREBALL && block.getType() == Material.END_STONE))
-				blockList.remove(block);
+		blockList.removeIf(block -> !this.placementRules.isPlacedByPlayer(block.getLocation()) || (e.getEntityType() == EntityType.FIREBALL && block.getType() == Material.END_STONE));
 	}
 	
 	/**
