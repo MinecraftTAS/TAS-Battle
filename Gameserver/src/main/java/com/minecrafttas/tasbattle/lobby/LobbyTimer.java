@@ -24,7 +24,7 @@ class LobbyTimer implements CommandExecutor {
 	
 	private List<Player> players = new ArrayList<>();
 
-	private List<Player> forcestart = new ArrayList<>();
+	private List<Player> readyPlayers = new ArrayList<>();
 
 	private BukkitTask task;
 	private int startTime, time;
@@ -45,7 +45,7 @@ class LobbyTimer implements CommandExecutor {
 		this.maxPlayers = maxPlayers;
 		this.start = start;
 
-		plugin.getCommand("forcestart").setExecutor(this);
+		plugin.getCommand("ready").setExecutor(this);
 
 		// Run advance() every second
 		this.task = new BukkitRunnable() {
@@ -61,8 +61,8 @@ class LobbyTimer implements CommandExecutor {
 	 */
 	private void advance() {
 		// Advance timer
-		if (this.players.size() >= this.maxPlayers && this.time > 20)
-			this.forceStart();
+		if (this.players.size() >= this.maxPlayers && this.time > 10)
+			this.time = 10;
 		else if (this.players.size() < this.minPlayers)
 			this.time = this.startTime;
 		else
@@ -72,8 +72,10 @@ class LobbyTimer implements CommandExecutor {
 		for (Player p : this.players) {
 			p.setLevel(this.time);
 			p.setExp(Math.max(0.0f, Math.min(1.0f, this.time / (float) this.startTime)));
-			if (this.time < 10)
+			if (this.time <= 5 || this.time == 10 || this.time == 20) {
+				p.sendMessage(Component.text("§b» §7The game will start in §a" + this.time + "§7 seconds."));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5f, this.time <= 0 ? 1.0f : 0.7f);
+			}
 		}
 
 		if (this.time <= 0) {
@@ -83,10 +85,36 @@ class LobbyTimer implements CommandExecutor {
 	}
 
 	/**
-	 * Update countdown to 20 seconds
+	 * Handle /ready command
+	 * @param sender Source of the command
+	 * @param command Command which was executed
+	 * @param label Alias of the command which was used
+	 * @param args Passed command arguments
+	 * @return Success
 	 */
-	public void forceStart() {
-		this.time = 20;
+	@Override
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		if (args.length == 1 && args[0].equals("force") && sender.isOp()) {
+			Bukkit.broadcast(Component.text("§b» §a" + sender.getName() + " §7force started the game."));
+			this.time = 1;
+		} else if (!this.readyPlayers.contains((Player) sender)) {
+
+			if (this.time > 10) {
+				Bukkit.broadcast(Component.text("§b» §a" + sender.getName() + "§7 is ready."));
+				this.readyPlayers.add((Player) sender);
+
+				if (this.readyPlayers.size() >= this.players.size())
+					this.time = 11;
+
+			} else {
+				sender.sendMessage(Component.text("§b» §cThe game is about to start, you cannot set yourself to ready anymore."));
+			}
+
+		} else {
+			sender.sendMessage(Component.text("§b» §cYou have already set yourself to ready before."));
+		}
+
+		return true;
 	}
 
 	/**
@@ -104,42 +132,13 @@ class LobbyTimer implements CommandExecutor {
 	public void addPlayer(Player p) {
 		this.players.add(p);
 	}
-	
+
 	/**
 	 * Is game already running
 	 * @return Game running
 	 */
 	public boolean isGameRunning() {
 		return this.task.isCancelled();
-	}
-
-	/**
-	 * Forcestart timer
-	 * @param sender Source of the command
-	 * @param command Command which was executed
-	 * @param label Alias of the command which was used
-	 * @param args Passed command arguments
-	 * @return Success
-	 */
-	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-		if (this.time < 20)
-			return true;
-
-		if (args.length == 1 && args[0].equals("force") && sender.isOp()) {
-			Bukkit.broadcast(Component.text("§b» §7Lobby has been force started."));
-			this.forceStart();
-		} else if (!this.forcestart.contains((Player) sender)) {
-			Bukkit.broadcast(Component.text("§b» §a" + sender.getName() + "§7 voted for forcestart."));
-			this.forcestart.add((Player) sender);
-
-			if (this.forcestart.size() >= this.players.size()) {
-				Bukkit.broadcast(Component.text("§b» §7Lobby has been force started."));
-				this.forceStart();
-			}
-		}
-
-		return true;
 	}
 
 }

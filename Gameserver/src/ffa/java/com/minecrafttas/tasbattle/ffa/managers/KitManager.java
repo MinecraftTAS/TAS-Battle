@@ -218,9 +218,9 @@ public class KitManager extends LobbyManager implements CommandHandler {
 		
 		// print help
 		if (args.length == 0) {
-			sender.sendMessage(Component.text("§b» §7/ffa save §a<name> <material> <description>"));
-			sender.sendMessage(Component.text("§b» §7/ffa delete §a<name>"));
-			sender.sendMessage(Component.text("§b» §7/ffa load §a<name>"));
+			sender.sendMessage(Component.text("§b» §7/ffa §asave §b<name> <material> <description>"));
+			sender.sendMessage(Component.text("§b» §7/ffa §adelete §b<name>"));
+			sender.sendMessage(Component.text("§b» §7/ffa §aload §b<name>"));
 			return true;
 		}
 		

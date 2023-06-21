@@ -1,10 +1,8 @@
 package com.minecrafttas.tasbattle.managers;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.UUID;
-
 import com.minecrafttas.tasbattle.TASBattleGameserver;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,21 +16,22 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Tickrate Changer module
  * @author Pancake
  */
 public class TickrateChanger implements PluginMessageListener, Listener, CommandExecutor {
-	
+
 	private static final String TRC_CHANNEL = "tickratechanger:data";
 
 	private HashMap<UUID, BukkitTask> verificationTimers = new HashMap<>();
 	private TASBattleGameserver plugin;
 	private float tickrate;
-	
+
 	/**
 	 * Initialize tickrate changer
 	 * @param plugin Plugin
@@ -58,27 +57,25 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	public void setTickrate(float tickrate) {
 		if (tickrate < 0.1f || tickrate > 100.0f)
 			return;
-		
-			
+
 		// update server tickrate
 		this.tickrate = tickrate;
 		try {
 			var msPerTick = Class.forName("net.minecraft.server.MinecraftServer").getField("MS_PER_TICK"); // unavoidable obfuscation
 			msPerTick.setAccessible(true);
 			msPerTick.setInt(null, (int) (1000 / tickrate));
-			
+
 			var gamespeed = Class.forName("net.minecraft.server.MinecraftServer").getField("GAMESPEED");
 			gamespeed.setAccessible(true);
 			gamespeed.setFloat(null, tickrate / 20.0f);
 		} catch (NoSuchFieldException | SecurityException | ClassNotFoundException | IllegalArgumentException | IllegalAccessException e) {
-			System.err.println("Unable to update server tickrate");
-			e.printStackTrace();
+			this.plugin.getSLF4JLogger().error("Unable to update server tickrate!", e);
 		}
-		
+
 		// update client tickrate
 		Bukkit.getOnlinePlayers().forEach(this::updatePlayer);
 	}
-	
+
 	/**
 	 * Update tickrate for player
 	 * @param p
@@ -103,10 +100,10 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 			}
 
 		}.runTaskLater(this.plugin, 8 * 20));
-		
+
 		this.updatePlayer(e.getPlayer());
 	}
-	
+
 	/**
 	 * Cancel verification timer for player on plugin message
 	 */
@@ -117,7 +114,7 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 
 		this.updatePlayer(player);
 	}
-	
+
 	/**
 	 * Handle /tickrate command
 	 */
@@ -130,11 +127,11 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 			// parse and update tickrate
 			var tickrate = Float.parseFloat(args[0]);
 			this.setTickrate(tickrate);
-			sender.sendMessage(Component.text("Updated tickrate to " + tickrate + "."));
+			sender.sendMessage(Component.text("§b» §7Updated tickrate to §a" + tickrate));
 		} catch (NumberFormatException e) {
-			sender.sendMessage(Component.text("Unable to parse tickrate: " + args[0] + ".", NamedTextColor.RED));
+			sender.sendMessage(Component.text("§b» §cUnable to parse tickrate: §a" + args[0], NamedTextColor.RED));
 		}
 		return true;
 	}
-	
+
 }

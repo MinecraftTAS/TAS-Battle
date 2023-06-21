@@ -57,8 +57,7 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	public void setTickrate(float tickrate) {
 		if (tickrate < 0.1f || tickrate > 100.0f)
 			return;
-		
-			
+
 		// update server tickrate
 		this.tickrate = tickrate;
 		try {
@@ -128,9 +127,9 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 			// parse and update tickrate
 			var tickrate = Float.parseFloat(args[0]);
 			this.setTickrate(tickrate);
-			sender.sendMessage(Component.text("Updated tickrate to " + tickrate + "."));
+			sender.sendMessage(Component.text("§b» §7Updated tickrate to §a" + tickrate));
 		} catch (NumberFormatException e) {
-			sender.sendMessage(Component.text("Unable to parse tickrate: " + args[0] + ".", NamedTextColor.RED));
+			sender.sendMessage(Component.text("§b» §cUnable to parse tickrate: §a" + args[0], NamedTextColor.RED));
 		}
 		return true;
 	}

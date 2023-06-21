@@ -83,12 +83,19 @@ public class FFA implements GameMode {
 			Collections.shuffle(kits);
 			kit = kits.get(0);
 		}
-		Bukkit.broadcast(Component.text("§b» §7Selected kit: §f").append(Component.text(kit.getName())));
 
 		// determine all enabled scenarios
 		var scenarios = this.scenarioManager.getEnabled();
-		Bukkit.broadcast(Component.text("§b» §7Enabled scenarios: §f" + scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", "))));
-		
+
+		// print messages
+		Bukkit.broadcast(Component.text("§b» §aThe game has started."));
+		Bukkit.broadcast(Component.text("§b» §7The most voted kit was: §a").append(Component.text(kit.getName())));
+		Bukkit.broadcast(Component.text("§b» §7and the enabled scenarios are: §a" + scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", "))));
+		Bukkit.broadcast(Component.text(""));
+		Bukkit.broadcast(Component.text("§b» §7Every player has been spread across the map. §cCross teaming is not allowed!"));
+		Bukkit.broadcast(Component.text("§b» §7The last person alive will be the winner."));
+		Bukkit.broadcast(Component.text(""));
+
 		// update players
 		for (var p : players) {
 			// prepare player
