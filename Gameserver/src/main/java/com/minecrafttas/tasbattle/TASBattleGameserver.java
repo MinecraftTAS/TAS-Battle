@@ -41,6 +41,7 @@ public class TASBattleGameserver extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		Bukkit.getPluginManager().registerEvents(new GuiHandler(), this);
+		Bukkit.getWorlds().forEach(w -> w.setAutoSave(false));
 		this.tickrateChanger = new TickrateChanger(this);
 		
 		this.gameMode = switch (System.getProperty("mode")) {
