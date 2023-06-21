@@ -49,6 +49,7 @@ public class WorldUtils {
 		w.setGameRule(GameRule.SPAWN_RADIUS, 0);
 		w.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
 		w.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+		w.setAutoSave(false);
 		return w;
 
 	}
