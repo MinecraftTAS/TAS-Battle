@@ -83,10 +83,10 @@ class LobbyTimer implements CommandExecutor {
 	}
 
 	/**
-	 * Update countdown to 30 seconds
+	 * Update countdown to 20 seconds
 	 */
 	public void forceStart() {
-		this.time = 15;
+		this.time = 20;
 	}
 
 	/**
@@ -123,7 +123,7 @@ class LobbyTimer implements CommandExecutor {
 	 */
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-		if (this.time < 15)
+		if (this.time < 20)
 			return true;
 
 		if (args.length == 1 && args[0].equals("force") && sender.isOp()) {

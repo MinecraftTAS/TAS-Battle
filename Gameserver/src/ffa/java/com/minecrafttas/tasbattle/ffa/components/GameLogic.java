@@ -106,6 +106,7 @@ public class GameLogic implements Listener {
 		
 		// update respawn location and play sound
 		e.setRespawnLocation(respawnLocation);
+		p.setGameMode(GameMode.SPECTATOR);
 		p.playSound(respawnLocation, Sound.ENTITY_ENDERMAN_SCREAM, SoundCategory.PLAYERS, 0.6f, 1f);
 		
 		this.removePlayer(p);
@@ -130,8 +131,9 @@ public class GameLogic implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent e) {
-		if (!this.players.contains(e.getEntity()))
-			e.setCancelled(true);
+		if (e instanceof Player player)
+			if (!this.players.contains(player))
+				e.setCancelled(true);
 	}
 	
 	/**

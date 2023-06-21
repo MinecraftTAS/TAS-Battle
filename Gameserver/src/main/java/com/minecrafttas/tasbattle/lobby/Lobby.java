@@ -126,7 +126,7 @@ public class Lobby implements Listener {
 	}
 
 	// restrict basic player events
-	@EventHandler public void onClickEvent(InventoryClickEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); };
+	@EventHandler public void onClickEvent(InventoryClickEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 	@EventHandler public void onPlayerBreak(BlockBreakEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 	@EventHandler public void onPlayerPlace(BlockPlaceEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
 	@EventHandler public void onPlayerDrop(PlayerDropItemEvent e) { if (!this.timer.isGameRunning()) e.setCancelled(true); }
