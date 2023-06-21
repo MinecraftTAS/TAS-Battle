@@ -1,6 +1,7 @@
 package com.minecrafttas.tasbattle;
 
 import com.google.inject.Inject;
+import com.minecrafttas.tasbattle.managers.ChatSystem;
 import com.minecrafttas.tasbattle.managers.DataManager;
 import com.minecrafttas.tasbattle.managers.LobbyCommand;
 import com.minecrafttas.tasbattle.managers.PermissionManager;
@@ -31,8 +32,7 @@ public class TASBattleProxy {
 	private DataManager dataManager;
 	private LobbyCommand lobbyCommand;
 	private PermissionManager permissionManager;
-
-
+	private ChatSystem chatSystem;
 
 	/**
      * Construct proxy plugin
@@ -76,6 +76,7 @@ public class TASBattleProxy {
 		this.dataManager = new DataManager(this);
 		this.lobbyCommand = new LobbyCommand(this);
 		this.permissionManager = new PermissionManager(this);
+		this.chatSystem = new ChatSystem(this);
 	}
 
 }

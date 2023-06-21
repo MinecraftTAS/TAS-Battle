@@ -3,6 +3,7 @@ package com.minecrafttas.tasbattle;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -10,6 +11,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.minecrafttas.tasbattle.bedwars.Bedwars;
@@ -22,7 +25,7 @@ import com.minecrafttas.tasbattle.managers.TickrateChanger;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-public class TASBattleGameserver extends JavaPlugin implements CommandExecutor {
+public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, Listener {
 	
 	public static interface GameMode {
 		public static interface CommandHandler extends CommandExecutor, TabCompleter {}
@@ -44,6 +47,7 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor {
 	@Override
 	public void onEnable() {
 		Bukkit.getPluginManager().registerEvents(new GuiHandler(), this);
+		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getWorlds().forEach(w -> w.setAutoSave(false));
 		this.tickrateChanger = new TickrateChanger(this);
 		
@@ -81,4 +85,10 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor {
 
 		return true;
 	}
+
+	@EventHandler
+	public void cancelChat(AsyncChatEvent e) {
+		e.setCancelled(true);
+	}
+
 }
