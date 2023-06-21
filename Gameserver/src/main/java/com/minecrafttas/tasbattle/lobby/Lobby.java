@@ -42,7 +42,7 @@ public class Lobby implements Listener {
 	public Lobby(TASBattleGameserver plugin, GameMode gameMode) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		this.managers = gameMode.createManagers();
-		this.timer = new LobbyTimer(plugin, 90, 2, 6, participants -> {
+		this.timer = new LobbyTimer(plugin, 90, 2, 8, participants -> {
 			for (var manager : this.managers)
 				manager.setActive(false);
 			gameMode.startGameMode(participants);

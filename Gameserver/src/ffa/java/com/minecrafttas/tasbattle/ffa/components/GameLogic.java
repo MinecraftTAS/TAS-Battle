@@ -125,8 +125,8 @@ public class GameLogic implements Listener {
 		var p = e.getPlayer();
 		p.setGameMode(GameMode.SPECTATOR);
 		p.teleport(this.world.getSpawnLocation());
-		
-		e.joinMessage(Component.text("§b» §a" + p.getName() + " §7started spectating"));
+
+		e.joinMessage(null);
 	}
 	
 	/**
@@ -155,10 +155,9 @@ public class GameLogic implements Listener {
 		// eliminate player from game
 		if (this.players.contains(p)) {
 			this.removePlayer(e.getPlayer());
-			e.quitMessage(null);
-		} else {
-			e.quitMessage(Component.text("§b» §a" + p.getName() + " §7stopped spectating"));
 		}
+
+		e.quitMessage(null);
 	}
 	
 	/**
