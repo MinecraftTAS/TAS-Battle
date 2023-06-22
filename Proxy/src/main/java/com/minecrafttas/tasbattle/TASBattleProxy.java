@@ -1,10 +1,7 @@
 package com.minecrafttas.tasbattle;
 
 import com.google.inject.Inject;
-import com.minecrafttas.tasbattle.managers.ChatSystem;
-import com.minecrafttas.tasbattle.managers.DataManager;
-import com.minecrafttas.tasbattle.managers.LobbyCommand;
-import com.minecrafttas.tasbattle.managers.PermissionManager;
+import com.minecrafttas.tasbattle.managers.*;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
@@ -33,6 +30,7 @@ public class TASBattleProxy {
 	private LobbyCommand lobbyCommand;
 	private PermissionManager permissionManager;
 	private ChatSystem chatSystem;
+	private CustomTabList customTabList;
 
 	/**
      * Construct proxy plugin
@@ -63,7 +61,7 @@ public class TASBattleProxy {
 			properties.storeToXML(Files.newOutputStream(configFile, StandardOpenOption.CREATE), null);
 			throw new IOException("Configuration is not set up.");
 		}
-		
+
 	}
 
 	/**
@@ -77,6 +75,7 @@ public class TASBattleProxy {
 		this.lobbyCommand = new LobbyCommand(this);
 		this.permissionManager = new PermissionManager(this);
 		this.chatSystem = new ChatSystem(this);
+		this.customTabList = new CustomTabList(this);
 	}
 
 }
