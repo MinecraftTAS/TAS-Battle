@@ -25,6 +25,9 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	@Getter
 	private ServerManagement serverManagement;
 
+	@Getter
+	private ScoreboardManager scoreboardManager;
+
 	/**
 	 * Enable tasbattle lobby mod
 	 */
@@ -37,6 +40,7 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 		this.entityManager = new EntityManager(this);
 		this.basicRestrictions = new BasicRestrictions(this);
 		this.serverManagement = new ServerManagement(this);
+		this.scoreboardManager = new ScoreboardManager(this);
 	}
 
 	@EventHandler
