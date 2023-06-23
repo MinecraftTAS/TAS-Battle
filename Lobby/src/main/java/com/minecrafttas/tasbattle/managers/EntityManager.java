@@ -56,7 +56,6 @@ public class EntityManager implements Listener {
             this.actionSlime.setSize(5);
             this.actionSlime.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 0, false, false));
 
-
             // delete previous action slimes
             for (var entity : world.getChunkAt(this.location).getEntities())
                 if (entity instanceof Slime && entity != this.actionSlime)
