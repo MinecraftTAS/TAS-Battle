@@ -5,11 +5,16 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import net.kyori.adventure.text.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * TAS Battle chat system
  * @author Pancake
  */
 public class ChatSystem {
+
+    private static final List<String> CHAT_SERVERS = Arrays.asList("lobbypreview", "gameserver01preview");
 
     private TASBattleProxy plugin;
 
@@ -31,7 +36,12 @@ public class ChatSystem {
      */
     @Subscribe
     public void onChat(PlayerChatEvent e) {
-        this.plugin.getServer().sendMessage(Component.text("§a" + e.getPlayer().getUsername() + " §b» §f" + e.getMessage()));
+        var server = e.getPlayer().getCurrentServer().get().getServerInfo();
+        if (!CHAT_SERVERS.contains(server.getName()))
+            return;
+
+        for (var subserver : CHAT_SERVERS)
+            this.plugin.getServer().getServer(subserver).get().sendMessage(Component.text("§a" + e.getPlayer().getUsername() + " §b» §f" + e.getMessage()));
     }
 
 }
