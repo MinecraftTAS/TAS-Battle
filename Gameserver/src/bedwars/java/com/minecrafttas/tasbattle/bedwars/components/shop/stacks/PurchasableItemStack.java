@@ -48,8 +48,8 @@ public class PurchasableItemStack extends ItemStack {
 		this.price = price;
 		this.priceAmount = amount;
 		this.editMeta(e -> {
-			e.displayName(MiniMessage.miniMessage().deserialize("<white>" + name + "</white>"));
-			e.lore(List.of(MiniMessage.miniMessage().deserialize("<gray>Cost: " + price.getDisplayName().replace("_", amount + "") + "</gray>")));
+			e.displayName(MiniMessage.miniMessage().deserialize("<!italic><white>" + name + "</white>"));
+			e.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Cost: " + price.getDisplayName().replace("_", amount + "") + "</gray>")));
 		});
 	}
 	
