@@ -2,13 +2,15 @@ package com.minecrafttas.tasbattle.managers;
 
 import com.minecrafttas.tasbattle.TASBattleProxy;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.player.ServerConnectedEvent;
+import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Custom tab list and actionb ar
+ * Custom tab list and actionbar
  * @author Pancake
  */
 public class CustomTabList {
@@ -43,11 +45,20 @@ public class CustomTabList {
      * @param e Post login event
      */
     @Subscribe
-    public void onPlayerJoin(ServerConnectedEvent e) {
-        e.getPlayer().sendPlayerListHeaderAndFooter(
-                Component.text("§c§lTAS§6§lBattle"),
-                Component.text("§7Official TAS Battle Minecraft Server")
-        );
+    public void onPlayerJoin(ServerPostConnectEvent e) {
+        var player = e.getPlayer();
+        var server = player.getCurrentServer().get().getServerInfo();
+        if (TASBATTLE_SERVERS.contains(server.getName())) {
+            player.sendPlayerListHeaderAndFooter(
+                    MiniMessage.miniMessage().deserialize("<bold><red>TAS</red><gold>Battle</gold></bold>"),
+                    MiniMessage.miniMessage().deserialize("<gray>Official TAS Battle Minecraft Server</gray>")
+            );
+        } else if (LAMP_SERVERS.contains(server.getName())) {
+            player.sendPlayerListHeaderAndFooter(
+                    MiniMessage.miniMessage().deserialize("<bold><aqua>Minecraft</aqua> <yellow>SMP</yellow></bold>"),
+                    MiniMessage.miniMessage().deserialize("<gray>Intercontinental Minecraft Server hosted by a bunch of idiots</gray>")
+            );
+        }
     }
 
 }

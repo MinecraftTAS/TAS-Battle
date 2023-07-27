@@ -3,9 +3,8 @@ package com.minecrafttas.tasbattle.managers;
 import com.minecrafttas.tasbattle.TASBattleProxy;
 import com.velocitypowered.api.command.RawCommand;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,12 +13,7 @@ import java.util.List;
  */
 public class LobbyCommand {
 
-    // plugin configuration
-    private String lobbyCommand;
-    private String[] lobbyAliases;
-    private String lobbyServer;
-    private String lobbyErrorMessage;
-    private List<String> lobbyEnabledServers;
+    public static final List<String> ALLOWED_SERVERS = List.of("ffa", "bedwars", "skywars", "juggernaut", "knockffa", "cores", "survivalgames", "speeduhc");
 
     /**
      * Initialize Lobby Command
@@ -27,22 +21,15 @@ public class LobbyCommand {
      */
     public LobbyCommand(TASBattleProxy plugin) {
         var server = plugin.getServer();
-        var config = plugin.getProperties();
 
-        // load configuration
-        this.lobbyCommand = config.getProperty("lobby_command");
-        this.lobbyAliases = config.getProperty("lobby_aliases").split("\\,");
-        this.lobbyServer = config.getProperty("lobby_server");
-        this.lobbyErrorMessage = config.getProperty("lobby_error_message");
-        this.lobbyEnabledServers = Arrays.stream(config.getProperty("lobby_enabled_servers").split("\\,")).toList();
-
-        // register lobby command
-        server.getCommandManager().register(this.lobbyCommand, (RawCommand) invocation -> {
-            if (invocation.source() instanceof Player player && this.lobbyEnabledServers.contains(player.getCurrentServer().get().getServerInfo().getName()))
-                player.createConnectionRequest(server.getServer(this.lobbyServer).get()).fireAndForget();
+        // register command
+        var lobby = server.getServer("lobby").get();
+        server.getCommandManager().register("lobby", (RawCommand) invocation -> {
+            if (invocation.source() instanceof Player player && ALLOWED_SERVERS.contains(player.getCurrentServer().get().getServerInfo().getName()))
+                player.createConnectionRequest(lobby).fireAndForget();
             else
-                invocation.source().sendMessage(Component.text(this.lobbyErrorMessage));
-        }, this.lobbyAliases);
+                invocation.source().sendMessage(MiniMessage.miniMessage().deserialize("<red>You cannot use that here.</red>"));
+        }, new String[] {"l", "spawn", "leave", "hub"});
     }
 
 }
