@@ -4,6 +4,8 @@ import com.minecrafttas.tasbattle.TASBattleProxy;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +43,8 @@ public class ChatSystem {
             return;
 
         for (var subserver : CHAT_SERVERS)
-            this.plugin.getServer().getServer(subserver).get().sendMessage(Component.text("§a" + e.getPlayer().getUsername() + " §b» §f" + e.getMessage()));
+            this.plugin.getServer().getServer(subserver).ifPresent(s ->
+                s.sendMessage(MiniMessage.miniMessage().deserialize("<green><username></green> <aqua>»</aqua> <white><text></white>", Placeholder.unparsed("username", e.getPlayer().getUsername()), Placeholder.unparsed("text", e.getMessage()))));
     }
 
 }
