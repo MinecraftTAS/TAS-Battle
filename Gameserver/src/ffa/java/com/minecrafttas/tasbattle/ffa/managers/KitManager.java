@@ -153,7 +153,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 				
 				var item = new ItemStack(kit.getMaterial());
 				item.editMeta(meta -> {
-					meta.displayName(MiniMessage.miniMessage().deserialize("<!italic>" + kit.getName()));
+					meta.displayName(MiniMessage.miniMessage().deserialize("<!italic><white>" + kit.getName()));
 					meta.lore(Arrays.stream(kit.getDescription()).map(MiniMessage.miniMessage()::deserialize).toList());
 				});
 				
@@ -199,7 +199,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			
 			// update first line of lore
 			var lore = new ArrayList<>(itemStack.lore());
-			lore.set(0, MiniMessage.miniMessage().deserialize("<gray>" + voteCount + " players voted for this kit</gray>"));
+			lore.set(0, MiniMessage.miniMessage().deserialize("<!italic><gray>" + voteCount + " players voted for this kit</gray>"));
 			itemStack.lore(lore);
 			this.kits.put(itemKit, itemStack);
 		}
