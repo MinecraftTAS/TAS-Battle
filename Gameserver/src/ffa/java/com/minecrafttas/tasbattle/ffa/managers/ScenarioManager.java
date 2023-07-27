@@ -80,11 +80,11 @@ public class ScenarioManager extends LobbyManager {
 		for (var scenario : scenarioList) {
 			var item = new ItemStack(scenario.getType());
 			item.editMeta(meta -> {
-				meta.displayName(MiniMessage.miniMessage().deserialize("<reset>" + scenario.getTitle()));
+				meta.displayName(MiniMessage.miniMessage().deserialize("<!italic>" + scenario.getTitle()));
 				var lore = new ArrayList<Component>();
-				lore.add(MiniMessage.miniMessage().deserialize("<red>This scenario is disabled</red>"));
+				lore.add(MiniMessage.miniMessage().deserialize("<!italic><red>This scenario is disabled</red>"));
 				lore.add(Component.text(""));
-				Arrays.stream(scenario.getDescription()).forEach(c -> lore.add(MiniMessage.miniMessage().deserialize("<reset><dark_purple>" + c + "</dark_purple>")));
+				Arrays.stream(scenario.getDescription()).forEach(c -> lore.add(MiniMessage.miniMessage().deserialize("<!italic><dark_purple>" + c + "</dark_purple>")));
 				meta.lore(lore);
 				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			});
@@ -120,7 +120,7 @@ public class ScenarioManager extends LobbyManager {
 			item.editMeta(meta -> {
 				meta.removeEnchant(Enchantment.LUCK);
 				var lore = new ArrayList<>(meta.lore());
-				lore.set(0, MiniMessage.miniMessage().deserialize("<red>>This scenario is disabled</red>"));
+				lore.set(0, MiniMessage.miniMessage().deserialize("<!italic><red>This scenario is disabled</red>"));
 				meta.lore(lore);
 			});
 			this.scenarios.put(scenario, item);
@@ -132,7 +132,7 @@ public class ScenarioManager extends LobbyManager {
 			item.editMeta(meta -> {
 				meta.addEnchant(Enchantment.LUCK, 10, true);
 				var lore = new ArrayList<>(meta.lore());
-				lore.set(0, MiniMessage.miniMessage().deserialize("<red>This scenario is enabled</red>"));
+				lore.set(0, MiniMessage.miniMessage().deserialize("<!italic><red>This scenario is enabled</red>"));
 				meta.lore(lore);
 			});
 			this.scenarios.put(scenario, item);
@@ -147,7 +147,7 @@ public class ScenarioManager extends LobbyManager {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text(""), MiniMessage.miniMessage().deserialize("<reset><dark_purple>Every FFA game can be customized with scenarios.</dark_purple>"), MiniMessage.miniMessage().deserialize("<reset><dark_purple>Scenarios are small additions to the game that</dark_purple>"), MiniMessage.miniMessage().deserialize("<reset><dark_purple>allow for unique and fun gameplay.</dark_purple>"));
+		return Arrays.asList(Component.text(""), MiniMessage.miniMessage().deserialize("<!italic><dark_purple>Every FFA game can be customized with scenarios.</dark_purple>"), MiniMessage.miniMessage().deserialize("<!italic><dark_purple>Scenarios are small additions to the game that</dark_purple>"), MiniMessage.miniMessage().deserialize("<!italic><dark_purple>allow for unique and fun gameplay.</dark_purple>"));
 	}
 	
 	@Override

@@ -111,10 +111,10 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			var type = Material.valueOf(stream.readUTF());
 			
 			var description = new String[stream.readInt() + 2];
-			description[0] = "<reset><gray>0 players voted for this kit</gray>";
+			description[0] = "<!italic><gray>0 players voted for this kit</gray>";
 			description[1] = "";
 			for (int i = 2; i < description.length; i++)
-				description[i] = "<reset><dark_purple>" + stream.readUTF() + "</dark_purple>";
+				description[i] = "<!italic><dark_purple>" + stream.readUTF() + "</dark_purple>";
 
 			var kit = stream.readAllBytes();
 			stream.close();
@@ -153,7 +153,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 				
 				var item = new ItemStack(kit.getMaterial());
 				item.editMeta(meta -> {
-					meta.displayName(MiniMessage.miniMessage().deserialize("<reset>" + kit.getName()));
+					meta.displayName(MiniMessage.miniMessage().deserialize("<!italic>" + kit.getName()));
 					meta.lore(Arrays.stream(kit.getDescription()).map(MiniMessage.miniMessage()::deserialize).toList());
 				});
 				
@@ -328,7 +328,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text(""), MiniMessage.miniMessage().deserialize("<dark_purple>The most voted kit will be equipped to</dark_purple>"), MiniMessage.miniMessage().deserialize("<dark_purple>all players at the beginning of the game</dark_purple>"));
+		return Arrays.asList(Component.text(""), MiniMessage.miniMessage().deserialize("<!italic><dark_purple>The most voted kit will be equipped to</dark_purple>"), MiniMessage.miniMessage().deserialize("<!italic><dark_purple>all players at the beginning of the game</dark_purple>"));
 	}
 
 	@Override

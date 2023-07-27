@@ -16,7 +16,7 @@ public class NamedItemStack extends ItemStack {
 	 */
 	public NamedItemStack(Material material, int count, String name) {
 		super(material, count);
-		this.editMeta(e -> e.displayName(MiniMessage.miniMessage().deserialize("<white>" + name + "</white>")));
+		this.editMeta(e -> e.displayName(MiniMessage.miniMessage().deserialize("<!italic><white>" + name + "</white>")));
 	}
 	
 }

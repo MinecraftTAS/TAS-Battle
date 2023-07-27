@@ -70,7 +70,7 @@ public class Lobby implements Listener {
 		for (LobbyManager manager : this.managers) {
 			var item = new ItemStack(manager.getItem());
 			item.editMeta(m -> {
-				m.displayName(MiniMessage.miniMessage().deserialize("<white>" + manager.getName() + "</white>"));
+				m.displayName(MiniMessage.miniMessage().deserialize("<!italic><white>" + manager.getName() + "</white>"));
 				m.lore(manager.getItemLore());
 			});
 			inv.setItem(i++, item);
@@ -78,7 +78,7 @@ public class Lobby implements Listener {
 		
 		var leaveItem = new ItemStack(Material.RED_BED);
 		leaveItem.editMeta(m -> {
-			m.displayName(MiniMessage.miniMessage().deserialize("<red>Leave the game</red>"));
+			m.displayName(MiniMessage.miniMessage().deserialize("<!italic><red>Leave the game</red>"));
 		});
 		inv.setItem(8, leaveItem);
 		
