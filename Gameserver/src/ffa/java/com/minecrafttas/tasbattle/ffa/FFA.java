@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.minecrafttas.tasbattle.TASBattleGameserver;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -26,7 +27,6 @@ import com.minecrafttas.tasbattle.loading.WorldUtils;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 
 /**
  * FFA gamemode
@@ -88,13 +88,13 @@ public class FFA implements GameMode {
 		var scenarios = this.scenarioManager.getEnabled();
 
 		// print messages
-		Bukkit.broadcast(Component.text("§b» §aThe game has started."));
-		Bukkit.broadcast(Component.text("§b» §7The most voted kit was: §a").append(Component.text(kit.getName())));
-		Bukkit.broadcast(Component.text("§b» §7and the enabled scenarios are: §a" + scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", "))));
-		Bukkit.broadcast(Component.text(""));
-		Bukkit.broadcast(Component.text("§b» §7Every player has been spread across the map. §cCross teaming is not allowed!"));
-		Bukkit.broadcast(Component.text("§b» §7The last person alive will be the winner."));
-		Bukkit.broadcast(Component.text(""));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>The game has started.</green>"));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The most voted kit is: <green>" + kit.getName() + "</green></gray>"));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>and the enabled scenarios are: <green>" + scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", ")) + "</green></gray>"));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize(""));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>Every player has been spread across the map. <red>Cross teaming is not allowed!</red></gray>"));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The last person alive will be the winner.</gray>"));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize(""));
 
 		// update players
 		for (var p : players) {
@@ -105,7 +105,7 @@ public class FFA implements GameMode {
 			try {
 				kit.deserializeKit(p.getInventory());
 			} catch (IOException _e) {
-				Bukkit.broadcast(Component.text("§b» §cAn error occured while deserializing the kit."));
+				Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>An error occured while deserializing the kit.</red>"));
 				_e.printStackTrace();
 			}
 		}

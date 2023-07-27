@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -60,7 +61,7 @@ public class TeamShop implements Listener {
 			villager.setCustomNameVisible(true);
 			villager.setGravity(true);
 			villager.setAI(true);
-			villager.customName(Component.text("§e§lRIGHT CLICK"));
+			villager.customName(MiniMessage.miniMessage().deserialize("<bold><yellow>RIGHT CLICK</yellow></bold>"));
 			
 			var stand = (ArmorStand) this.world.spawnEntity(loc.clone().add(.5, 0.3, .5), EntityType.ARMOR_STAND);
 			stand.setInvisible(true);
@@ -68,7 +69,7 @@ public class TeamShop implements Listener {
 			stand.setGravity(false);
 			stand.setAI(false);	
 			stand.setCustomNameVisible(true);
-			stand.customName(Component.text("§bITEM SHOP"));
+			stand.customName(MiniMessage.miniMessage().deserialize("<aqua>ITEM SHOP</aqua>"));
 			return villager;
 		}).collect(Collectors.toList());
 	}

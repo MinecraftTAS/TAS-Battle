@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.minecrafttas.tasbattle.TASBattleGameserver;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -124,10 +125,10 @@ public class ResourceSpawner implements Listener {
 		// create emerald spawner armor stands
 		for (var spawner : this.emeraldSpawners) {
 			var loc = spawner.loc.clone();
-			this.createArmorStand(loc.add(0, .7, 0), "§2Emerald", null, null);
-			this.createArmorStand(loc.add(0, .3, 0), null, e -> e.customName(Component.text("§eTier §c" + spawner.currentTier)), null);
+			this.createArmorStand(loc.add(0, .7, 0), "<dark_green>Emerald</dark_green>", null, null);
+			this.createArmorStand(loc.add(0, .3, 0), null, e -> e.customName(MiniMessage.miniMessage().deserialize("<yellow>Tier <red>" + spawner.currentTier + "</red></yellow>")), null);
 			this.createArmorStand(loc.add(0, -.6, 0), null, e -> {
-				e.customName(Component.text("§eSpawns in §c" + ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20) + " §eseconds"));
+				e.customName(MiniMessage.miniMessage().deserialize("<yellow>Spawns in <red>" + ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20) + "</red> seconds</yellow>"));
 				e.setRotation(e.getLocation().getYaw() + 1, e.getLocation().getPitch());
 			}, Material.EMERALD_BLOCK);
 		}
@@ -135,10 +136,10 @@ public class ResourceSpawner implements Listener {
 		// create diamond spawner armor stands
 		for (var spawner : this.diamondSpawners) {
 			var loc = spawner.loc.clone();
-			this.createArmorStand(loc.add(0, .7, 0), "§bDiamond", null, null);
-			this.createArmorStand(loc.add(0, .3, 0), null, e -> e.customName(Component.text("§eTier §c" + spawner.currentTier)), null);
+			this.createArmorStand(loc.add(0, .7, 0), "<aqua>Diamond</aqua>", null, null);
+			this.createArmorStand(loc.add(0, .3, 0), null, e -> e.customName(MiniMessage.miniMessage().deserialize("<yellow>Tier <red>" + spawner.currentTier + "</red></yellow>")), null);
 			this.createArmorStand(loc.add(0, -.6, 0), null, e -> {
-				e.customName(Component.text("§eSpawns in §c" + ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20) + " §eseconds"));
+				e.customName(MiniMessage.miniMessage().deserialize("<yellow>Spawns in <red>" + ((spawner.lastSpawnAt + spawner.tiers[spawner.currentTier] - this.tick) / 20) + "</red> seconds</yellow>"));
 				e.setRotation(e.getLocation().getYaw() + 1, e.getLocation().getPitch());
 			}, Material.DIAMOND_BLOCK);
 		}
@@ -188,7 +189,7 @@ public class ResourceSpawner implements Listener {
 		
 		// update text
 		if (text != null)
-			stand.customName(Component.text(text));
+			stand.customName(MiniMessage.miniMessage().deserialize(text));
 		
 		// update text updater
 		if (textUpdate != null) {

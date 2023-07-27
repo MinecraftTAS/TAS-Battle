@@ -1,7 +1,7 @@
 package com.minecrafttas.tasbattle.managers;
 
 import com.minecrafttas.tasbattle.TASBattleLobby;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +35,7 @@ public class ScoreboardManager implements Listener {
             existingObjective.unregister();
 
         // register objective
-        var objective = scoreboard.registerNewObjective(p.getName(), Criteria.DUMMY, Component.text("§c§lTAS§6§lBattle §fLobby"), RenderType.INTEGER);
+        var objective = scoreboard.registerNewObjective(p.getName(), Criteria.DUMMY, MiniMessage.miniMessage().deserialize("<bold><red>TAS</red><gold>Battle</bold> <white>Lobby</white>"), RenderType.INTEGER);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.getScore(" ").setScore(5);
         objective.getScore("§fWelcome to the").setScore(4);

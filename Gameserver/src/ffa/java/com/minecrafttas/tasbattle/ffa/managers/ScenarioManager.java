@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -79,11 +80,11 @@ public class ScenarioManager extends LobbyManager {
 		for (var scenario : scenarioList) {
 			var item = new ItemStack(scenario.getType());
 			item.editMeta(meta -> {
-				meta.displayName(Component.text("§r§f" + scenario.getTitle()));
+				meta.displayName(MiniMessage.miniMessage().deserialize("<reset>" + scenario.getTitle()));
 				var lore = new ArrayList<Component>();
-				lore.add(Component.text("§cThis scenario is disabled"));
+				lore.add(MiniMessage.miniMessage().deserialize("<red>This scenario is disabled</red>"));
 				lore.add(Component.text(""));
-				Arrays.stream(scenario.getDescription()).forEach(c -> lore.add(Component.text("§r§5" + c)));
+				Arrays.stream(scenario.getDescription()).forEach(c -> lore.add(MiniMessage.miniMessage().deserialize("<reset><dark_purple>" + c + "</dark_purple>")));
 				meta.lore(lore);
 				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			});
@@ -113,25 +114,25 @@ public class ScenarioManager extends LobbyManager {
 		// update votes
 		if (this.enabled.contains(scenario)) {
 			this.enabled.remove(scenario);
-			Bukkit.broadcast(Component.text("§b» §a" + player.getName() + " §cdisabled §a").append(Component.text("§f" + scenario.getTitle())));
+			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>" + player.getName() + " <red>disabled</red> " + scenario.getTitle() + "</green>"));
 			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 0.75f));
 			
 			item.editMeta(meta -> {
 				meta.removeEnchant(Enchantment.LUCK);
 				var lore = new ArrayList<>(meta.lore());
-				lore.set(0, Component.text("§cThis scenario is disabled"));
+				lore.set(0, MiniMessage.miniMessage().deserialize("<red>>This scenario is disabled</red>"));
 				meta.lore(lore);
 			});
 			this.scenarios.put(scenario, item);
 		} else {
 			this.enabled.add(scenario);
-			Bukkit.broadcast(Component.text("§b» §a" + player.getName() + " enabled ").append(Component.text("§f" + scenario.getTitle())));
+			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>" + player.getName() + " enabled <white>" + scenario.getTitle() + "</white></green>"));
 			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 1f));
 		
 			item.editMeta(meta -> {
 				meta.addEnchant(Enchantment.LUCK, 10, true);
 				var lore = new ArrayList<>(meta.lore());
-				lore.set(0, Component.text("§aThis scenario is enabled"));
+				lore.set(0, MiniMessage.miniMessage().deserialize("<red>This scenario is enabled</red>"));
 				meta.lore(lore);
 			});
 			this.scenarios.put(scenario, item);
@@ -146,7 +147,7 @@ public class ScenarioManager extends LobbyManager {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text(""), Component.text("§r§5Every FFA game can be customized with scenarios."), Component.text("§r§5Scenarios are small additions to the game that"), Component.text("§r§5allow for unique and fun gameplay."));
+		return Arrays.asList(Component.text(""), MiniMessage.miniMessage().deserialize("<reset><dark_purple>Every FFA game can be customized with scenarios.</dark_purple>"), MiniMessage.miniMessage().deserialize("<reset><dark_purple>Scenarios are small additions to the game that</dark_purple>"), MiniMessage.miniMessage().deserialize("<reset><dark_purple>allow for unique and fun gameplay.</dark_purple>"));
 	}
 	
 	@Override

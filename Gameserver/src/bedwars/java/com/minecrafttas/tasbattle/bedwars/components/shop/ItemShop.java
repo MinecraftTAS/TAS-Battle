@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle.bedwars.components.shop;
 
 import java.util.Arrays;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -33,7 +34,7 @@ public class ItemShop extends PagedInventory {
 	 * @param invMng Inventory management instance
 	 */
 	public ItemShop(Player p, InventoryManagement invMng) {
-		super(Component.text("§8Item Shop"), 54);
+		super(MiniMessage.miniMessage().deserialize("<dark_gray>Item Shop"), 54);
 		this.invMng = invMng;
 		
 		// quick buy
