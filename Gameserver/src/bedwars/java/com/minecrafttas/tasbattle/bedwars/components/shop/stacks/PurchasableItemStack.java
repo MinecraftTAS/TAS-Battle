@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +25,7 @@ public class PurchasableItemStack extends ItemStack {
 	 */
 	@RequiredArgsConstructor
 	public enum Price {
-		IRON("§f_ Iron", Material.IRON_INGOT), GOLD("§6_ Gold", Material.GOLD_INGOT), DIAMOND("§b_ Diamond", Material.DIAMOND), EMERALD("§2_ Emerald", Material.EMERALD);
+		IRON("<white>_ Iron</white>", Material.IRON_INGOT), GOLD("<gold>_ Gold</gold>", Material.GOLD_INGOT), DIAMOND("<aqua>_ Diamond</aqua>", Material.DIAMOND), EMERALD("<dark_green>_ Emerald</dark_green>", Material.EMERALD);
 		
 		@Getter private final String displayName;
 		@Getter private final Material type;
@@ -47,8 +48,8 @@ public class PurchasableItemStack extends ItemStack {
 		this.price = price;
 		this.priceAmount = amount;
 		this.editMeta(e -> {
-			e.displayName(Component.text("§f" + name));
-			e.lore(List.of(Component.text("§7Cost: " + price.getDisplayName().replace("_", amount + ""))));
+			e.displayName(MiniMessage.miniMessage().deserialize("<white>" + name + "</white>"));
+			e.lore(List.of(MiniMessage.miniMessage().deserialize("<gray>Cost: " + price.getDisplayName().replace("_", amount + "") + "</gray>")));
 		});
 	}
 	

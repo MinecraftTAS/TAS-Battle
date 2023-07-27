@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -73,7 +73,7 @@ class LobbyTimer implements CommandExecutor {
 			p.setLevel(this.time);
 			p.setExp(Math.max(0.0f, Math.min(1.0f, this.time / (float) this.startTime)));
 			if (this.time <= 5 || this.time == 10 || this.time == 20) {
-				p.sendMessage(Component.text("§b» §7The game will start in §a" + this.time + "§7 seconds."));
+				p.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The game will start in <green>" + this.time + "</green> seconds.</gray>"));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5f, this.time <= 0 ? 1.0f : 0.7f);
 			}
 		}
@@ -95,23 +95,23 @@ class LobbyTimer implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 		if (args.length == 1 && args[0].equals("force") && sender.isOp()) {
-			Bukkit.broadcast(Component.text("§b» §a" + sender.getName() + " §7force started the game."));
+			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + sender.getName() + "</green> force started the game.</gray>"));
 			this.time = 1;
 		} else if (!this.readyPlayers.contains((Player) sender)) {
 
 			if (this.time > 10) {
-				Bukkit.broadcast(Component.text("§b» §a" + sender.getName() + "§7 is ready."));
+				Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + sender.getName() + "</green> is ready.</gray>"));
 				this.readyPlayers.add((Player) sender);
 
 				if (this.readyPlayers.size() >= this.players.size())
 					this.time = 11;
 
 			} else {
-				sender.sendMessage(Component.text("§b» §cThe game is about to start, you cannot set yourself to ready anymore."));
+				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>The game is about to start, you cannot set yourself to ready anymore.</red>"));
 			}
 
 		} else {
-			sender.sendMessage(Component.text("§b» §cYou have already set yourself to ready before."));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>You have already set yourself to ready before.</red>"));
 		}
 
 		return true;

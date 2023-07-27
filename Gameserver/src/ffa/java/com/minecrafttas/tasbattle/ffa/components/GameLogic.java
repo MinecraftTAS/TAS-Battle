@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle.ffa.components;
 
 import java.util.List;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -58,9 +59,9 @@ public class GameLogic implements Listener {
 		// print death message
 		var killer = p.getKiller();
 		if (killer == null || killer == p) {
-			Bukkit.broadcast(Component.text("§b» §a" + p.getName() + "§7 died"));
+			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> died</gray>"));
 		} else {
-			Bukkit.broadcast(Component.text("§b» §a" + p.getName() + "§7 was slain by §a" + killer.getName()));
+			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> was slain by <green>" + killer.getName() + "</green></gray>"));
 			killer.playSound(killer, Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.0f);
 		}
 		
@@ -87,8 +88,8 @@ public class GameLogic implements Listener {
 		
 		// announce winner
 		if (p != null) {
-			Bukkit.broadcast(Component.text("§b» §a" + p.getName() + "§7 won the game!"));
-			p.showTitle(Title.title(Component.text("§cYou won!"), Component.empty()));
+			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> won the game!</gray>"));
+			p.showTitle(Title.title(MiniMessage.miniMessage().deserialize("<red>You won!</red>"), Component.empty()));
 		}
 
 		// crash server in 16 ticks

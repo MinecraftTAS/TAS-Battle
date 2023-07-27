@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle.lobby;
 
 import java.util.List;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -69,7 +70,7 @@ public class Lobby implements Listener {
 		for (LobbyManager manager : this.managers) {
 			var item = new ItemStack(manager.getItem());
 			item.editMeta(m -> {
-				m.displayName(Component.text("§f" + manager.getName()));
+				m.displayName(MiniMessage.miniMessage().deserialize("<white>" + manager.getName() + "</white>"));
 				m.lore(manager.getItemLore());
 			});
 			inv.setItem(i++, item);
@@ -77,13 +78,13 @@ public class Lobby implements Listener {
 		
 		var leaveItem = new ItemStack(Material.RED_BED);
 		leaveItem.editMeta(m -> {
-			m.displayName(Component.text("§cLeave the game"));
+			m.displayName(MiniMessage.miniMessage().deserialize("<red>Leave the game</red>"));
 		});
 		inv.setItem(8, leaveItem);
 		
 		player.updateInventory(); // not taking any risks ._.
 
-		e.joinMessage(Component.text("§b» §a" + player.getName() + " §7joined the game"));
+		e.joinMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + player.getName() + "</green> joined the game</gray>"));
 	}
 
 	/**
@@ -97,7 +98,7 @@ public class Lobby implements Listener {
 		
 		var player = e.getPlayer();
 		this.timer.removePlayer(player);
-		e.quitMessage(Component.text("§b» §a" + player.getName() + " §7left the game"));
+		e.quitMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + player.getName() + "</green> left the game</gray>"));
 	}
 
 	/**

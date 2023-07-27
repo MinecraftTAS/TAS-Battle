@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -110,10 +111,10 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			var type = Material.valueOf(stream.readUTF());
 			
 			var description = new String[stream.readInt() + 2];
-			description[0] = "§r§70 players voted for this kit";
+			description[0] = "<reset><gray>0 players voted for this kit</gray>";
 			description[1] = "";
 			for (int i = 2; i < description.length; i++)
-				description[i] = "§r§5" + stream.readUTF();
+				description[i] = "<reset><dark_purple>" + stream.readUTF() + "</dark_purple>";
 
 			var kit = stream.readAllBytes();
 			stream.close();
@@ -152,8 +153,8 @@ public class KitManager extends LobbyManager implements CommandHandler {
 				
 				var item = new ItemStack(kit.getMaterial());
 				item.editMeta(meta -> {
-					meta.displayName(Component.text("§r§f" + kit.getName()));
-					meta.lore(Arrays.stream(kit.getDescription()).map(Component::text).toList());
+					meta.displayName(MiniMessage.miniMessage().deserialize("<reset>" + kit.getName()));
+					meta.lore(Arrays.stream(kit.getDescription()).map(MiniMessage.miniMessage()::deserialize).toList());
 				});
 				
 				this.kits.put(kit, item);
@@ -198,12 +199,12 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			
 			// update first line of lore
 			var lore = new ArrayList<>(itemStack.lore());
-			lore.set(0, Component.text("§7" + voteCount + " players voted for this kit"));
+			lore.set(0, MiniMessage.miniMessage().deserialize("<gray>" + voteCount + " players voted for this kit</gray>"));
 			itemStack.lore(lore);
 			this.kits.put(itemKit, itemStack);
 		}
 		
-		player.sendMessage(Component.text("§b» §7You voted for §a").append(item.getItemMeta().displayName()));
+		player.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>You voted for</gray> <green>").append(item.getItemMeta().displayName()));
 		player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 1f));
 		
 	}
@@ -218,9 +219,9 @@ public class KitManager extends LobbyManager implements CommandHandler {
 		
 		// print help
 		if (args.length == 0) {
-			sender.sendMessage(Component.text("§b» §7/ffa §asave §b<name> <material> <description>"));
-			sender.sendMessage(Component.text("§b» §7/ffa §adelete §b<name>"));
-			sender.sendMessage(Component.text("§b» §7/ffa §aload §b<name>"));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>/ffa <green>save <aqua>\\<name> \\<material> \\<description></aqua></green></gray>"));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>/ffa <green>delete <aqua>\\<name></aqua></green></gray>"));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>/ffa <green>load <aqua>\\<name></aqua></green></gray>"));
 			return true;
 		}
 		
@@ -232,14 +233,14 @@ public class KitManager extends LobbyManager implements CommandHandler {
 					typeFrag = i;
 			
 			if (typeFrag == -1) {
-				sender.sendMessage(Component.text("§b» §cMaterial must start with \"minecraft:\""));
+				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Material must start with \"minecraft:\"</red>"));
 				return true;
 			}
 			
 			// try to parse material
 			var material = Material.matchMaterial(args[typeFrag]);
 			if (material == null) {
-				sender.sendMessage(Component.text("§b» §cInvalid material"));
+				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Invalid material</red>"));
 				return true;
 			}
 			
@@ -248,7 +249,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			var description = Arrays.stream(Arrays.copyOfRange(args, typeFrag + 1, args.length)).collect(Collectors.joining(" ")).split("\\|");
 			
 			if (description.length == 0) {
-				sender.sendMessage(Component.text("§b» §cInvalid description"));
+				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Invalid description</red>"));
 				return true;
 			}
 			
@@ -259,12 +260,12 @@ public class KitManager extends LobbyManager implements CommandHandler {
 				kit.serializeKit(((Player) sender).getInventory());
 				kit.saveToFile();
 			} catch (IOException e) {
-				sender.sendMessage(Component.text("§b» §cUnable to write file, check console for stacktrace"));
+				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Unable to write file, check console for stacktrace</red>"));
 				e.printStackTrace();
 				return true;
 			}
 			
-			sender.sendMessage(Component.text("§b» §aKit successfully saved."));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>Kit successfully saved.</green>"));
 		} else if (args[0].equals("delete")) {
 			var name = Arrays.stream(Arrays.copyOfRange(args, 1, args.length)).collect(Collectors.joining("_")).replace('.', '_').replace('/', '_');
 			
@@ -274,12 +275,12 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			// try to delete kit
 			var file = new File(KitManager.FFA_KITS, name);
 			if (!file.exists()) {
-				sender.sendMessage(Component.text("§b» §cKit not found."));
+				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Kit not found.</red>"));
 				return true;
 			}
 
 			file.delete();
-			sender.sendMessage(Component.text("§b» §cKit successfully deleted."));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Kit successfully deleted.</red>"));
 		} else if (args[0].equals("load")) {
 			var name = Arrays.stream(Arrays.copyOfRange(args, 1, args.length)).collect(Collectors.joining("_")).replace('.', '_').replace('/', '_');
 			
@@ -292,12 +293,12 @@ public class KitManager extends LobbyManager implements CommandHandler {
 				var kit = Kit.loadFromFile(file);
 				kit.deserializeKit(((Player) sender).getInventory());
 			} catch (IOException e) {
-				sender.sendMessage(Component.text("§b» §cUnable to read file, check console for stacktrace"));
+				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Unable to read file, check console for stacktrace</red>"));
 				e.printStackTrace();
 				return true;
 			}
 			
-			sender.sendMessage(Component.text("§b» §aKit successfully loaded."));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>Kit successfully loaded.</green>"));
 		}
 		return true;
 	}
@@ -327,7 +328,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 
 	@Override
 	protected List<Component> getItemLore() {
-		return Arrays.asList(Component.text(""), Component.text("§5The most voted kit will be equipped to"), Component.text("§5all players at the beginning of the game"));
+		return Arrays.asList(Component.text(""), MiniMessage.miniMessage().deserialize("<dark_purple>The most voted kit will be equipped to</dark_purple>"), MiniMessage.miniMessage().deserialize("<dark_purple>all players at the beginning of the game</dark_purple>"));
 	}
 
 	@Override

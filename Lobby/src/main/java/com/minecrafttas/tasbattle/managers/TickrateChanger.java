@@ -3,6 +3,7 @@ package com.minecrafttas.tasbattle.managers;
 import com.minecrafttas.tasbattle.TASBattleLobby;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -127,9 +128,9 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 			// parse and update tickrate
 			var tickrate = Float.parseFloat(args[0]);
 			this.setTickrate(tickrate);
-			sender.sendMessage(Component.text("§b» §7Updated tickrate to §a" + tickrate));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <white>Updated tickrate to <green>" + tickrate + "</green></white>"));
 		} catch (NumberFormatException e) {
-			sender.sendMessage(Component.text("§b» §cUnable to parse tickrate: §a" + args[0], NamedTextColor.RED));
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Unable to parse tickrate: <green>" + args[0] + "</green></red>"));
 		}
 		return true;
 	}
