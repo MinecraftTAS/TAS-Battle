@@ -80,7 +80,7 @@ public class ScenarioManager extends LobbyManager {
 		for (var scenario : scenarioList) {
 			var item = new ItemStack(scenario.getType());
 			item.editMeta(meta -> {
-				meta.displayName(MiniMessage.miniMessage().deserialize("<!italic>" + scenario.getTitle()));
+				meta.displayName(MiniMessage.miniMessage().deserialize("<!italic><white>" + scenario.getTitle()));
 				var lore = new ArrayList<Component>();
 				lore.add(MiniMessage.miniMessage().deserialize("<!italic><red>This scenario is disabled</red>"));
 				lore.add(Component.text(""));
@@ -114,7 +114,7 @@ public class ScenarioManager extends LobbyManager {
 		// update votes
 		if (this.enabled.contains(scenario)) {
 			this.enabled.remove(scenario);
-			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>" + player.getName() + " <red>disabled</red> " + scenario.getTitle() + "</green>"));
+			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>" + player.getName() + " <red>disabled</red> <white>" + scenario.getTitle() + "</white></green>"));
 			player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, Source.PLAYER, 0.3f, 0.75f));
 			
 			item.editMeta(meta -> {
@@ -132,7 +132,7 @@ public class ScenarioManager extends LobbyManager {
 			item.editMeta(meta -> {
 				meta.addEnchant(Enchantment.LUCK, 10, true);
 				var lore = new ArrayList<>(meta.lore());
-				lore.set(0, MiniMessage.miniMessage().deserialize("<!italic><red>This scenario is enabled</red>"));
+				lore.set(0, MiniMessage.miniMessage().deserialize("<!italic><green>This scenario is enabled</green>"));
 				meta.lore(lore);
 			});
 			this.scenarios.put(scenario, item);
