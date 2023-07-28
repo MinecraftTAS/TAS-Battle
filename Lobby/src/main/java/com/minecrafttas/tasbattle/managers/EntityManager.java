@@ -30,6 +30,7 @@ public class EntityManager implements Listener {
     private Location location;
     private UUID uuid;
     private String name;
+    private Component customName = Component.text("Action Slime");
 
     /**
      * Initialize entity manager
@@ -50,7 +51,7 @@ public class EntityManager implements Listener {
             this.uuid = UUID.fromString(config.getString("uuid"));
             this.name = config.getString("name");
             this.actionSlime = (Slime) world.spawnEntity(location, EntityType.SLIME);
-            this.actionSlime.customName(Component.text("Action Slime"));
+            this.actionSlime.customName(this.customName);
             this.actionSlime.setAI(false);
             this.actionSlime.setInvulnerable(true);
             this.actionSlime.setSize(5);
@@ -76,7 +77,7 @@ public class EntityManager implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) throws IOException {
         var player = e.getPlayer();
         var raytrace = player.rayTraceEntities(3);
-        if (raytrace == null || raytrace.getHitEntity() != this.actionSlime)
+        if (raytrace == null || !this.customName.equals(raytrace.getHitEntity().customName()))
             return;
 
         this.plugin.getServerManagement().joinServer(player);
