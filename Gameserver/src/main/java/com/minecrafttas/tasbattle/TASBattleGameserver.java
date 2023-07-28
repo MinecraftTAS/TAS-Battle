@@ -3,7 +3,10 @@ package com.minecrafttas.tasbattle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.minecrafttas.tasbattle.stats.StatsManager;
+import com.minecrafttas.tasbattle.stats.structs.Stats;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -39,23 +42,29 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 	@Getter
 	private GameMode gameMode;
 	@Getter
+	private StatsManager statsManager;
+	@Getter
 	private Lobby lobby;
 	
 	/**
 	 * Enable TAS Battle mod
 	 */
+	@SneakyThrows
 	@Override
 	public void onEnable() {
 		Bukkit.getPluginManager().registerEvents(new GuiHandler(), this);
 		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getWorlds().forEach(w -> w.setAutoSave(false));
 		this.tickrateChanger = new TickrateChanger(this);
-		
-		this.gameMode = switch (System.getProperty("mode")) {
+
+		var mode = System.getProperty("mode");
+		this.gameMode = switch (mode) {
 			case "ffa": yield new FFA(this);
 			case "bedwars": yield new Bedwars(this);
 			default: throw new IllegalArgumentException("Unsupported gamemode");
 		};
+
+		this.statsManager = new StatsManager(mode);
 
 		this.getCommand("halt").setExecutor(this);
 
@@ -63,7 +72,7 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 			this.getCommand(pair.getKey()).setExecutor(pair.getValue());
 			this.getCommand(pair.getKey()).setTabCompleter(pair.getValue());
 		}
-		
+
 		if (System.getProperty("dev") == null)
 			this.lobby = new Lobby(this, this.gameMode);
 		else
