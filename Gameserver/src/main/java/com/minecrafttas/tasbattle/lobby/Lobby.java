@@ -95,6 +95,11 @@ public class Lobby implements Listener {
 
 		// update scoreboard
 		var scoreboard = player.getScoreboard();
+
+		var existingObjective = scoreboard.getObjective(player.getName());
+		if (existingObjective != null)
+			existingObjective.unregister();
+
 		var objective = scoreboard.registerNewObjective(player.getName(), Criteria.DUMMY, MiniMessage.miniMessage().deserialize("<bold><red>TAS</red><gold>Battle</bold> <white>"  + this.statsManager.getMode().toUpperCase() + "</white>"), RenderType.INTEGER);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.getScore(" ").setScore(14);
