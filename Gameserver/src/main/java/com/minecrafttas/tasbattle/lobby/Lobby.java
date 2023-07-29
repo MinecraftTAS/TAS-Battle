@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle.lobby;
 
 import java.util.List;
 
+import com.minecrafttas.tasbattle.stats.StatsManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,13 +26,17 @@ import com.minecrafttas.tasbattle.TASBattleGameserver;
 import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.RenderType;
 
 /**
  * Event listener during lobby phase
  * @author Pancake
  */
 public class Lobby implements Listener {
-	
+
+	private StatsManager statsManager;
 	private LobbyTimer timer;
 	private List<LobbyManager> managers;
 	
@@ -42,6 +47,7 @@ public class Lobby implements Listener {
 	 */
 	public Lobby(TASBattleGameserver plugin, GameMode gameMode) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
+		this.statsManager = plugin.getStatsManager();
 		this.managers = gameMode.createManagers();
 		this.timer = new LobbyTimer(plugin, 90, 2, 8, participants -> {
 			for (var manager : this.managers)
@@ -84,7 +90,22 @@ public class Lobby implements Listener {
 		
 		player.updateInventory(); // not taking any risks ._.
 
+		// update join message
 		e.joinMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + player.getName() + "</green> joined the game</gray>"));
+
+		// update scoreboard
+		var scoreboard = player.getScoreboard();
+		var objective = scoreboard.registerNewObjective(player.getName(), Criteria.DUMMY, MiniMessage.miniMessage().deserialize("<bold><red>TAS</red><gold>Battle</bold> <white>"  + this.statsManager.getMode() + "</white>"), RenderType.INTEGER);
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		objective.getScore(" ").setScore(14);
+		objective.getScore("§bLeaderboard:").setScore(13);
+		var leaderboard = this.statsManager.getLeaderboard();
+		for (int rank = 9; rank >= 0; rank--)
+			objective.getScore("§7" + (rank+1) + ". §f" + (rank >= leaderboard.length ? "Empty" : leaderboard[rank])).setScore(12 - rank);
+
+		objective.getScore("").setScore(2);
+		objective.getScore("§8https://discord.gg/jGhNxpd").setScore(1);
+		objective.getScore("§8https://minecrafttas.com").setScore(0);
 	}
 
 	/**
