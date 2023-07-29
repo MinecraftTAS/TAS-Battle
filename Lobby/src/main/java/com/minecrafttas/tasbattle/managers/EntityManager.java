@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -23,6 +25,8 @@ import java.util.UUID;
  * @author Pancake
  */
 public class EntityManager implements Listener {
+
+    private static final String BUNGEE_CHANNEL = "BungeeCord";
 
     private TASBattleLobby plugin;
     private Slime actionSlime;
@@ -38,6 +42,7 @@ public class EntityManager implements Listener {
      */
     public EntityManager(TASBattleLobby plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, BUNGEE_CHANNEL);
         this.plugin = plugin;
 
         // try to load configuration
@@ -80,7 +85,12 @@ public class EntityManager implements Listener {
         if (raytrace == null || !this.customName.equals(raytrace.getHitEntity().customName()))
             return;
 
-        this.plugin.getServerManagement().joinServer(player);
+        var stream = new ByteArrayOutputStream();
+        var dataStream = new DataOutputStream(stream);
+        dataStream.writeUTF("Connect");
+        dataStream.writeUTF("gameserver01preview");
+        player.sendPluginMessage(this.plugin, BUNGEE_CHANNEL, stream.toByteArray());
+        stream.close();
     }
 
     /**
