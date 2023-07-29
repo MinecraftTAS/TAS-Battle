@@ -55,25 +55,24 @@ public class StatsManager {
 
         action.accept(stats);
 
-        stats.getPlayers().sort(Comparator.comparingInt(PlayerData::calculateIndex));
+        stats.getPlayers().sort(Comparator.comparingInt(PlayerData::calculateIndex).reversed());
         Files.writeString(this.storage, GSON.toJson(stats), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
 
         this.cachedStats = stats;
     }
 
     /**
-     * Get player data from the stats cache
+     * Get player data from a stats instance
+     * @param stats Stats instance
      * @param id Player ID
      * @return Player data
      */
-    public PlayerData getPlayerStats(UUID id) {
+    public PlayerData getPlayerStats(Stats stats, UUID id) {
+        for (var player : stats.getPlayers())
+            if (player.getId().equals(id))
+                return player;
         var data = new PlayerData(id);
-        for (var player : this.cachedStats.getPlayers()) {
-            if (player.getId().equals(id)) {
-                data = player;
-                break;
-            }
-        }
+        stats.getPlayers().add(data);
         return data;
     }
 
