@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.minecrafttas.tasbattle.stats.structs.PlayerData;
 import com.minecrafttas.tasbattle.stats.structs.Stats;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +25,9 @@ public class StatsManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private Path storage;
-    private String mode;
     private Stats cachedStats;
+    @Getter
+    private String mode;
 
     /**
      * Initialize stats manager
@@ -34,6 +36,7 @@ public class StatsManager {
      */
     public StatsManager(String mode) throws IOException {
         this.storage = new File(STATS, mode + ".json").toPath();
+        this.mode = mode;
         if (Files.exists(this.storage))
             this.cachedStats = GSON.fromJson(Files.readString(this.storage, StandardCharsets.UTF_8), Stats.class);
         else
@@ -78,7 +81,8 @@ public class StatsManager {
      * Return top 10 players names from the cached stats
      */
     public String[] getLeaderboard() {
-        return this.cachedStats.getPlayers().subList(0, 10).stream().map(PlayerData::getUsername).toArray(String[]::new);
+        var players = this.cachedStats.getPlayers();
+        return players.subList(0, Math.min(10, players.size())).stream().map(PlayerData::getUsername).toArray(String[]::new);
     }
 
 }
