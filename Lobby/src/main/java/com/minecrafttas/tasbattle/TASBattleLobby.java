@@ -23,9 +23,6 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	private BasicRestrictions basicRestrictions;
 
 	@Getter
-	private ServerManagement serverManagement;
-
-	@Getter
 	private ScoreboardManager scoreboardManager;
 
 	/**
@@ -39,7 +36,6 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 		this.dimensionChanger = new DimensionChanger(this);
 		this.entityManager = new EntityManager(this);
 		this.basicRestrictions = new BasicRestrictions(this);
-		this.serverManagement = new ServerManagement(this);
 		this.scoreboardManager = new ScoreboardManager(this);
 	}
 
