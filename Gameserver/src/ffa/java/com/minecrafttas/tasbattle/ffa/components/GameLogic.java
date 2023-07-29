@@ -67,26 +67,20 @@ public class GameLogic implements Listener {
 		}
 
 		// update stats
-		long ms = System.currentTimeMillis();
-		try {
-			var statsManager = this.plugin.getStatsManager();
-			statsManager.editStats(stats -> {
-				var player = statsManager.getPlayerStats(stats, p.getUniqueId());
-				player.setUsername(p.getName());
-				player.setDeaths(player.getDeaths() + 1);
-				player.setLosses(player.getLosses() + 1);
+		var statsManager = this.plugin.getStatsManager();
+		statsManager.editStats(stats -> {
+			var player = statsManager.getPlayerStats(stats, p.getUniqueId());
+			player.setUsername(p.getName());
+			player.setDeaths(player.getDeaths() + 1);
+			player.setLosses(player.getLosses() + 1);
 
-				if (killer == null)
-					return;
+			if (killer == null)
+				return;
 
-				player = statsManager.getPlayerStats(stats, killer.getUniqueId());
-				player.setUsername(killer.getName());
-				player.setKills(player.getKills() + 1);
-			});
-		} catch (IOException e) {
-			this.plugin.getSLF4JLogger().error("Unable to save stats!", e);
-		}
-		this.plugin.getSLF4JLogger().info("Saving stats took {} ms", System.currentTimeMillis() - ms);
+			player = statsManager.getPlayerStats(stats, killer.getUniqueId());
+			player.setUsername(killer.getName());
+			player.setKills(player.getKills() + 1);
+		});
 
 		// end game on last player
 		if (this.players.size() == 1)
@@ -116,18 +110,12 @@ public class GameLogic implements Listener {
 			p.showTitle(Title.title(MiniMessage.miniMessage().deserialize("<red>You won!</red>"), Component.empty()));
 
 			// update stats
-			long ms = System.currentTimeMillis();
-			try {
-				var statsManager = this.plugin.getStatsManager();
-				statsManager.editStats(stats -> {
-					var player = statsManager.getPlayerStats(stats, p.getUniqueId());
-					player.setUsername(p.getName());
-					player.setWins(player.getWins() + 1);
-				});
-			} catch (IOException e) {
-				this.plugin.getSLF4JLogger().error("Unable to save stats!", e);
-			}
-			this.plugin.getSLF4JLogger().info("Saving stats took {} ms", System.currentTimeMillis() - ms);
+			var statsManager = this.plugin.getStatsManager();
+			statsManager.editStats(stats -> {
+				var player = statsManager.getPlayerStats(stats, p.getUniqueId());
+				player.setUsername(p.getName());
+				player.setWins(player.getWins() + 1);
+			});
 		}
 
 		// crash server in 16 ticks
