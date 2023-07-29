@@ -64,7 +64,7 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 			default: throw new IllegalArgumentException("Unsupported gamemode");
 		};
 
-		this.statsManager = new StatsManager(mode);
+		this.statsManager = new StatsManager(this, mode);
 
 		this.getCommand("halt").setExecutor(this);
 

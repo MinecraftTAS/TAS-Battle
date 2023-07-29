@@ -23,4 +23,6 @@ commands:
     halt:
         usage: /halt
         description: Halts the server immediately
-
+    stats:
+        usage: /stats
+        description: Show the players current statistics
