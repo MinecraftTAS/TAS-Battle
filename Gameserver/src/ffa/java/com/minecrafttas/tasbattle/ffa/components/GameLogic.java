@@ -1,5 +1,6 @@
 package com.minecrafttas.tasbattle.ffa.components;
 
+import java.io.IOException;
 import java.util.List;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -64,11 +65,32 @@ public class GameLogic implements Listener {
 			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> was slain by <green>" + killer.getName() + "</green></gray>"));
 			killer.playSound(killer, Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.0f);
 		}
-		
-		// end game on last player
-		if (this.players.size() == 1) {
-			stopGame(this.players.get(0));
+
+		// update stats
+		long ms = System.currentTimeMillis();
+		try {
+			var statsManager = this.plugin.getStatsManager();
+			statsManager.editStats(stats -> {
+				var player = statsManager.getPlayerStats(stats, p.getUniqueId());
+				player.setUsername(p.getName());
+				player.setDeaths(player.getDeaths() + 1);
+				player.setLosses(player.getLosses() + 1);
+
+				if (killer == null)
+					return;
+
+				player = statsManager.getPlayerStats(stats, killer.getUniqueId());
+				player.setUsername(killer.getName());
+				player.setKills(player.getKills() + 1);
+			});
+		} catch (IOException e) {
+			this.plugin.getSLF4JLogger().error("Unable to save stats!", e);
 		}
+		this.plugin.getSLF4JLogger().info("Saving stats took {} ms", System.currentTimeMillis() - ms);
+
+		// end game on last player
+		if (this.players.size() == 1)
+			stopGame(this.players.get(0));
 	}
 	
 	/**
@@ -76,6 +98,8 @@ public class GameLogic implements Listener {
 	 * @param p Winner
 	 */
 	public void stopGame(Player p) {
+		this.players.clear();
+
 		// decrease tickrate
 		this.plugin.getTickrateChanger().setTickrate(1.0f);
 		
@@ -90,6 +114,20 @@ public class GameLogic implements Listener {
 		if (p != null) {
 			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> won the game!</gray>"));
 			p.showTitle(Title.title(MiniMessage.miniMessage().deserialize("<red>You won!</red>"), Component.empty()));
+
+			// update stats
+			long ms = System.currentTimeMillis();
+			try {
+				var statsManager = this.plugin.getStatsManager();
+				statsManager.editStats(stats -> {
+					var player = statsManager.getPlayerStats(stats, p.getUniqueId());
+					player.setUsername(p.getName());
+					player.setWins(player.getWins() + 1);
+				});
+			} catch (IOException e) {
+				this.plugin.getSLF4JLogger().error("Unable to save stats!", e);
+			}
+			this.plugin.getSLF4JLogger().info("Saving stats took {} ms", System.currentTimeMillis() - ms);
 		}
 
 		// crash server in 16 ticks
