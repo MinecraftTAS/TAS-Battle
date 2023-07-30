@@ -1,9 +1,16 @@
 package com.minecrafttas.tasbattle.ffa.managers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.minecrafttas.tasbattle.TASBattleGameserver;
+import com.minecrafttas.tasbattle.ffa.scenarios.*;
+import com.minecrafttas.tasbattle.lobby.LobbyManager;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.Sound.Source;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,20 +22,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.minecrafttas.tasbattle.ffa.scenarios.DisableDropsScenario;
-import com.minecrafttas.tasbattle.ffa.scenarios.ShowHealthScenario;
-import com.minecrafttas.tasbattle.lobby.LobbyManager;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.sound.Sound.Source;
-import net.kyori.adventure.text.Component;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * FFA Scenario Manager
@@ -66,15 +63,22 @@ public class ScenarioManager extends LobbyManager {
 	 * Initialize scenario manager
 	 * @param plugin Plugin
 	 */
-	public ScenarioManager(JavaPlugin plugin) {
+	public ScenarioManager(TASBattleGameserver plugin) {
 		super(plugin);
 		this.enabled = new ArrayList<>();
 		this.scenarios = HashBiMap.create();
 		this.inventory = Bukkit.createInventory(null, 54, Component.text("Scenarios"));
 		
 		var scenarioList = Arrays.asList(
-			new ShowHealthScenario(),
-			new DisableDropsScenario(plugin)
+				new ShowHealthScenario(),
+				new DisableDropsScenario(plugin),
+				new DoubleHealthScenario(),
+				new HalfHealthScenario(),
+				new WitherScenario(),
+				new NoHitDelayScenario(),
+				new NoFallDamageScenario(),
+				new SlowerTickrateScenario(plugin),
+				new DynamicTickrateScenario(plugin)
 		);
 		
 		for (var scenario : scenarioList) {
