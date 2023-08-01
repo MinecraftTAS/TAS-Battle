@@ -3,6 +3,7 @@ package com.minecrafttas.tasbattle.ffa.components;
 import java.io.IOException;
 import java.util.List;
 
+import lombok.Getter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -32,6 +33,7 @@ public class GameLogic implements Listener {
 	private TASBattleGameserver plugin;
 	private World world;
 	private List<Player> players;
+	@Getter
 	private boolean finished;
 
 	/**
