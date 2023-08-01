@@ -2,7 +2,7 @@ package com.minecrafttas.tasbattle.ffa.scenarios;
 
 import com.minecrafttas.tasbattle.TASBattleGameserver;
 import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager.AbstractScenario;
-import com.minecrafttas.tasbattle.managers.TickrateChanger;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -34,6 +34,9 @@ public class DynamicTickrateScenario extends AbstractScenario {
 					if (distance < smallestDistance)
 						smallestDistance = distance;
 				}
+
+				// send current tickrate actionbar
+				p1.sendActionBar(MiniMessage.miniMessage().deserialize(String.format("<aqua>%.2f</aqua><white>tps</white>", latestTickrate)));
 			}
 
 			// update tickrates
