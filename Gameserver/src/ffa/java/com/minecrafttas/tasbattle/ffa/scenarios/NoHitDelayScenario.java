@@ -15,7 +15,7 @@ public class NoHitDelayScenario extends AbstractScenario {
 	@Override
 	public void gameStart(List<Player> participants) {
 		for (var p : participants)
-			p.setMaximumNoDamageTicks(0);
+			p.setMaximumNoDamageTicks(1);
 	}
 	
 }
