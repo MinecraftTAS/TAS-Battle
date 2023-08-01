@@ -1,6 +1,7 @@
 package com.minecrafttas.tasbattle.ffa.scenarios;
 
 import com.minecrafttas.tasbattle.TASBattleGameserver;
+import com.minecrafttas.tasbattle.ffa.FFA;
 import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager.AbstractScenario;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -23,6 +24,9 @@ public class DynamicTickrateScenario extends AbstractScenario {
 	@Override
 	public void gameStart(List<Player> participants) {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
+			if (((FFA) this.plugin.getGameMode()).getGameLogic().isFinished())
+				return;
+
 			// calculate distances
 			var smallestDistance = 1000.0;
 			for (var p1 : participants) {
@@ -55,5 +59,4 @@ public class DynamicTickrateScenario extends AbstractScenario {
 		}, 2L, 2L);
 	}
 
-	
 }
