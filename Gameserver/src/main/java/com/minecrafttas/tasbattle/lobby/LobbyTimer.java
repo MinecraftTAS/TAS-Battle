@@ -72,6 +72,7 @@ class LobbyTimer implements CommandExecutor {
 		for (Player p : this.players) {
 			p.setLevel(this.time);
 			p.setExp(Math.max(0.0f, Math.min(1.0f, this.time / (float) this.startTime)));
+			p.sendActionBar(MiniMessage.miniMessage().deserialize("<white>Type <green>/ready</green> to quickstart the game</white>"));
 			if (this.time <= 5 || this.time == 10 || this.time == 20) {
 				p.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The game will start in <green>" + this.time + "</green> seconds.</gray>"));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5f, this.time <= 0 ? 1.0f : 0.7f);
