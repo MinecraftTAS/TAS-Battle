@@ -74,7 +74,7 @@ public class LobbyTelemetry implements Listener {
     @EventHandler
     public void onConnect(PlayerJoinEvent e) throws IOException {
         var player = e.getPlayer();
-        this.write(String.format("[%s CONNECT ]: player %s %s (%s)\n", FORMAT.format(Date.from(Instant.now())), player.getName(), player.getUniqueId(), player.getAddress().getHostString()));
+        this.write(String.format("[%s CONNECT ]: %s %s (%s)\n", FORMAT.format(Date.from(Instant.now())), player.getName(), player.getUniqueId(), player.getAddress().getHostString()));
     }
 
     /**
@@ -83,8 +83,7 @@ public class LobbyTelemetry implements Listener {
      */
     @EventHandler
     public void onChat(AsyncChatEvent e) throws IOException {
-        var player = e.getPlayer();
-        this.write(String.format("[%s CHAT    ]: player %s %s (%s), message: %s\n", FORMAT.format(Date.from(Instant.now())), player.getName(), player.getUniqueId(), player.getAddress().getHostString(), ((TextComponent) e.message()).content()));
+        this.write(String.format("[%s CHAT    ]: %s: %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getName(), ((TextComponent) e.message()).content()));
     }
 
     /**
@@ -93,8 +92,7 @@ public class LobbyTelemetry implements Listener {
      */
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent e) throws IOException {
-        var player = e.getPlayer();
-        this.write(String.format("[%s CHAT    ]: player %s %s (%s), message: %s\n", FORMAT.format(Date.from(Instant.now())), player.getName(), player.getUniqueId(), player.getAddress().getHostString(), e.getMessage()));
+        this.write(String.format("[%s CHAT    ]: %s: %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getName(), e.getMessage()));
     }
 
     /**
@@ -103,8 +101,7 @@ public class LobbyTelemetry implements Listener {
      */
     @EventHandler
     public void onDisconnect(PlayerQuitEvent e) throws IOException {
-        var player = e.getPlayer();
-        this.write(String.format("[%s DCONNECT]: player %s %s (%s)\n", FORMAT.format(Date.from(Instant.now())), player.getName(), player.getUniqueId(), player.getAddress().getHostString()));
+        this.write(String.format("[%s DCONNECT]: %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getName()));
     }
 
     /**
