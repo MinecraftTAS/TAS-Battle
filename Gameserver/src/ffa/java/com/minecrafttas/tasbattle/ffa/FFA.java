@@ -2,6 +2,8 @@ package com.minecrafttas.tasbattle.ffa;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +29,8 @@ import com.minecrafttas.tasbattle.loading.WorldUtils;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
 
 import lombok.Getter;
+
+import static com.minecrafttas.tasbattle.managers.GameserverTelemetry.FORMAT;
 
 /**
  * FFA gamemode
@@ -62,9 +66,12 @@ public class FFA implements GameMode {
 		// find available worlds
 		var serverDir = new File(".");
 		var availableWorlds = serverDir.listFiles((dir, name) -> name.startsWith("ffa-"));
+
 		// pick random world
 		var worldName = availableWorlds[(int) (Math.random() * availableWorlds.length)].getName();
 		this.world = WorldUtils.loadWorld(worldName);
+
+		this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: FFA: %s (%s kits available) (%s scenarios available)\n", FORMAT.format(Date.from(Instant.now())), worldName, this.kitManager.getKits().size() + "", this.scenarioManager.getScenarios().size()));
 	}
 	
 	@Override
@@ -95,6 +102,7 @@ public class FFA implements GameMode {
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>Every player has been spread across the map. <red>Cross teaming is not allowed!</red></gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The last person alive will be the winner.</gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize(""));
+		this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: players: %s, scenarios: %s, kit: %s\n", FORMAT.format(Date.from(Instant.now())), players.stream().map(Player::getName).collect(Collectors.joining(", ")), scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", ")), kit.getName()));
 
 		// update players
 		for (var p : players) {

@@ -1,16 +1,11 @@
 package com.minecrafttas.tasbattle.ffa.components;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.minecrafttas.tasbattle.TASBattleGameserver;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.World;
+import net.kyori.adventure.title.Title;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,10 +18,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.minecrafttas.tasbattle.TASBattleGameserver;
+import java.io.IOException;
+import java.sql.Date;
+import java.time.Instant;
+import java.util.List;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
+import static com.minecrafttas.tasbattle.managers.GameserverTelemetry.FORMAT;
 
 public class GameLogic implements Listener {
 
@@ -62,8 +59,10 @@ public class GameLogic implements Listener {
 		// print death message
 		var killer = p.getKiller();
 		if (killer == null || killer == p) {
+			this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: %s died\n", FORMAT.format(Date.from(Instant.now())), p.getName()));
 			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> died</gray>"));
 		} else {
+			this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: %s killed by %s\n", FORMAT.format(Date.from(Instant.now())), p.getName(), killer.getName()));
 			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> was slain by <green>" + killer.getName() + "</green></gray>"));
 			killer.playSound(killer, Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.0f);
 		}
@@ -75,6 +74,7 @@ public class GameLogic implements Listener {
 			player.setUsername(p.getName());
 			player.setDeaths(player.getDeaths() + 1);
 			player.setLosses(player.getLosses() + 1);
+			this.plugin.getTelemetry().write(String.format("[%s STATS   ]: %s, deaths: %s, losses: %s\n", FORMAT.format(Date.from(Instant.now())), p.getName(), player.getDeaths() + "", player.getLosses() + ""));
 
 			if (killer == null)
 				return;
@@ -82,6 +82,7 @@ public class GameLogic implements Listener {
 			player = statsManager.getPlayerStats(stats, killer.getUniqueId());
 			player.setUsername(killer.getName());
 			player.setKills(player.getKills() + 1);
+			this.plugin.getTelemetry().write(String.format("[%s STATS   ]: %s, kills: %s\n", FORMAT.format(Date.from(Instant.now())), killer.getName(), player.getKills() + ""));
 		});
 
 		// end game on last player
@@ -94,20 +95,22 @@ public class GameLogic implements Listener {
 	 * @param p Winner
 	 */
 	public void stopGame(Player p) {
+		this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: game end\n", FORMAT.format(Date.from(Instant.now()))));
 		this.players.clear();
 
 		// decrease tickrate
 		this.plugin.getTickrateChanger().setTickrate(1.0f);
-		
+
 		// play win sounds
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			player.playSound(player, Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR, SoundCategory.PLAYERS, 1f, (float) (Math.random() * 0.5f + 1f));
 			player.playSound(player, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, SoundCategory.PLAYERS, 1f, (float) (Math.random() * 0.5f + 1f));
 			player.playSound(player, Sound.ENTITY_FIREWORK_ROCKET_TWINKLE_FAR, SoundCategory.PLAYERS, 1f, (float) (Math.random() * 0.5f + 1f));
 		}
-		
+
 		// announce winner
 		if (p != null) {
+			this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: winner: %s\n", FORMAT.format(Date.from(Instant.now())), p.getName()));
 			Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray><green>" + p.getName() + "</green> won the game!</gray>"));
 			p.showTitle(Title.title(MiniMessage.miniMessage().deserialize("<red>You won!</red>"), Component.empty()));
 
@@ -117,7 +120,19 @@ public class GameLogic implements Listener {
 				var player = statsManager.getPlayerStats(stats, p.getUniqueId());
 				player.setUsername(p.getName());
 				player.setWins(player.getWins() + 1);
+				try {
+					this.plugin.getTelemetry().write(String.format("[%s STATS   ]: %s, wins: %s\n", FORMAT.format(Date.from(Instant.now())), p.getName(), player.getWins() + ""));
+					this.plugin.getTelemetry().onShutdown();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			});
+		} else {
+			try {
+				this.plugin.getTelemetry().onShutdown();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		// crash server in 16 ticks

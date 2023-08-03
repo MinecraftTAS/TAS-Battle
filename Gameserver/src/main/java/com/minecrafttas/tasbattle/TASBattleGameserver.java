@@ -1,11 +1,15 @@
 package com.minecrafttas.tasbattle;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.minecrafttas.tasbattle.bedwars.Bedwars;
+import com.minecrafttas.tasbattle.ffa.FFA;
+import com.minecrafttas.tasbattle.gui.GuiHandler;
+import com.minecrafttas.tasbattle.lobby.Lobby;
+import com.minecrafttas.tasbattle.lobby.LobbyManager;
+import com.minecrafttas.tasbattle.managers.GameserverTelemetry;
+import com.minecrafttas.tasbattle.managers.TickrateChanger;
 import com.minecrafttas.tasbattle.stats.StatsManager;
-import com.minecrafttas.tasbattle.stats.structs.Stats;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
@@ -17,16 +21,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.minecrafttas.tasbattle.bedwars.Bedwars;
-import com.minecrafttas.tasbattle.ffa.FFA;
-import com.minecrafttas.tasbattle.gui.GuiHandler;
-import com.minecrafttas.tasbattle.lobby.Lobby;
-import com.minecrafttas.tasbattle.lobby.LobbyManager;
-import com.minecrafttas.tasbattle.managers.TickrateChanger;
-
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, Listener {
 	
@@ -45,6 +43,8 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 	private StatsManager statsManager;
 	@Getter
 	private Lobby lobby;
+	@Getter
+	private GameserverTelemetry telemetry;
 	
 	/**
 	 * Enable TAS Battle mod
@@ -56,6 +56,7 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 		Bukkit.getPluginManager().registerEvents(this, this);
 		Bukkit.getWorlds().forEach(w -> w.setAutoSave(false));
 		this.tickrateChanger = new TickrateChanger(this);
+		this.telemetry = new GameserverTelemetry(this);
 
 		var mode = System.getProperty("mode");
 		this.gameMode = switch (mode) {
