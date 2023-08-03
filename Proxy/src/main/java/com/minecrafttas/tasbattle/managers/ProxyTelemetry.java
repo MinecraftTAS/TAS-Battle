@@ -77,7 +77,7 @@ public class ProxyTelemetry {
     @Subscribe
     public void onPing(ProxyPingEvent e) throws IOException {
         var vhost = e.getConnection().getVirtualHost();
-        this.write(String.format("[%s PING    ]: %s, version: %s, hostname: %s\n", FORMAT.format(Date.from(Instant.now())), e.getConnection().getRemoteAddress().getHostString(), e.getConnection().getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown"));
+        this.write(String.format("[%s PING    ]: %s -> %s (%s)\n", FORMAT.format(Date.from(Instant.now())), e.getConnection().getRemoteAddress().getHostString(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", e.getConnection().getProtocolVersion().getVersionIntroducedIn()));
     }
 
     /**
@@ -89,7 +89,7 @@ public class ProxyTelemetry {
         var player = e.getPlayer();
         var vhost = player.getVirtualHost();
         var gameProfile = player.getGameProfile();
-        this.write(String.format("[%s CONNECT ]: player %s %s (%s), version: %s, hostname: %s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), gameProfile.getId(), player.getRemoteAddress().getHostString(), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown"));
+        this.write(String.format("[%s CONNECT ]: %s %s (%s -> %s) [%s]\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), gameProfile.getId(), player.getRemoteAddress().getHostString(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", player.getProtocolVersion().getVersionIntroducedIn()));
     }
 
     /**
@@ -98,12 +98,8 @@ public class ProxyTelemetry {
      */
     @Subscribe
     public void onServerConnect(ServerConnectedEvent e) throws IOException {
-        var player = e.getPlayer();
-        var vhost = player.getVirtualHost();
-        var gameProfile = player.getGameProfile();
         var prev = e.getPreviousServer();
-        var next = e.getServer();
-        this.write(String.format("[%s SERVER  ]: player %s %s (%s), version: %s, hostname: %s, from: %s, to: %s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), gameProfile.getId(), player.getRemoteAddress().getHostString(), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", prev.isPresent() ? prev.get().getServerInfo().getName() : "proxy", next.getServerInfo().getName()));
+        this.write(String.format("[%s SERVER  ]: %s: %s -> %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getGameProfile().getName(), prev.isPresent() ? prev.get().getServerInfo().getName() : "proxy", e.getServer().getServerInfo().getName()));
     }
 
     /**
@@ -112,11 +108,7 @@ public class ProxyTelemetry {
      */
     @Subscribe
     public void onChat(PlayerChatEvent e) throws IOException {
-        var player = e.getPlayer();
-        var vhost = player.getVirtualHost();
-        var gameProfile = player.getGameProfile();
-        var server = player.getCurrentServer();
-        this.write(String.format("[%s CHAT    ]: player %s %s (%s), version: %s, hostname: %s, server: %s, message: %s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), gameProfile.getId(), player.getRemoteAddress().getHostString(), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", server.isPresent() ? server.get().getServerInfo().getName() : "unknown", e.getMessage().strip()));
+        this.write(String.format("[%s CHAT    ]: %s: %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getGameProfile().getName(), e.getMessage()));
     }
 
     /**
@@ -125,12 +117,8 @@ public class ProxyTelemetry {
      */
     @Subscribe
     public void onCommand(CommandExecuteEvent e) throws IOException {
-        if (e.getCommandSource() instanceof Player player) {
-            var vhost = player.getVirtualHost();
-            var gameProfile = player.getGameProfile();
-            var server = player.getCurrentServer();
-            this.write(String.format("[%s CHAT    ]: player %s %s (%s), version: %s, hostname: %s, server: %s, message: /%s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), gameProfile.getId(), player.getRemoteAddress().getHostString(), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", server.isPresent() ? server.get().getServerInfo().getName() : "unknown", e.getCommand()));
-        }
+        if (e.getCommandSource() instanceof Player player)
+            this.write(String.format("[%s CHAT    ]: %s: /%s\n", FORMAT.format(Date.from(Instant.now())), player.getGameProfile().getName(), e.getCommand()));
     }
 
     /**
@@ -142,7 +130,7 @@ public class ProxyTelemetry {
         var player = e.getPlayer();
         var vhost = player.getVirtualHost();
         var gameProfile = player.getGameProfile();
-        this.write(String.format("[%s DCONNECT]: player %s %s (%s), login state: %s, version: %s, hostname: %s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), e.getLoginStatus().name(), gameProfile.getId(), player.getRemoteAddress().getHostString(), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown"));
+        this.write(String.format("[%s DCONNECT]: %s, %s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), e.getLoginStatus().name()));
     }
 
     /**
