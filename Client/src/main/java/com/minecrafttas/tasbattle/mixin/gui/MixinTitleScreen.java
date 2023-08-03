@@ -10,7 +10,9 @@ import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,54 +23,9 @@ import java.io.IOException;
 @Mixin(TitleScreen.class)
 public class MixinTitleScreen extends Screen {
 	protected MixinTitleScreen(Component component) { super(component); }
-	
-	/**
-	 * Replace menu buttons with tas battle
-	 * @param height Screen height
-	 * @param distanceBtn Distance between buttons
-	 * @reason Replacing main menu buttons
-	 * @author Pancake
-	 */
-	@Overwrite
-	private void createNormalMenuOptions(int height, int distanceBtn) {
-		this.addRenderableWidget(Button.builder(Component.literal("Join TAS Battle"), b -> {
-			var file = new File(this.minecraft.gameDirectory, ".gpdr");
-			if (file.exists()) {
-				var address = "mgnet.work";
-				if(hasControlDown() && hasShiftDown())
-					address = "preview.mgnet.work";
 
-				ConnectScreen.startConnecting(this, minecraft, new ServerAddress(address, 25565), new ServerData("MGNetwork", address, false));
-				return;
-			}
-
-			var guiScale = this.minecraft.options.guiScale();
-			var guiScaleValue = guiScale.get();
-
-			var width = this.minecraft.getWindow().getWidth();
-			if (width > 1440)
-				guiScale.set(4);
-			else if (width > 1280)
-				guiScale.set(2);
-			else
-				guiScale.set(1);
-
-			this.minecraft.resizeDisplay();
-			this.minecraft.setScreen(new ConfirmScreen(bl -> {
-				guiScale.set(guiScaleValue);
-				this.minecraft.resizeDisplay();
-
-				if (bl) {
-					try {
-						ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 25565), new ServerData("MGNetwork", "mgnet.work", false));
-						file.createNewFile();
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				} else {
-					this.minecraft.setScreen(null);
-				}
-			}, Component.literal("TAS Battle DSGVO/GDPR Confirmation"), Component.literal("""
+	@Unique
+	private static final String GDPR = """
 Dear player,
 
 In compliance with the General Data Protection Regulation (GDPR) and the Datenschutz-Grundverordnung (DSGVO), we are providing you with this confirmation regarding the processing of your personal data on our Minecraft server.
@@ -81,13 +38,14 @@ We may collect and process the following personal data about you:
 
 Player Name: We collect your Minecraft username for identification and authentication purposes.
 IP Address: We collect your IP address to help prevent abuse and ensure the security of the server.
-Server Interactions: While we do log server interactions, they are not linked or associated with any specific user.
+Server Interactions: We collect your server interactions (chat interactions, commands executed, etc) for moderation and community interaction purposes.
 
 Purpose of Data Processing:
 We process the above-mentioned data solely for the following purposes:
 
 To allow you to access and use the Minecraft server.
 To maintain server security and prevent abuse.
+To moderate the server and ensure a positive and respectful gaming environment.
 
 Legal Basis:
 The legal basis for processing your personal data is our legitimate interest in operating and maintaining the Minecraft server and ensuring its security.
@@ -111,7 +69,71 @@ By continuing to use our server, you are providing your explicit consent to the 
 Thank you for being a part of our gaming community.
 
 Sincerely,
-MGNetwork"""), Component.literal("Accept and join"), Component.literal("Back to main menu")));
+MGNetwork""";
+
+	@Unique
+	private static final String SHORT_GDPR = """
+By playing on our server you give us permission to store the following information about you:
+- Username, UUID, IP Address
+- Chat messages, commands executed and more server interactions""";
+
+	/**
+	 * Replace menu buttons with tas battle
+	 * @param height Screen height
+	 * @param distanceBtn Distance between buttons
+	 * @reason Replacing main menu buttons
+	 * @author Pancake
+	 */
+	@Overwrite
+	private void createNormalMenuOptions(int height, int distanceBtn) {
+		this.addRenderableWidget(Button.builder(Component.literal("Join TAS Battle"), b -> {
+			var file = new File(this.minecraft.gameDirectory, ".gdpr");
+			if (file.exists()) {
+				var address = "mgnet.work";
+				if(hasControlDown() && hasShiftDown())
+					address = "preview.mgnet.work";
+
+				ConnectScreen.startConnecting(this, minecraft, new ServerAddress(address, 25565), new ServerData("MGNetwork", address, false));
+				return;
+			}
+
+
+			this.minecraft.setScreen(new ConfirmScreen(bl -> {
+				this.minecraft.resizeDisplay();
+				if (bl) {
+					try {
+						ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 25565), new ServerData("MGNetwork", "mgnet.work", false));
+						file.createNewFile();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				} else {
+					var guiScale = this.minecraft.options.guiScale();
+					var guiScaleValue = guiScale.get();
+
+					var width = this.minecraft.getWindow().getWidth();
+					if (width > 1920)
+						guiScale.set(2);
+					else
+						guiScale.set(1);
+
+					this.minecraft.resizeDisplay();
+					this.minecraft.setScreen(new ConfirmScreen(bl2 -> {
+						guiScale.set(guiScaleValue);
+						this.minecraft.resizeDisplay();
+
+						if (bl2)
+							try {
+								ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 25565), new ServerData("MGNetwork", "mgnet.work", false));
+								file.createNewFile();
+							} catch (IOException e) {
+								throw new RuntimeException(e);
+							}
+						else
+							Runtime.getRuntime().halt(-1);
+					}, Component.literal("TAS Battle Privacy Confirmation"), Component.literal(GDPR), Component.literal("Accept and join"), Component.literal("Reject and quit")));
+				}
+			}, Component.literal("TAS Battle Privacy Confirmation"), Component.literal(SHORT_GDPR), Component.literal("Accept and join"), Component.literal("Show full...")));
 		}).bounds(this.width / 2 - 100, this.height / 4 + 48, 200, 20).build());
 	}
 }
