@@ -107,27 +107,29 @@ public class ProxyTelemetry {
     }
 
     /**
-     * Log anonymous chatting
+     * Log chatting
      * @param e Event
      */
     @Subscribe
     public void onChat(PlayerChatEvent e) throws IOException {
         var player = e.getPlayer();
         var vhost = player.getVirtualHost();
+        var gameProfile = player.getGameProfile();
         var server = player.getCurrentServer();
-        this.write(String.format("[%s CHAT    ]: player anonymous, version: %s, hostname: %s, server: %s, message: %s\n", FORMAT.format(Date.from(Instant.now())), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", server.isPresent() ? server.get().getServerInfo().getName() : "unknown", e.getMessage().strip()));
+        this.write(String.format("[%s CHAT    ]: player %s %s (%s), version: %s, hostname: %s, server: %s, message: %s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), gameProfile.getId(), player.getRemoteAddress().getHostString(), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", server.isPresent() ? server.get().getServerInfo().getName() : "unknown", e.getMessage().strip()));
     }
 
     /**
-     * Log anonymous commands
+     * Log commands
      * @param e Event
      */
     @Subscribe
     public void onCommand(CommandExecuteEvent e) throws IOException {
         if (e.getCommandSource() instanceof Player player) {
             var vhost = player.getVirtualHost();
+            var gameProfile = player.getGameProfile();
             var server = player.getCurrentServer();
-            this.write(String.format("[%s CHAT    ]: player anonymous, version: %s, hostname: %s, server: %s, message: /%s\n", FORMAT.format(Date.from(Instant.now())), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", server.isPresent() ? server.get().getServerInfo().getName() : "unknown", e.getCommand()));
+            this.write(String.format("[%s CHAT    ]: player %s %s (%s), version: %s, hostname: %s, server: %s, message: /%s\n", FORMAT.format(Date.from(Instant.now())), gameProfile.getName(), gameProfile.getId(), player.getRemoteAddress().getHostString(), player.getProtocolVersion().getVersionIntroducedIn(), vhost.isPresent() ? vhost.get().getHostString() : "unknown", server.isPresent() ? server.get().getServerInfo().getName() : "unknown", e.getCommand()));
         }
     }
 
