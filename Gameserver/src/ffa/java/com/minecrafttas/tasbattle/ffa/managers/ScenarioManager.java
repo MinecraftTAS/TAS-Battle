@@ -78,7 +78,9 @@ public class ScenarioManager extends LobbyManager {
 				new NoHitDelayScenario(),
 				new NoFallDamageScenario(),
 				new SlowerTickrateScenario(plugin),
-				new DynamicTickrateScenario(plugin)
+				new DynamicTickrateScenario(plugin),
+				new BetterExplosionsScenario(plugin),
+				new NoDurabilityScenario(plugin)
 		);
 		
 		for (var scenario : scenarioList) {
