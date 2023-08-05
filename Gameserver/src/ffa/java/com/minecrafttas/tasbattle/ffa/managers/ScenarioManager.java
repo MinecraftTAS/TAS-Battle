@@ -80,7 +80,8 @@ public class ScenarioManager extends LobbyManager {
 				new SlowerTickrateScenario(plugin),
 				new DynamicTickrateScenario(plugin),
 				new BetterExplosionsScenario(plugin),
-				new NoDurabilityScenario(plugin)
+				new NoDurabilityScenario(plugin),
+				new InfiniteConsumablesScenario(plugin)
 		);
 		
 		for (var scenario : scenarioList) {
