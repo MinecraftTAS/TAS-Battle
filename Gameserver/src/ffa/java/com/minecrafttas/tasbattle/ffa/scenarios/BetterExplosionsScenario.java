@@ -17,7 +17,7 @@ public class BetterExplosionsScenario extends AbstractScenario {
 	private JavaPlugin plugin;
 
 	public BetterExplosionsScenario(JavaPlugin plugin) {
-		super("Better explosions", new String[] {"Velocity of explosions is increased", "and damage reduced"}, Material.BARRIER);
+		super("Better explosions", new String[] {"Velocity of explosions is increased", "and damage is reduced"}, Material.TNT);
 		this.plugin = plugin;
 	}
 
@@ -37,7 +37,7 @@ public class BetterExplosionsScenario extends AbstractScenario {
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent e) {
 		if ((e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) && e.getDamage() >= 2.0)
-			e.setDamage(2.0);
+			e.setDamage(Math.max(2, e.getDamage() / 5));
 	}
 	
 }

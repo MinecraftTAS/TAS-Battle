@@ -17,7 +17,7 @@ public class NoDurabilityScenario extends AbstractScenario {
 	private JavaPlugin plugin;
 
 	public NoDurabilityScenario(JavaPlugin plugin) {
-		super("Disable durability", new String[] {"Items won't lose durability"}, Material.BARRIER);
+		super("Disable durability", new String[] {"Items won't lose durability"}, Material.FISHING_ROD);
 		this.plugin = plugin;
 	}
 

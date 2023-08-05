@@ -70,7 +70,7 @@ public class ScenarioManager extends LobbyManager {
 		this.inventory = Bukkit.createInventory(null, 54, Component.text("Scenarios"));
 		
 		var scenarioList = Arrays.asList(
-				new ShowHealthScenario(),
+				new ShowHealthScenario(plugin),
 				new DisableDropsScenario(plugin),
 				new DoubleHealthScenario(),
 				new HalfHealthScenario(),
@@ -81,7 +81,8 @@ public class ScenarioManager extends LobbyManager {
 				new DynamicTickrateScenario(plugin),
 				new BetterExplosionsScenario(plugin),
 				new NoDurabilityScenario(plugin),
-				new InfiniteConsumablesScenario(plugin)
+				new InfiniteConsumablesScenario(plugin),
+				new HardScenario()
 		);
 		
 		for (var scenario : scenarioList) {
