@@ -6,9 +6,6 @@ java {
 	sourceCompatibility = targetCompatibility = 17
 }
 
-version = "${project.mod_version}"
-group = "${project.mod_group}"
-
 repositories {
 	maven { url = 'https://maven.mgnet.work' }
 	maven { url = 'https://jitpack.io' }
@@ -61,22 +58,19 @@ processResources {
 
 
     filesMatching("fabric.mod.json") {
-        expand 'mod_url': project.mod_url, 'name': project.mod_name, 'mod_version': project.version, 'mod_description': project.mod_description, 'mod_sources': project.mod_sources
+        expand 'mod_url': project.mod_url, 'name': project.mod_name, 'mod_version': project.mod_version, 'mod_description': project.mod_description, 'mod_sources': project.mod_sources
     }
+}
+
+base {
+	archivesName = "client"
 }
 
 // Upload plugin to server [login via key]
 tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${version}.jar | sftp -oPort=13524 pancake@mgnet.work".split(" ")
-}
-
-// Copy plugin to preview server
-tasks.register('copyPlugin', Exec) {
-	workingDir "${buildDir}/libs"
-	commandLine "ssh -p 13524 pancake@mgnet.work echo ${pancake_password} | sudo -S -u root cp /home/pancake/${base.archivesName.get()}-${version}.jar /srv/http/data/tasbattle/client.jar".split(" ")
+	commandLine "cmd.exe /k echo put client.jar | sftp -oPort=13524 pancake@mgnet.work:/srv/http/data/tasbattle/".split(" ")
 }
 
 upload.dependsOn = ['build']
-upload.finalizedBy(copyPlugin)
 upload.group = 'tasbattle'
