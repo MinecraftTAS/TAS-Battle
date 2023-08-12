@@ -10,7 +10,10 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 public class BetterExplosionsScenario extends AbstractScenario {
 
@@ -34,10 +37,18 @@ public class BetterExplosionsScenario extends AbstractScenario {
 		}
 	}
 
+	private volatile List<UUID> invinciblePlayers = new LinkedList<>();
+
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent e) {
-		if ((e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) && e.getDamage() >= 2.0)
-			e.setDamage(Math.max(2, e.getDamage() / 5));
+		if ((e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) && e.getEntity() instanceof Player player)
+			if (!this.invinciblePlayers.contains(player.getUniqueId()) && player.getHealth() > 1.0) {
+				if (e.getDamage() >= 2.0)
+					e.setDamage(Math.max(2, e.getDamage() / 5));
+				this.invinciblePlayers.add(player.getUniqueId());
+				Bukkit.getScheduler().runTaskLater(plugin, () -> this.invinciblePlayers.remove(player.getUniqueId()), 20L);
+			} else
+				e.setCancelled(true);
 	}
 	
 }
