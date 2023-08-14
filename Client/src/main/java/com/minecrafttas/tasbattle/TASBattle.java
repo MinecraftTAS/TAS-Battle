@@ -1,9 +1,6 @@
 package com.minecrafttas.tasbattle;
 
-import com.minecrafttas.tasbattle.system.DataSystem;
-import com.minecrafttas.tasbattle.system.DimensionSystem;
-import com.minecrafttas.tasbattle.system.SpectatingSystem;
-import com.minecrafttas.tasbattle.system.TickrateChanger;
+import com.minecrafttas.tasbattle.system.*;
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
@@ -23,6 +20,7 @@ public class TASBattle implements ModInitializer {
 	private final SpectatingSystem spectatingSystem = new SpectatingSystem();
 	private final DataSystem dataSystem = new DataSystem();
 	private final DimensionSystem dimensionSystem = new DimensionSystem();
+	private final ModBlacklist modWhitelist = new ModBlacklist();
 
 	@Override
 	public void onInitialize() {
