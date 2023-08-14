@@ -86,12 +86,14 @@ By playing on our server you give us permission to store the following informati
 	@Overwrite
 	private void createNormalMenuOptions(int height, int distanceBtn) {
 		this.addRenderableWidget(Button.builder(Component.literal("Join TAS Battle"), b -> {
+			String address;
+			if(hasControlDown() && hasShiftDown())
+				address = "preview.mgnet.work";
+            else
+                address = "mgnet.work";
+
 			var file = new File(this.minecraft.gameDirectory, ".gdpr");
 			if (file.exists()) {
-				var address = "mgnet.work";
-				if(hasControlDown() && hasShiftDown())
-					address = "preview.mgnet.work";
-
 				ConnectScreen.startConnecting(this, minecraft, new ServerAddress(address, 25565), new ServerData("MGNetwork", address, false));
 				return;
 			}
@@ -101,7 +103,7 @@ By playing on our server you give us permission to store the following informati
 				this.minecraft.resizeDisplay();
 				if (bl) {
 					try {
-						ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 25565), new ServerData("MGNetwork", "mgnet.work", false));
+						ConnectScreen.startConnecting(this, minecraft, new ServerAddress(address, 25565), new ServerData("MGNetwork", address, false));
 						file.createNewFile();
 					} catch (IOException e) {
 						throw new RuntimeException(e);
@@ -123,7 +125,7 @@ By playing on our server you give us permission to store the following informati
 
 						if (bl2)
 							try {
-								ConnectScreen.startConnecting(this, minecraft, new ServerAddress("mgnet.work", 25565), new ServerData("MGNetwork", "mgnet.work", false));
+								ConnectScreen.startConnecting(this, minecraft, new ServerAddress(address, 25565), new ServerData("MGNetwork", address, false));
 								file.createNewFile();
 							} catch (IOException e) {
 								throw new RuntimeException(e);
