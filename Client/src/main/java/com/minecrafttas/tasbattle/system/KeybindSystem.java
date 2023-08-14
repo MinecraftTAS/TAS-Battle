@@ -1,20 +1,18 @@
 package com.minecrafttas.tasbattle.system;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.glfw.GLFW;
-
 import com.minecrafttas.tasbattle.TASBattle;
-
 import lombok.Getter;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manages keybinds and their categories.
@@ -22,26 +20,20 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
  */
 public class KeybindSystem {
 
-	private static Map<KeyMapping, Boolean> keys = new HashMap<>();
-	private static Keybind[] keybinds = {
-		new Keybind("Start/Stop spectating", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> { // Spectate previous player
-			TASBattle.getInstance().getSpectatingSystem().cycleSpectate();
-		}),
-		new Keybind("Spectate next player", "TAS Battle", GLFW.GLFW_KEY_E, true, () -> { //Spectate next player
-			TASBattle.getInstance().getSpectatingSystem().spectateNextPlayer();
-		}),
-		new Keybind("Spectate previous player", "TAS Battle", GLFW.GLFW_KEY_Q, true, () -> { //Spectate previous player
-			TASBattle.getInstance().getSpectatingSystem().spectatePreviousPlayer();
-		})
+	private static final Map<KeyMapping, Boolean> keys = new HashMap<>();
+	private static final Keybind[] keybinds = {
+		new Keybind("Start/Stop spectating", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> TASBattle.instance.getSpectatingSystem().cycleSpectate()),
+		new Keybind("Spectate next player", "TAS Battle", GLFW.GLFW_KEY_E, true, () -> TASBattle.instance.getSpectatingSystem().spectateNextPlayer()),
+		new Keybind("Spectate previous player", "TAS Battle", GLFW.GLFW_KEY_Q, true, () -> TASBattle.instance.getSpectatingSystem().spectatePreviousPlayer())
 	};
 
 	@Getter
 	private static class Keybind {
 
-		private KeyMapping keyMapping;
-		private String category;
-		private boolean isInGame;
-		private Runnable onKeyDown;
+		private final KeyMapping keyMapping;
+		private final String category;
+		private final boolean isInGame;
+		private final Runnable onKeyDown;
 
 		public Keybind(String name, String category, int defaultKey, boolean isInGame, Runnable onKeyDown) {
 			this.keyMapping = new KeyMapping(name, defaultKey, category);
@@ -64,7 +56,7 @@ public class KeybindSystem {
 				categories.put(keybinds[i].category, i + 8);
 		
 		// add keybinds
-		return ArrayUtils.addAll(keyMappings, Arrays.asList(keybinds).stream().map(Keybind::getKeyMapping).toArray(KeyMapping[]::new)); // convert Keybind array to KeyMapping on the fly
+		return ArrayUtils.addAll(keyMappings, Arrays.stream(keybinds).map(Keybind::getKeyMapping).toArray(KeyMapping[]::new)); // convert Keybind array to KeyMapping on the fly
 	}
 
 	/**
@@ -93,7 +85,7 @@ public class KeybindSystem {
 		if (screen != null && ((screen.getFocused() instanceof EditBox && ((EditBox) screen.getFocused()).canConsumeInput()) || screen.getFocused() instanceof RecipeBookComponent))
 			return false;
 
-		boolean wasPressed = keys.containsKey(map) ? keys.get(map) : false;
+		boolean wasPressed = keys.getOrDefault(map, false);
 		boolean isPressed = GLFW.glfwGetKey(mc.getWindow().getWindow(), map.key.getValue()) == GLFW.GLFW_PRESS;
 		keys.put(map, isPressed);
 		return !wasPressed && isPressed;

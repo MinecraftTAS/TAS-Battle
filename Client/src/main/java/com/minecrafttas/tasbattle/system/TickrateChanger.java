@@ -1,7 +1,6 @@
 package com.minecrafttas.tasbattle.system;
 
 import com.minecrafttas.tasbattle.TASBattle;
-
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -10,19 +9,13 @@ import net.minecraft.resources.ResourceLocation;
  * Main tickrate changer
  * @author Pancake
  */
+@Getter
 public class TickrateChanger {
-	
-	// don't touch this miran
 	
 	public static final ResourceLocation IDENTIFIER = new ResourceLocation("tickratechanger", "data");
 
-	@Getter
 	private float tickrate = 20.0f;
-	
-	@Getter
 	private float gamespeed = 1.0f;
-	
-	@Getter
 	private long msPerTick = 50;
 	
 	private long systemTimeSinceTC = System.currentTimeMillis(); // system time passed since last tickrate change

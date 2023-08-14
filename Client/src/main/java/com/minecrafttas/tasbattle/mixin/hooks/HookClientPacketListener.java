@@ -1,22 +1,20 @@
 package com.minecrafttas.tasbattle.mixin.hooks;
 
-import java.nio.charset.StandardCharsets;
-
+import com.minecrafttas.tasbattle.TASBattle;
+import com.minecrafttas.tasbattle.system.DataSystem;
 import com.minecrafttas.tasbattle.system.DimensionSystem;
+import com.minecrafttas.tasbattle.system.TickrateChanger;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.minecrafttas.tasbattle.TASBattle;
-import com.minecrafttas.tasbattle.system.DataSystem;
-import com.minecrafttas.tasbattle.system.TickrateChanger;
-
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This mixin is purely responsible for the hooking up networking events
@@ -32,20 +30,20 @@ public class HookClientPacketListener {
 	@Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void hookCustomPayloadEvent(ClientboundCustomPayloadPacket packet, CallbackInfo ci) {
 		if (packet.getIdentifier().equals(TickrateChanger.IDENTIFIER)) {
-			TASBattle.getInstance().getTickrateChanger().changeTickrate(packet.getData().readFloat());
+			TASBattle.instance.getTickrateChanger().changeTickrate(packet.getData().readFloat());
 			ci.cancel();
 		} else if (packet.getIdentifier().equals(DataSystem.IDENTIFIER)) {
 			try {
 				var data = packet.getData();
 				var bytes = new byte[data.readInt()];
 				data.readBytes(bytes);
-				TASBattle.getInstance().getDataSystem().parseData(new String(bytes, StandardCharsets.UTF_8));
+				TASBattle.instance.getDataSystem().parseData(new String(bytes, StandardCharsets.UTF_8));
 			} catch (Exception e) {
 				TASBattle.LOGGER.error("Invalid data from server!", e);
 			}
 			ci.cancel();
 		} else if (packet.getIdentifier().equals(DimensionSystem.IDENTIFIER)) {
-			TASBattle.getInstance().getDimensionSystem().changeDimension();
+			TASBattle.instance.getDimensionSystem().changeDimension();
 			ci.cancel();
 		}
 	}

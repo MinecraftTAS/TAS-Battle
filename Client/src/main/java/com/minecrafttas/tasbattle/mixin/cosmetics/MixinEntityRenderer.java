@@ -1,14 +1,7 @@
 package com.minecrafttas.tasbattle.mixin.cosmetics;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.minecrafttas.tasbattle.TASBattle;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,6 +9,11 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * This mixin expands the nametag renderer by adding custom tags below
@@ -36,12 +34,12 @@ public class MixinEntityRenderer<T extends Entity> {
 	 * @param component Name
 	 * @param poseStack Pose stack
 	 * @param multiBufferSource Multi buffer source
-	 * @param i
+	 * @param i Distance
 	 * @param ci Callback Info
 	 */
 	@Inject(method = "renderNameTag", at = @At("RETURN"))
 	public void renderLabel(T player, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
-		var tags = TASBattle.getInstance().getDataSystem().getTags();
+		var tags = TASBattle.instance.getDataSystem().getTags();
 		if (!tags.containsKey(player.getUUID()))
 			return;
 		

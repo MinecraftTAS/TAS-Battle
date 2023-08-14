@@ -1,12 +1,10 @@
 package com.minecrafttas.tasbattle.mixin.tickratechanger;
 
+import com.minecrafttas.tasbattle.TASBattle;
+import net.minecraft.client.gui.components.SubtitleOverlay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
-
-import com.minecrafttas.tasbattle.TASBattle;
-
-import net.minecraft.client.gui.components.SubtitleOverlay;
 
 /**
  * This mixin slows down the subtitle overlay to the tickrate
@@ -21,6 +19,6 @@ public class MixinSubtitleOverlay {
 	 */
 	@ModifyConstant(method = "render", constant = @Constant(doubleValue = 3000D))
 	public double applyTickrate(double threethousand) {
-		return threethousand * TASBattle.getInstance().getTickrateChanger().getGamespeed();
+		return threethousand * TASBattle.instance.getTickrateChanger().getGamespeed();
 	}
 }
