@@ -1,29 +1,27 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "com.minecrafttas.tasbattle.mixin",
-  "compatibilityLevel": "JAVA_17",
   "mixins": [
   ],
   "client": [
-  	"cosmetics.MixinAbstractClientPlayer",
-  	"cosmetics.MixinEntityRenderer",
+    "MixinMinecraft",
+    "cosmetics.MixinAbstractClientPlayer",
+    "cosmetics.MixinEntityRenderer",
     "gui.MixinDeathScreen",
-  	"gui.MixinRealmsNotificationsScreen",
-  	"gui.MixinTitleScreen",
+    "gui.MixinRealmsNotificationsScreen",
+    "gui.MixinTitleScreen",
     "hooks.HookClientAdvancements",
     "hooks.HookClientHandshakePacketListenerImpl",
     "hooks.HookClientPacketListener",
     "hooks.HookOptions",
     "hooks.HookRecipeToast",
-  	"spectator.MixinMouseHandler",
-  	"spectator.MixinCamera",
-  	"tickratechanger.MixinItemRenderer",
-  	"tickratechanger.MixinLevelRenderer",
-  	"tickratechanger.MixinSoundEngine",
-  	"tickratechanger.MixinSubtitleOverlay",
-  	"tickratechanger.MixinToastInstance",
-  	"MixinMinecraft"
+    "spectator.MixinCamera",
+    "spectator.MixinMouseHandler",
+    "tickratechanger.MixinItemRenderer",
+    "tickratechanger.MixinLevelRenderer",
+    "tickratechanger.MixinSoundEngine",
+    "tickratechanger.MixinSubtitleOverlay",
+    "tickratechanger.MixinToastInstance"
   ],
   "injectors": {
     "defaultRequire": 1
