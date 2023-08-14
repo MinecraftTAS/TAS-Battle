@@ -1,12 +1,10 @@
 package com.minecrafttas.tasbattle.mixin.tickratechanger;
 
+import com.minecrafttas.tasbattle.TASBattle;
+import net.minecraft.client.renderer.RenderStateShard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import com.minecrafttas.tasbattle.TASBattle;
-
-import net.minecraft.client.renderer.RenderStateShard;
 
 /**
  * Slows down the enchantment glint
@@ -21,7 +19,7 @@ public class MixinItemRenderer {
 	 */
 	@Redirect(method = "setupGlintTexturing", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
 	private static long modifyGlintTexturing() {
-		return TASBattle.getInstance().getTickrateChanger().getMilliseconds();
+		return TASBattle.instance.getTickrateChanger().getMilliseconds();
 	}
 	
 }

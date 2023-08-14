@@ -3,6 +3,7 @@ package com.minecrafttas.tasbattle.system;
 import com.minecrafttas.tasbattle.TASBattle;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundTeleportToEntityPacket;
 import net.minecraft.util.Mth;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class SpectatingSystem {
 	
-	public static enum SpectatorMode {
+	public enum SpectatorMode {
 		FIXED, // Forces the player to always look at the spectatingEntity
 		ORBIT, // Forces the position and angle to the spactatingEntity. By moving the mouse, the player can orbit around the spectatingEntity
 		NONE // If spectating should be disabled
@@ -42,54 +43,45 @@ public class SpectatingSystem {
 	 * @param f Partial ticks
 	 */
 	public void onCamera(LocalPlayer p, Camera c, float f) {
-		switch (this.mode) {
-			case FIXED:
-				var entityPos = this.spectatedEntity.getEyePosition();
-				var playerX = Mth.lerp(f, p.xo, p.getX());
-				var playerY = Mth.lerp(f, p.yo, p.getY()) + p.getEyeHeight();
-				var playerZ = Mth.lerp(f, p.zo, p.getZ());
+        switch (this.mode) {
+            case FIXED -> {
+                var entityPos = this.spectatedEntity.getEyePosition();
+                var playerX = Mth.lerp(f, p.xo, p.getX());
+                var playerY = Mth.lerp(f, p.yo, p.getY()) + p.getEyeHeight();
+                var playerZ = Mth.lerp(f, p.zo, p.getZ());
+                var xOff = entityPos.x - playerX;
+                var yOff = entityPos.y - playerY;
+                var zOff = entityPos.z - playerZ;
+                var y = Math.sqrt(xOff * xOff + zOff * zOff);
+                var xRot = Mth.wrapDegrees((float) (-Mth.atan2(yOff, y) * 57.2957763671875));
+                var yRot = Mth.wrapDegrees((float) (Mth.atan2(zOff, xOff) * 57.2957763671875) - 90.0f);
+                p.setXRot(xRot);
+                p.setYRot(yRot);
+                c.setRotation(yRot, xRot);
+                c.setPosition(playerX, playerY, playerZ);
+            }
+            case ORBIT -> {
+                var anglePitch = p.getYRot() / 65.0;
+                var angleYaw = -p.getXRot() / 65.0;
+                var posY = this.distance * Math.sin(angleYaw) + this.spectatedEntity.getY();
+                var hyp = this.distance * Math.cos(angleYaw);
+                var posX = hyp * Math.sin(anglePitch) + this.spectatedEntity.getX();
+                var posZ = hyp * Math.cos(anglePitch) + this.spectatedEntity.getZ();
+                p.setPos(posX, posY, posZ);
+                var entityPos2 = this.spectatedEntity.getEyePosition();
+                var xOff2 = entityPos2.x - posX;
+                var yOff2 = entityPos2.y - posY;
+                var zOff2 = entityPos2.z - posZ;
+                var y2 = Math.sqrt(xOff2 * xOff2 + zOff2 * zOff2);
+                var xRot2 = Mth.wrapDegrees((float) (-Mth.atan2(yOff2, y2) * 57.2957763671875));
+                var yRot2 = Mth.wrapDegrees((float) (Mth.atan2(zOff2, xOff2) * 57.2957763671875) - 90.0f);
+                c.setRotation(yRot2, xRot2);
+                c.setPosition(posX, posY, posZ);
+            }
+            default -> {
 
-				var xOff = entityPos.x - playerX;
-				var yOff = entityPos.y - playerY;
-				var zOff = entityPos.z - playerZ;
-
-				var y = Math.sqrt(xOff * xOff + zOff * zOff);
-				var xRot = Mth.wrapDegrees((float) (-Mth.atan2(yOff, y) * 57.2957763671875));
-				var yRot = Mth.wrapDegrees((float) (Mth.atan2(zOff, xOff) * 57.2957763671875) - 90.0f);
-
-				p.setXRot(xRot);
-				p.setYRot(yRot);
-				c.setRotation(yRot, xRot);
-				c.setPosition(playerX, playerY, playerZ);
-				break;
-			case ORBIT:
-				var anglePitch = p.getYRot() / 65.0;
-				var angleYaw = -p.getXRot() / 65.0;
-				
-				var posY = this.distance * Math.sin(angleYaw) + this.spectatedEntity.getY();
-				var hyp = this.distance * Math.cos(angleYaw);
-				var posX = hyp * Math.sin(anglePitch) + this.spectatedEntity.getX();
-				var posZ = hyp * Math.cos(anglePitch) + this.spectatedEntity.getZ();
-				
-				p.setPos(posX, posY, posZ);
-				
-				var entityPos2 = this.spectatedEntity.getEyePosition();
-
-				var xOff2 = entityPos2.x - posX;
-				var yOff2 = entityPos2.y - posY;
-				var zOff2 = entityPos2.z - posZ;
-
-				var y2 = Math.sqrt(xOff2 * xOff2 + zOff2 * zOff2);
-				var xRot2 = Mth.wrapDegrees((float) (-Mth.atan2(yOff2, y2) * 57.2957763671875));
-				var yRot2 = Mth.wrapDegrees((float) (Mth.atan2(zOff2, xOff2) * 57.2957763671875) - 90.0f);
-
-				c.setRotation(yRot2, xRot2);
-				c.setPosition(posX, posY, posZ);
-				
-				break;
-			default:
-				break;
-		}
+            }
+        }
 	}
 	
 	/**
@@ -140,7 +132,7 @@ public class SpectatingSystem {
 		
 		// get spectatable players
 		var playerList = mc.level.players();
-		playerList.removeIf(player -> player.isSpectator()); 
+		playerList.removeIf(AbstractClientPlayer::isSpectator);
 
 		if (!playerList.isEmpty()) {
 			this.spectatedEntity = this.nextObject(playerList, this.spectatedEntity);
@@ -160,7 +152,7 @@ public class SpectatingSystem {
 		
 		// get spectatable players
 		var playerList = mc.level.players();
-		playerList.removeIf(player -> player.isSpectator()); 
+		playerList.removeIf(AbstractClientPlayer::isSpectator);
 
 		if (!playerList.isEmpty()) {
 			this.spectatedEntity = this.previousObject(playerList, this.spectatedEntity);

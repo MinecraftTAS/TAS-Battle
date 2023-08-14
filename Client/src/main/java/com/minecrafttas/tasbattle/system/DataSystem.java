@@ -16,15 +16,13 @@ import java.util.UUID;
  * Data class for tas battle
  * @author Pancake
  */
+@Getter
 public class DataSystem {
 
 	public static final ResourceLocation IDENTIFIER = new ResourceLocation("tasbattle", "data");
 
-	@Getter
-	private Map<UUID, String> tags;
-	
-	@Getter
-	private Map<UUID, ResourceLocation> capes;
+	private final Map<UUID, String> tags;
+	private final Map<UUID, ResourceLocation> capes;
 	
 	/**
 	 * Initialize data system
@@ -36,7 +34,7 @@ public class DataSystem {
 	
 	/**
 	 * Parse data from plugin message
-	 * @param data
+	 * @param data TAS Battle data
 	 * @throws Exception Malformed data
 	 */
 	public void parseData(String data) throws Exception {
