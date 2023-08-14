@@ -39,9 +39,8 @@ public class TickrateChanger {
 		this.tickrate = tickrate;
 		this.gamespeed = tickrate / 20.0f;
 		this.msPerTick = (long) (1000L / tickrate);
-		
-		var mc = Minecraft.getInstance();
-		mc.timer.msPerTick = this.msPerTick;
+
+		Minecraft.getInstance().timer.msPerTick = this.msPerTick;
 		
 		TASBattle.LOGGER.debug("Tickrate changed to {}", tickrate);
 	}

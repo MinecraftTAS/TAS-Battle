@@ -1,7 +1,6 @@
 package com.minecrafttas.tasbattle.system;
 
 import com.minecrafttas.tasbattle.TASBattle;
-import lombok.Getter;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
@@ -15,33 +14,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Manages keybinds and their categories.
+ * Manages KEYBINDS and their categories.
  * @author Pancake
  */
 public class KeybindSystem {
 
 	private static final Map<KeyMapping, Boolean> keys = new HashMap<>();
-	private static final Keybind[] keybinds = {
+	private static final Keybind[] KEYBINDS = {
 		new Keybind("Start/Stop spectating", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> TASBattle.instance.getSpectatingSystem().cycleSpectate()),
 		new Keybind("Spectate next player", "TAS Battle", GLFW.GLFW_KEY_E, true, () -> TASBattle.instance.getSpectatingSystem().spectateNextPlayer()),
 		new Keybind("Spectate previous player", "TAS Battle", GLFW.GLFW_KEY_Q, true, () -> TASBattle.instance.getSpectatingSystem().spectatePreviousPlayer())
 	};
 
-	@Getter
-	private static class Keybind {
-
-		private final KeyMapping keyMapping;
-		private final String category;
-		private final boolean isInGame;
-		private final Runnable onKeyDown;
-
+	private record Keybind(KeyMapping keyMapping, String category, boolean isInGame, Runnable onKeyDown) {
 		public Keybind(String name, String category, int defaultKey, boolean isInGame, Runnable onKeyDown) {
-			this.keyMapping = new KeyMapping(name, defaultKey, category);
-			this.category = category;
-			this.isInGame = isInGame;
-			this.onKeyDown = onKeyDown;
+			this(new KeyMapping(name, defaultKey, category), category, isInGame, onKeyDown);
 		}
-		
 	}
 
 	/**
@@ -51,21 +39,21 @@ public class KeybindSystem {
 	public static KeyMapping[] onKeybindInitialize(KeyMapping[] keyMappings) {
 		// initialize categories
 		Map<String, Integer> categories = KeyMapping.CATEGORY_SORT_ORDER;
-		for (int i = 0; i < keybinds.length; i++)
-			if (!categories.containsKey(keybinds[i].category))
-				categories.put(keybinds[i].category, i + 8);
+		for (int i = 0; i < KEYBINDS.length; i++)
+			if (!categories.containsKey(KEYBINDS[i].category))
+				categories.put(KEYBINDS[i].category, i + 8);
 		
 		// add keybinds
-		return ArrayUtils.addAll(keyMappings, Arrays.stream(keybinds).map(Keybind::getKeyMapping).toArray(KeyMapping[]::new)); // convert Keybind array to KeyMapping on the fly
+		return ArrayUtils.addAll(keyMappings, Arrays.stream(KEYBINDS).map(Keybind::keyMapping).toArray(KeyMapping[]::new)); // convert Keybind array to KeyMapping on the fly
 	}
 
 	/**
-	 * Watch for key presses and trigger keybinds
+	 * Watch for key presses and trigger KEYBINDS
 	 * @param mc Instance of Minecraft
 	 */
 	public static void onGameLoop(Minecraft mc) {
-		for (Keybind keybind : keybinds) {
-			if (keybind.isInGame && mc.level == null || !isKeyDown(mc, keybind.getKeyMapping()))
+		for (Keybind keybind : KEYBINDS) {
+			if (keybind.isInGame && mc.level == null || !isKeyDown(mc, keybind.keyMapping()))
 				continue;
 			
 			keybind.onKeyDown.run();

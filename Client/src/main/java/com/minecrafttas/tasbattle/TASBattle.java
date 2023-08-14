@@ -11,29 +11,22 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * TAS Battle mod class
+ * @author Pancake
  */
 @Getter
-public class TASBattle implements ModInitializer{
+public class TASBattle implements ModInitializer {
 	
 	public static final Logger LOGGER = LogManager.getLogger("TAS Battle");
 
 	public static TASBattle instance;
-	private TickrateChanger tickrateChanger;
-	private SpectatingSystem spectatingSystem;
-	private DataSystem dataSystem;
-	private DimensionSystem dimensionSystem;
+	private final TickrateChanger tickrateChanger = new TickrateChanger();
+	private final SpectatingSystem spectatingSystem = new SpectatingSystem();
+	private final DataSystem dataSystem = new DataSystem();
+	private final DimensionSystem dimensionSystem = new DimensionSystem();
 
 	@Override
 	public void onInitialize() {
 		instance = this;
-
-		// initialize modules
-		this.tickrateChanger = new TickrateChanger();
-		this.spectatingSystem = new SpectatingSystem();
-		this.dataSystem = new DataSystem();
-		this.dimensionSystem = new DimensionSystem();
-
-		LOGGER.info("TAS Battle has been initialized");
 	}
 	
 }
