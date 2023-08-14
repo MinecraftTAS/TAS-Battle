@@ -28,7 +28,7 @@ public class MixinMinecraft {
 	 * @param ci Callback info
 	 */
 	@Inject(method = "runTick", at = @At("HEAD"))
-	public void inject_run(CallbackInfo ci) {
+	public void inject_runTick(CallbackInfo ci) {
 		KeybindSystem.onGameLoop((Minecraft) (Object) this);
 	}
 	
