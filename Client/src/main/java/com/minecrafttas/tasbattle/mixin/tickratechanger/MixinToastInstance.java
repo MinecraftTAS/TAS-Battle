@@ -1,6 +1,7 @@
 package com.minecrafttas.tasbattle.mixin.tickratechanger;
 
 import com.minecrafttas.tasbattle.TASBattle;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -9,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
  * This mixin slows down the toast to the tickrate
  * @author Pancake
  */
-@Mixin(targets = "net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance")
+@Mixin(ToastComponent.ToastInstance.class)
 public class MixinToastInstance {
 
 	/**
