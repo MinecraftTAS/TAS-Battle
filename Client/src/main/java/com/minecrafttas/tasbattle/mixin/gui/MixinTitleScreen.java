@@ -27,7 +27,7 @@ public class MixinTitleScreen extends Screen {
 	private static final String GDPR = """
 Dear player,
 
-In compliance with the General Data Protection Regulation (GDPR) and the Datenschutz-Grundverordnung (DSGVO), we are providing you with this confirmation regarding the processing of your personal data on our Minecraft server.
+In compliance with the General Data Protection Regulation (GDPR), we are providing you with this confirmation regarding the processing of your personal data on our Minecraft server.
 
 Data Controller:
 The data controller for your personal data on the TAS Battle network is MGNetwork, gamesupport@mgnet.work.
@@ -56,7 +56,7 @@ Data Sharing:
 We do not share your personal data with any third parties except as required by law.
 
 Your Rights:
-Under the GDPR/DSGVO, you have the right to access, rectify, erase, restrict, and object to the processing of your personal data. If you wish to exercise any of these rights, please select "Back to main menu" or contact us via email.
+Under the GDPR, you have the right to access, rectify, erase, restrict, and object to the processing of your personal data. If you wish to exercise any of these rights, please select "Back to main menu" or contact us via email.
 
 Contact Information:
 If you have any questions or concerns regarding the processing of your personal data on MGNetwork, please contact us at gamesupport@mgnet.work.

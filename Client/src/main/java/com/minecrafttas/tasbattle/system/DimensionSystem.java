@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 
 /**
- * Data class for tas battle
+ * Dimension changer class
  * @author Pancake
  */
 public class DimensionSystem {
