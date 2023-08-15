@@ -7,6 +7,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Client-side spectating module
@@ -34,7 +35,11 @@ public class SpectatingSystem {
 	 * @param f Partial ticks
 	 */
 	public void onCamera(Entity cameraEntity, Camera c, float f) {
-		var entityPos = this.spectatedEntity.getEyePosition();
+		var entityPos = new Vec3(
+				Mth.lerp(f, this.spectatedEntity.xo, this.spectatedEntity.getX()),
+				Mth.lerp(f, this.spectatedEntity.yo, this.spectatedEntity.getY()) + this.spectatedEntity.getEyeHeight(),
+				Mth.lerp(f, this.spectatedEntity.zo, this.spectatedEntity.getZ())
+		);
 		var playerX = Mth.lerp(f, cameraEntity.xo, cameraEntity.getX());
 		var playerY = Mth.lerp(f, cameraEntity.yo, cameraEntity.getY()) + cameraEntity.getEyeHeight();
 		var playerZ = Mth.lerp(f, cameraEntity.zo, cameraEntity.getZ());
@@ -58,10 +63,10 @@ public class SpectatingSystem {
 				// calculate rotation
                 var anglePitch = cameraEntity.getYRot() / 65.0;
                 var angleYaw = -cameraEntity.getXRot() / 65.0;
-                var posY = this.distance * Math.sin(angleYaw) + this.spectatedEntity.getY();
+                var posY = this.distance * Math.sin(angleYaw) + Mth.lerp(f, this.spectatedEntity.yo, this.spectatedEntity.getY());
                 var hyp = this.distance * Math.cos(angleYaw);
-                var posX = hyp * Math.sin(anglePitch) + this.spectatedEntity.getX();
-                var posZ = hyp * Math.cos(anglePitch) + this.spectatedEntity.getZ();
+                var posX = hyp * Math.sin(anglePitch) + Mth.lerp(f, this.spectatedEntity.xo, this.spectatedEntity.getX());
+                var posZ = hyp * Math.cos(anglePitch) + Mth.lerp(f, this.spectatedEntity.zo, this.spectatedEntity.getZ());
                 var xOff2 = entityPos.x - posX;
                 var yOff2 = entityPos.y - posY;
                 var zOff2 = entityPos.z - posZ;
