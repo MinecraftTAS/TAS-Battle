@@ -9,6 +9,7 @@
     "cosmetics.MixinEntityRenderer",
     "gui.MixinDeathScreen",
     "gui.MixinRealmsNotificationsScreen",
+    "gui.MixinSpectatorGui",
     "gui.MixinTitleScreen",
     "hooks.HookClientAdvancements",
     "hooks.HookClientHandshakePacketListenerImpl",

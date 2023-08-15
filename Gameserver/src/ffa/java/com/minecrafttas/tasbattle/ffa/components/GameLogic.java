@@ -163,7 +163,7 @@ public class GameLogic implements Listener {
 		e.setRespawnLocation(respawnLocation);
 		player.setGameMode(GameMode.SPECTATOR);
 		this.plugin.getTickrateChanger().updatePlayer(player);
-		player.sendPluginMessage(plugin, SPEC_CHANNEL, new byte[1]);
+		player.sendPluginMessage(this.plugin, SPEC_CHANNEL, new byte[1]);
 	}
 	
 	/**
@@ -175,11 +175,13 @@ public class GameLogic implements Listener {
 		var p = e.getPlayer();
 		p.setGameMode(GameMode.SPECTATOR);
 		p.teleport(this.world.getSpawnLocation());
-		p.sendPluginMessage(plugin, SPEC_CHANNEL, new byte[1]);
 
 		e.joinMessage(null);
+		Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+			p.sendPluginMessage(this.plugin, SPEC_CHANNEL, new byte[1]);
+		}, 4L);
 	}
-	
+
 	/**
 	 * Handle player damage (entity damage)
 	 * @param e Event
