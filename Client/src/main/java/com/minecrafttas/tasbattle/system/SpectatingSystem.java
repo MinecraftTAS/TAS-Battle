@@ -1,12 +1,20 @@
 package com.minecrafttas.tasbattle.system;
 
 import com.minecrafttas.tasbattle.TASBattle;
-import lombok.Getter;
+import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Setter;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.components.spectator.SpectatorGui;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -16,6 +24,8 @@ import net.minecraft.world.phys.Vec3;
 public class SpectatingSystem {
 
 	public static final ResourceLocation IDENTIFIER = new ResourceLocation("spectatingsystem", "data");
+	private static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation("textures/gui/widgets.png");
+	private static final ResourceLocation SPECTATOR_LOCATION = new ResourceLocation("textures/gui/spectator_widgets.png");
 
 	public enum SpectatorMode {
 		FIXED, // forces the player to always look at the spectatingEntity
@@ -25,7 +35,7 @@ public class SpectatingSystem {
 	private Entity spectatedEntity;
 	private SpectatorMode mode;
 	private int distance = 5;
-	@Getter @Setter
+	@Setter
 	private boolean showHUD;
 	
 	/**
@@ -80,7 +90,7 @@ public class SpectatingSystem {
             }
         }
 	}
-	
+
 	/**
 	 * Spectate an entity
 	 * @param e Entity
@@ -112,5 +122,87 @@ public class SpectatingSystem {
 	public boolean isSpectating() {
 		return this.mode != null;
 	}
-	
+
+	/**
+	 * Render spectating system hud
+	 */
+	public void render(PoseStack poseStack) {
+		if (!this.showHUD)
+			return;
+
+		// find players
+		var mc = Minecraft.getInstance();
+		var players = mc.getConnection().getListedOnlinePlayers().stream().filter(p -> p.getGameMode() == GameType.SURVIVAL).toList();
+
+		// find positions
+		int i = (mc.getWindow().getGuiScaledWidth() / 2) - (players.size()+1) * 10 - 1;
+		int j = Mth.floor(mc.getWindow().getGuiScaledHeight() - 50.0f);
+
+		// push stack
+		poseStack.pushPose();
+		poseStack.translate(0.0f, 0.0f, -90.0f);
+
+		// render first icon
+		RenderSystem.enableBlend();
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+		RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+		SpectatorGui.blit(poseStack, i, j, 0, 0, 21, 22);
+		var component = Component.literal("1");
+		mc.font.drawShadow(poseStack, component, i + 20 - mc.font.width(component), j + 13, 0xFFFFFF);
+
+		// render player icons (except last)
+		for (int k = 0; k < players.size() - 1; k++)
+			this.renderIcon(mc, poseStack, i, j, k, players.get(k).getProfile(), false);
+
+		// render last player icon
+		this.renderIcon(mc, poseStack, i + 1, j, players.size() - 1, players.get(players.size() - 1).getProfile(), true);
+
+		// find slot
+		int slot = 0;
+		for (int k = 0; k < players.size(); k++)
+			if (this.spectatedEntity instanceof Player p && players.get(k).getProfile().getName().equals(p.getGameProfile().getName()))
+				slot = k + 1;
+
+		// render slot
+		RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+		SpectatorGui.blit(poseStack, i - 1 + slot * 20, j - 1, 0, 22, 24, 24);
+		RenderSystem.disableBlend();
+
+		// reset stack
+		poseStack.popPose();
+	}
+
+	/**
+	 * Render player icon
+	 * @param mc Minecraft instance
+	 * @param poseStack Pose stack
+	 * @param x X position
+	 * @param y Y position
+	 * @param k Player index
+	 * @param profile Profile
+	 * @param isLast Is last player
+	 */
+	private void renderIcon(Minecraft mc, PoseStack poseStack, int x, int y, int k, GameProfile profile, boolean isLast) {
+		// render background
+		RenderSystem.enableBlend();
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+		RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+		SpectatorGui.blit(poseStack, x + 21 + k * 20, y, isLast ? 162 : 21, 0, 21, 22);
+
+		// translate player head
+		poseStack.pushPose();
+		poseStack.translate(x + 23 + k * 20 - (isLast ? 1 : 0), y + 3, 0.0f);
+
+		// draw player head
+		RenderSystem.setShaderTexture(0, mc.getSkinManager().getInsecureSkinLocation(profile));
+		PlayerFaceRenderer.draw(poseStack, 2, 2, 12);
+
+		// reset translate
+		poseStack.popPose();
+
+		// draw text
+		var component = Component.literal((k+2) + "");
+		mc.font.drawShadow(poseStack, component, x + k * 20 + 41 - mc.font.width(component) - (isLast ? 1 : 0), y + 13, 0xFFFFFF);
+	}
+
 }
