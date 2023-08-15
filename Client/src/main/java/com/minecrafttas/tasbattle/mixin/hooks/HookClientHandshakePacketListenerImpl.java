@@ -2,6 +2,7 @@ package com.minecrafttas.tasbattle.mixin.hooks;
 
 import com.minecrafttas.tasbattle.system.DataSystem;
 import com.minecrafttas.tasbattle.system.DimensionSystem;
+import com.minecrafttas.tasbattle.system.SpectatingSystem;
 import com.minecrafttas.tasbattle.system.TickrateChanger;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -40,11 +41,13 @@ public class HookClientHandshakePacketListenerImpl {
     public void onHandleLogin(ClientboundLoginPacket clientboundLoginPacket, CallbackInfo ci) {
         this.minecraft.doRunTask(() -> {
             this.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
-            this.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(TickrateChanger.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
+            this.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(DataSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
             this.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(DimensionSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
+            this.connection.send(new ServerboundCustomPayloadPacket(new ResourceLocation("minecraft", "register"), new FriendlyByteBuf(Unpooled.buffer().writeBytes(SpectatingSystem.IDENTIFIER.toString().getBytes(StandardCharsets.US_ASCII)))));
             this.connection.send(new ServerboundCustomPayloadPacket(TickrateChanger.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
             this.connection.send(new ServerboundCustomPayloadPacket(DataSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
             this.connection.send(new ServerboundCustomPayloadPacket(DimensionSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
+            this.connection.send(new ServerboundCustomPayloadPacket(SpectatingSystem.IDENTIFIER, new FriendlyByteBuf(Unpooled.buffer(1))));
         });
     }
 

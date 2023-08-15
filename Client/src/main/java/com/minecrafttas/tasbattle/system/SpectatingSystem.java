@@ -1,6 +1,8 @@
 package com.minecrafttas.tasbattle.system;
 
 import com.minecrafttas.tasbattle.TASBattle;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Camera;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -11,7 +13,9 @@ import net.minecraft.world.entity.Entity;
  * @author Scribble
  */
 public class SpectatingSystem {
-	
+
+	public static final ResourceLocation IDENTIFIER = new ResourceLocation("spectatingsystem", "data");
+
 	public enum SpectatorMode {
 		FIXED, // forces the player to always look at the spectatingEntity
 		ORBIT // forces the position and angle to the spactatingEntity. By moving the mouse, the player can orbit around the spectatingEntity
@@ -19,15 +23,9 @@ public class SpectatingSystem {
 	
 	private Entity spectatedEntity;
 	private SpectatorMode mode;
-	private int distance;
-	
-	/**
-	 * Initialize spectator manager
-	 */
-	public SpectatingSystem() {
-		this.mode = SpectatorMode.NONE;
-		this.distance = 5;
-	}
+	private int distance = 5;
+	@Getter @Setter
+	private boolean showHUD;
 	
 	/**
 	 * Main update loop of the spectator manager
