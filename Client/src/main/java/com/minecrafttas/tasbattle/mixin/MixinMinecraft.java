@@ -31,7 +31,16 @@ public class MixinMinecraft {
 	public void inject_runTick(CallbackInfo ci) {
 		KeybindSystem.onGameLoop((Minecraft) (Object) this);
 	}
-	
+
+	/**
+	 * Disable spectating system on level change
+	 * @param ci Callback info
+	 */
+	@Inject(method = "setLevel", at = @At("HEAD"))
+	public void inject_runLevel(CallbackInfo ci) {
+		TASBattle.instance.getSpectatingSystem().setShowHUD(false);
+	}
+
 	/***
 	 * Disable screen opening when spectating
 	 * @param mc Instance of Minecraft

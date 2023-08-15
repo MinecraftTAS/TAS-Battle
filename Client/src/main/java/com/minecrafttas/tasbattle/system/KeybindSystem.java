@@ -21,9 +21,7 @@ public class KeybindSystem {
 
 	private static final Map<KeyMapping, Boolean> keys = new HashMap<>();
 	private static final Keybind[] KEYBINDS = {
-		new Keybind("Start/Stop spectating", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> TASBattle.instance.getSpectatingSystem().cycleSpectate()),
-		new Keybind("Spectate next player", "TAS Battle", GLFW.GLFW_KEY_E, true, () -> TASBattle.instance.getSpectatingSystem().spectateNextPlayer()),
-		new Keybind("Spectate previous player", "TAS Battle", GLFW.GLFW_KEY_Q, true, () -> TASBattle.instance.getSpectatingSystem().spectatePreviousPlayer())
+		new Keybind("Toggle spectating mode", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> TASBattle.instance.getSpectatingSystem().changeMode())
 	};
 
 	private record Keybind(KeyMapping keyMapping, String category, boolean isInGame, Runnable onKeyDown) {
