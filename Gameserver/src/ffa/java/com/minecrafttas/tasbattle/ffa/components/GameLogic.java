@@ -27,6 +27,8 @@ import static com.minecrafttas.tasbattle.managers.GameserverTelemetry.FORMAT;
 
 public class GameLogic implements Listener {
 
+	private static final String SPEC_CHANNEL = "spectatingsystem:data";
+
 	private TASBattleGameserver plugin;
 	private World world;
 	private List<Player> players;
@@ -40,7 +42,10 @@ public class GameLogic implements Listener {
 	 * @param player Participating players
 	 */
 	public GameLogic(TASBattleGameserver plugin, World world, List<Player> players) {
+		var messenger = Bukkit.getMessenger();
 		Bukkit.getPluginManager().registerEvents(this, plugin);
+		messenger.registerOutgoingPluginChannel(plugin, SPEC_CHANNEL);
+
 		this.plugin = plugin;
 		this.world = world;
 		this.players = players;
@@ -158,6 +163,7 @@ public class GameLogic implements Listener {
 		e.setRespawnLocation(respawnLocation);
 		player.setGameMode(GameMode.SPECTATOR);
 		this.plugin.getTickrateChanger().updatePlayer(player);
+		player.sendPluginMessage(plugin, SPEC_CHANNEL, new byte[1]);
 	}
 	
 	/**
@@ -169,6 +175,7 @@ public class GameLogic implements Listener {
 		var p = e.getPlayer();
 		p.setGameMode(GameMode.SPECTATOR);
 		p.teleport(this.world.getSpawnLocation());
+		p.sendPluginMessage(plugin, SPEC_CHANNEL, new byte[1]);
 
 		e.joinMessage(null);
 	}

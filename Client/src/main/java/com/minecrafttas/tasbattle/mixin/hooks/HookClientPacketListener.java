@@ -52,6 +52,9 @@ public class HookClientPacketListener {
 		} else if (packet.getIdentifier().equals(DimensionSystem.IDENTIFIER)) {
 			TASBattle.instance.getDimensionSystem().changeDimension();
 			ci.cancel();
+		} else if (packet.getIdentifier().equals(SpectatingSystem.IDENTIFIER)) {
+			TASBattle.instance.getSpectatingSystem().setShowHUD(true);
+			ci.cancel();
 		}
 	}
 
