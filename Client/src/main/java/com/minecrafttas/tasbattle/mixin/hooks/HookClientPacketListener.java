@@ -3,11 +3,18 @@ package com.minecrafttas.tasbattle.mixin.hooks;
 import com.minecrafttas.tasbattle.TASBattle;
 import com.minecrafttas.tasbattle.system.DataSystem;
 import com.minecrafttas.tasbattle.system.DimensionSystem;
+import com.minecrafttas.tasbattle.system.SpectatingSystem;
 import com.minecrafttas.tasbattle.system.TickrateChanger;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -56,5 +63,25 @@ public class HookClientPacketListener {
 		// don't show
 	}
 
+	/**
+	 * Pass camera entity to spectating system
+	 * @param mc Minecraft instance
+	 * @param e Entity
+	 */
+	@Redirect(method = "handleSetCamera", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setCameraEntity(Lnet/minecraft/world/entity/Entity;)V"))
+	public void hookHandleSetCamera(Minecraft mc, Entity e) {
+		TASBattle.instance.getSpectatingSystem().spectate(mc.player.equals(e) ? null : e);
+	}
+
+	/**
+	 * Don't send player packets when spectating
+	 * @param packet Packet
+	 * @param ci Callback Info
+	 */
+	@Inject(method = "send", at = @At("HEAD"), cancellable = true)
+	public void hookSendPacket(Packet<?> packet, CallbackInfo ci) {
+		if (TASBattle.instance.getSpectatingSystem().isSpectating() && packet instanceof ServerboundMovePlayerPacket || packet instanceof ServerboundPlayerInputPacket || packet instanceof ServerboundPlayerCommandPacket)
+			ci.cancel();
+	}
 
 }
