@@ -44,7 +44,6 @@ public class SpectatingSystem {
 	private int distance = 5;
 	@Setter
 	private boolean showHUD;
-	private GameProfile toBeSpectated;
 
 	/**
 	 * Main update loop of the spectator manager
@@ -140,27 +139,16 @@ public class SpectatingSystem {
 			return;
 
 		// find players
-		var players = mc.getConnection().getListedOnlinePlayers().stream().filter(p -> p.getGameMode() == GameType.SURVIVAL).toList();
-
-		// pancake says: i love minecraft commands :)
-		// pancake also says: yeah i need to make this serverside
+		var players = mc.getConnection().getListedOnlinePlayers().stream().filter(p -> p.getGameMode() == GameType.SURVIVAL && !p.getProfile().getName().equals(mc.player.getGameProfile().getName())).toList();
 
 		// check keyboard
 		for (int k = 0; k < players.size() + 1; k++) {
 			if (KeybindSystem.isKeyDown(mc, GLFW.GLFW_KEY_1 + k)) {
 				if (k == 0)
-					mc.getConnection().send(new ServerboundChatCommandPacket("spectate", Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+					mc.getConnection().send(new ServerboundChatCommandPacket("orbit", Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
 				else
-					mc.getConnection().send(new ServerboundChatCommandPacket("spectate " + (this.toBeSpectated = players.get(k - 1).getProfile()).getName(), Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+					mc.getConnection().send(new ServerboundChatCommandPacket("orbit " + players.get(k - 1).getProfile().getName(), Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
 			}
-		}
-
-		// spectate to be spectated player
-		if (this.toBeSpectated != null && mc.level.getPlayerByUUID(this.toBeSpectated.getId()) != null) {
-			mc.getConnection().send(new ServerboundChatCommandPacket("spectate", Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
-			mc.getConnection().send(new ServerboundChatCommandPacket("spectate " + this.toBeSpectated.getName(), Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
-
-			this.toBeSpectated = null;
 		}
 
 		// find positions
@@ -184,7 +172,8 @@ public class SpectatingSystem {
 			this.renderIcon(mc, poseStack, i, j, k, players.get(k).getProfile(), false);
 
 		// render last player icon
-		this.renderIcon(mc, poseStack, i + 1, j, players.size() - 1, players.get(players.size() - 1).getProfile(), true);
+		if (!players.isEmpty())
+			this.renderIcon(mc, poseStack, i + 1, j, players.size() - 1, players.get(players.size() - 1).getProfile(), true);
 
 		// find slot
 		int slot = 0;
