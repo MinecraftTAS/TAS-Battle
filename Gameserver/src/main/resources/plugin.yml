@@ -26,3 +26,6 @@ commands:
     stats:
         usage: /stats
         description: Show the players current statistics
+    orbit:
+        usage: /orbit <player>
+        description: Orbit a player
