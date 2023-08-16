@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class KeybindSystem {
 
-	private static final Map<KeyMapping, Boolean> keys = new HashMap<>();
+	private static final Map<Integer, Boolean> keys = new HashMap<>();
 	private static final Keybind[] KEYBINDS = {
 		new Keybind("Toggle spectating mode", "TAS Battle", GLFW.GLFW_KEY_R, true, () -> TASBattle.instance.getSpectatingSystem().changeMode())
 	};
@@ -51,7 +51,7 @@ public class KeybindSystem {
 	 */
 	public static void onGameLoop(Minecraft mc) {
 		for (Keybind keybind : KEYBINDS) {
-			if (keybind.isInGame && mc.level == null || !isKeyDown(mc, keybind.keyMapping()))
+			if (keybind.isInGame && mc.level == null || !isKeyDown(mc, keybind.keyMapping.key.getValue()))
 				continue;
 			
 			keybind.onKeyDown.run();
@@ -65,15 +65,15 @@ public class KeybindSystem {
 	 * @param map Key mappings to check
 	 * @return Key has been pressed recently
 	 */
-	private static boolean isKeyDown(Minecraft mc, KeyMapping map) {
+	public static boolean isKeyDown(Minecraft mc, int key) {
 		// check if in a text field
 		Screen screen = mc.screen;
 		if (screen != null && ((screen.getFocused() instanceof EditBox && ((EditBox) screen.getFocused()).canConsumeInput()) || screen.getFocused() instanceof RecipeBookComponent))
 			return false;
 
-		boolean wasPressed = keys.getOrDefault(map, false);
-		boolean isPressed = GLFW.glfwGetKey(mc.getWindow().getWindow(), map.key.getValue()) == GLFW.GLFW_PRESS;
-		keys.put(map, isPressed);
+		boolean wasPressed = keys.getOrDefault(key, false);
+		boolean isPressed = GLFW.glfwGetKey(mc.getWindow().getWindow(), key) == GLFW.GLFW_PRESS;
+		keys.put(key, isPressed);
 		return !wasPressed && isPressed;
 	}
 

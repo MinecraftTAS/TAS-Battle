@@ -9,13 +9,20 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.spectator.SpectatorGui;
+import net.minecraft.commands.arguments.ArgumentSignatures;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.LastSeenMessages;
+import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+import org.lwjgl.glfw.GLFW;
+
+import java.time.Instant;
+import java.util.BitSet;
 
 /**
  * Client-side spectating module
@@ -37,7 +44,8 @@ public class SpectatingSystem {
 	private int distance = 5;
 	@Setter
 	private boolean showHUD;
-	
+	private GameProfile toBeSpectated;
+
 	/**
 	 * Main update loop of the spectator manager
 	 * @param cameraEntity Camera entity
@@ -127,12 +135,33 @@ public class SpectatingSystem {
 	 * Render spectating system hud
 	 */
 	public void render(PoseStack poseStack) {
-		if (!this.showHUD)
+		var mc = Minecraft.getInstance();
+		if (!this.showHUD || mc.level == null)
 			return;
 
 		// find players
-		var mc = Minecraft.getInstance();
 		var players = mc.getConnection().getListedOnlinePlayers().stream().filter(p -> p.getGameMode() == GameType.SURVIVAL).toList();
+
+		// pancake says: i love minecraft commands :)
+		// pancake also says: yeah i need to make this serverside
+
+		// check keyboard
+		for (int k = 0; k < players.size() + 1; k++) {
+			if (KeybindSystem.isKeyDown(mc, GLFW.GLFW_KEY_1 + k)) {
+				if (k == 0)
+					mc.getConnection().send(new ServerboundChatCommandPacket("spectate", Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+				else
+					mc.getConnection().send(new ServerboundChatCommandPacket("spectate " + (this.toBeSpectated = players.get(k - 1).getProfile()).getName(), Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+			}
+		}
+
+		// spectate to be spectated player
+		if (this.toBeSpectated != null && mc.level.getPlayerByUUID(this.toBeSpectated.getId()) != null) {
+			mc.getConnection().send(new ServerboundChatCommandPacket("spectate", Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+			mc.getConnection().send(new ServerboundChatCommandPacket("spectate " + this.toBeSpectated.getName(), Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+
+			this.toBeSpectated = null;
+		}
 
 		// find positions
 		int i = (mc.getWindow().getGuiScaledWidth() / 2) - (players.size()+1) * 10 - 1;
