@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -21,8 +22,10 @@ import java.nio.file.Files;
  * This mixin hooks the minecraft class game loop and modifies other aspects of the minecraft class
  */
 @Mixin(Minecraft.class)
-public class MixinMinecraft {
-	
+public abstract class MixinMinecraft {
+
+	@Shadow public abstract Minecraft getInstance();
+
 	/**
 	 * Hook game loop method
 	 * @param ci Callback info
@@ -39,6 +42,7 @@ public class MixinMinecraft {
 	@Inject(method = "setLevel", at = @At("HEAD"))
 	public void inject_runLevel(CallbackInfo ci) {
 		TASBattle.instance.getSpectatingSystem().getSelectedPlayers().clear();
+		TASBattle.instance.getSpectatingSystem().spectate(null);
 		TASBattle.instance.getSpectatingSystem().setShowHUD(false);
 	}
 
