@@ -16,6 +16,7 @@
     "hooks.HookClientPacketListener",
     "hooks.HookOptions",
     "hooks.HookRecipeToast",
+    "spectator.MixinArmorStandRenderer",
     "spectator.MixinCamera",
     "spectator.MixinMouseHandler",
     "tickratechanger.MixinItemRenderer",
