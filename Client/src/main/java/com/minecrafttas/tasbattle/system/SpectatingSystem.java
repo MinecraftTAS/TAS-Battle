@@ -4,11 +4,13 @@ import com.minecrafttas.tasbattle.TASBattle;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.spectator.SpectatorGui;
+import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.commands.arguments.ArgumentSignatures;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.LastSeenMessages;
@@ -22,7 +24,9 @@ import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 /**
  * Client-side spectating module
@@ -40,9 +44,12 @@ public class SpectatingSystem {
 	}
 	
 	private Entity spectatedEntity;
+	@Getter
+	private List<String> selectedPlayers = new ArrayList<>();
+	private SpectatorMode lastMode = SpectatorMode.FIXED;
 	private SpectatorMode mode;
 	private int distance = 5;
-	@Setter
+	@Setter @Getter
 	private boolean showHUD;
 
 	/**
@@ -104,7 +111,7 @@ public class SpectatingSystem {
 	 */
 	public void spectate(Entity e) {
 		this.spectatedEntity = e;
-		this.mode = e == null ? null : SpectatorMode.FIXED;
+		this.mode = e == null ? null : this.lastMode;
 	}
 
 	/**
@@ -114,7 +121,7 @@ public class SpectatingSystem {
 		if (this.spectatedEntity == null)
 			return;
 
-		this.mode = this.mode == SpectatorMode.FIXED ? SpectatorMode.ORBIT : SpectatorMode.FIXED;
+		this.mode = this.lastMode = this.mode == SpectatorMode.FIXED ? SpectatorMode.ORBIT : SpectatorMode.FIXED;
 		TASBattle.LOGGER.info("Cycling spectate to {}", this.mode);
 	}
 
@@ -141,13 +148,30 @@ public class SpectatingSystem {
 		// find players
 		var players = mc.getConnection().getListedOnlinePlayers().stream().filter(p -> p.getGameMode() == GameType.SURVIVAL && !p.getProfile().getName().equals(mc.player.getGameProfile().getName())).toList();
 
-		// check keyboard
-		for (int k = 0; k < players.size() + 1; k++) {
-			if (KeybindSystem.isKeyDown(mc, GLFW.GLFW_KEY_1 + k)) {
-				if (k == 0)
-					mc.getConnection().send(new ServerboundChatCommandPacket("orbit", Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
-				else
-					mc.getConnection().send(new ServerboundChatCommandPacket("orbit " + players.get(k - 1).getProfile().getName(), Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+		// check unwatch
+		if (KeybindSystem.isKeyDown(mc, GLFW.GLFW_KEY_1)) {
+			this.selectedPlayers.clear();
+			mc.getConnection().send(new ServerboundChatCommandPacket("orbit", Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+		}
+
+		for (int k = 1; k < players.size() + 1; k++) {
+			var keyDown = KeybindSystem.isKeyDown(mc, GLFW.GLFW_KEY_1 + k);
+			if (!keyDown)
+				continue;
+
+			if (GLFW.glfwGetKey(mc.getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS) {
+				var name = players.get(k - 1).getProfile().getName();
+
+				if (this.selectedPlayers.contains(name))
+					continue;
+
+				this.selectedPlayers.add(name);
+				mc.getConnection().send(new ServerboundChatCommandPacket("orbit " + String.join(" ", this.selectedPlayers), Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
+			} else {
+				var name = players.get(k - 1).getProfile().getName();
+				this.selectedPlayers.clear();
+				this.selectedPlayers.add(name);
+				mc.getConnection().send(new ServerboundChatCommandPacket("orbit " + name, Instant.now(), 0L, ArgumentSignatures.EMPTY, new LastSeenMessages.Update(0, BitSet.valueOf(new long[0]))));
 			}
 		}
 
@@ -175,16 +199,22 @@ public class SpectatingSystem {
 		if (!players.isEmpty())
 			this.renderIcon(mc, poseStack, i + 1, j, players.size() - 1, players.get(players.size() - 1).getProfile(), true);
 
-		// find slot
-		int slot = 0;
-		for (int k = 0; k < players.size(); k++)
-			if (this.spectatedEntity instanceof Player p && players.get(k).getProfile().getName().equals(p.getGameProfile().getName()))
-				slot = k + 1;
+		// render slots
+		var hasRendered = false;
+		for (int k = 0; k < players.size(); k++) {
+			if (this.selectedPlayers.contains(players.get(k).getProfile().getName())) {
+				RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+				SpectatorGui.blit(poseStack, i - 1 + (k + 1) * 20, j - 1, 0, 22, 24, 24);
+				RenderSystem.disableBlend();
+				hasRendered = true;
+			}
+		}
 
-		// render slot
-		RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
-		SpectatorGui.blit(poseStack, i - 1 + slot * 20, j - 1, 0, 22, 24, 24);
-		RenderSystem.disableBlend();
+		if (!hasRendered) {
+			RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+			SpectatorGui.blit(poseStack, i - 1, j - 1, 0, 22, 24, 24);
+			RenderSystem.disableBlend();
+		}
 
 		// reset stack
 		poseStack.popPose();

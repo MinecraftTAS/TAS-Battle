@@ -38,6 +38,7 @@ public class MixinMinecraft {
 	 */
 	@Inject(method = "setLevel", at = @At("HEAD"))
 	public void inject_runLevel(CallbackInfo ci) {
+		TASBattle.instance.getSpectatingSystem().getSelectedPlayers().clear();
 		TASBattle.instance.getSpectatingSystem().setShowHUD(false);
 	}
 
