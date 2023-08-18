@@ -62,10 +62,13 @@ public class KeybindSystem {
 	/**
 	 * Check whether key has been pressed recently.
 	 * @param mc Instance of minecraft
-	 * @param map Key mappings to check
+	 * @param key Key mappings to check
 	 * @return Key has been pressed recently
 	 */
 	public static boolean isKeyDown(Minecraft mc, int key) {
+		if (key == -1)
+			return false;
+
 		// check if in a text field
 		Screen screen = mc.screen;
 		if (screen != null && ((screen.getFocused() instanceof EditBox && ((EditBox) screen.getFocused()).canConsumeInput()) || screen.getFocused() instanceof RecipeBookComponent))
