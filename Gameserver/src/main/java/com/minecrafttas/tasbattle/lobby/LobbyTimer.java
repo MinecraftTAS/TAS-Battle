@@ -1,9 +1,5 @@
 package com.minecrafttas.tasbattle.lobby;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -15,6 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Timer for launching the game
@@ -33,9 +33,9 @@ class LobbyTimer implements CommandExecutor {
 
 	/**
 	 * Create new lobby timer
-	 * @param time Time to start counting down from
+	 * @param startTime Time to start counting down from
 	 * @param minPlayers Minimal amount of players required
-	 * @param max Maximal amount of players before fast start
+	 * @param maxPlayers Maximal amount of players before fast start
 	 * @param start Game start runnable
 	 */
 	public LobbyTimer(JavaPlugin plugin, int startTime, int minPlayers, int maxPlayers, Consumer<List<Player>> start) {
@@ -77,6 +77,9 @@ class LobbyTimer implements CommandExecutor {
 				p.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The game will start in <green>" + this.time + "</green> seconds.</gray>"));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5f, this.time <= 0 ? 1.0f : 0.7f);
 			}
+
+			if (p.getLocation().y() < 85)
+				p.teleport(p.getWorld().getSpawnLocation());
 		}
 
 		if (this.time <= 0) {
