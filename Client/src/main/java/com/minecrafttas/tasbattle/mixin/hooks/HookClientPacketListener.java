@@ -83,7 +83,7 @@ public class HookClientPacketListener {
 	 */
 	@Inject(method = "send", at = @At("HEAD"), cancellable = true)
 	public void hookSendPacket(Packet<?> packet, CallbackInfo ci) {
-		if (TASBattle.instance.getSpectatingSystem().isSpectating() && packet instanceof ServerboundMovePlayerPacket || packet instanceof ServerboundPlayerInputPacket || packet instanceof ServerboundPlayerCommandPacket)
+		if (TASBattle.instance.getSpectatingSystem().isSpectating() && (packet instanceof ServerboundMovePlayerPacket || packet instanceof ServerboundPlayerInputPacket || packet instanceof ServerboundPlayerCommandPacket))
 			ci.cancel();
 	}
 
