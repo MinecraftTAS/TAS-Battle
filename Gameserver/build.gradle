@@ -16,9 +16,9 @@ base {
 // Compile with UTF-8
 compileJava.options.encoding = 'UTF-8'
 
-// Compile for java 20
+// Compile for java 21
 java {
-	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_20
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 // Add repositories required for project
@@ -32,8 +32,8 @@ repositories {
 // Add paper api
 dependencies {
 	// Add lombok processor
-	compileOnly 'org.projectlombok:lombok:1.18.28'
-	annotationProcessor 'org.projectlombok:lombok:1.18.28'
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	// Add paper mc api for compile time
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
 }
@@ -44,13 +44,13 @@ sourceSets.main.java.srcDirs += ['src/ffa/java', 'src/bedwars/java']
 // Upload plugin to server [login via key]
 tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${version}.jar | sftp -oPort=13524 pancake@mgnet.work:/home/tasbattle/preview/default/plugins/".split(" ")
+	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${version}.jar | sftp -oPort=13524 root@mgnet.work:/home/tasbattle/default/plugins/".split(" ")
 }
 
-// Restart preview server
+// Restart server
 tasks.register('restartServer', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "ssh -p 13524 pancake@mgnet.work echo ${pancake_password} | sudo -S -u tasbattle screen -XS gameserver01preview quit".split(" ")
+	commandLine "ssh mgnetwork gs01 restart".split(" ")
 }
 
 upload.dependsOn = ['build']
