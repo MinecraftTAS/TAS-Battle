@@ -69,7 +69,7 @@ base {
 // Upload plugin to server [login via key]
 tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put client.jar | sftp -oPort=13524 pancake@mgnet.work:/srv/http/data/tasbattle/".split(" ")
+	commandLine "cmd.exe /k echo put client.jar | sftp -oPort=13524 root@mgnet.work:/srv/http/data/tasbattle/".split(" ")
 }
 
 upload.dependsOn = ['build']
