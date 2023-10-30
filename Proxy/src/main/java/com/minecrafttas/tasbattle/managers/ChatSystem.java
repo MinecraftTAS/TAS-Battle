@@ -3,7 +3,6 @@ package com.minecrafttas.tasbattle.managers;
 import com.minecrafttas.tasbattle.TASBattleProxy;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
@@ -16,7 +15,7 @@ import java.util.List;
  */
 public class ChatSystem {
 
-    private static final List<String> CHAT_SERVERS = Arrays.asList("lobbypreview", "gameserver01preview");
+    private static final List<String> CHAT_SERVERS = Arrays.asList("lobby", "gameserver01");
 
     private TASBattleProxy plugin;
 

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class LobbyCommand {
 
-    public static final List<String> ALLOWED_SERVERS = List.of("ffa", "bedwars", "skywars", "juggernaut", "knockffa", "cores", "survivalgames", "speeduhc");
+    public static final List<String> ALLOWED_SERVERS = List.of("gameserver01");
 
     /**
      * Initialize Lobby Command

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 public class ProxyTelemetry {
 
-    public static final File LOG_FILE = new File("/home/tasbattle/preview/telemetry/proxy.log");
+    public static final File LOG_FILE = new File("/home/tasbattle/telemetry/proxy.log");
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss", Locale.ENGLISH);
 
     private FileWriter logWriter;
