@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 public class CustomTabList {
 
     private static final List<String> TASBATTLE_SERVERS = List.of("lobby", "gameserver01");
-    private static final List<String> LAMP_SERVERS = List.of("lamp");
 
     /**
      * Initialize custom tab list
@@ -52,11 +51,6 @@ public class CustomTabList {
             player.sendPlayerListHeaderAndFooter(
                     MiniMessage.miniMessage().deserialize("<bold><red>TAS</red><gold>Battle</gold></bold>"),
                     MiniMessage.miniMessage().deserialize("<gray>Official TAS Battle Minecraft Server</gray>")
-            );
-        } else if (LAMP_SERVERS.contains(server.getName())) {
-            player.sendPlayerListHeaderAndFooter(
-                    MiniMessage.miniMessage().deserialize("<bold><aqua>Minecraft</aqua> <yellow>SMP</yellow></bold>"),
-                    MiniMessage.miniMessage().deserialize("<gray>Intercontinental Minecraft Server hosted by a bunch of idiots</gray>")
             );
         }
     }
