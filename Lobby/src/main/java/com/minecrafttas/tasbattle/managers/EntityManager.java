@@ -69,7 +69,6 @@ public class EntityManager implements Listener {
 
         } catch (Exception e) {
             this.plugin.getSLF4JLogger().error("Unable to read lobby configuration!", e);
-            e.printStackTrace();
         }
 
     }
@@ -88,7 +87,7 @@ public class EntityManager implements Listener {
         var stream = new ByteArrayOutputStream();
         var dataStream = new DataOutputStream(stream);
         dataStream.writeUTF("Connect");
-        dataStream.writeUTF("gameserver01preview");
+        dataStream.writeUTF("gameserver01");
         player.sendPluginMessage(this.plugin, BUNGEE_CHANNEL, stream.toByteArray());
         stream.close();
     }
