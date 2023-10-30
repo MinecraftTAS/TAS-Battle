@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class GameserverTelemetry implements Listener {
 
-    public static final File LOG_DIR = new File("/home/tasbattle/preview/telemetry/games/");
+    public static final File LOG_DIR = new File("/home/tasbattle/telemetry/games/");
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss", Locale.ENGLISH);
 
     private FileWriter logWriter;
