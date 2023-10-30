@@ -31,7 +31,7 @@ import java.util.function.Consumer;
  */
 public class StatsManager implements CommandExecutor {
 
-    private static final File STATS = new File("/home/tasbattle/preview/stats/");
+    private static final File STATS = new File("/home/tasbattle/stats/");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private volatile Stats cachedStats;

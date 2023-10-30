@@ -123,7 +123,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 		
 	}
 	
-	public static final File FFA_KITS = new File("/home/tasbattle/preview/default/plugins/TAS-Battle-Gameserver/ffa");
+	public static final File FFA_KITS = new File("/home/tasbattle/default/plugins/TAS-Battle-Gameserver/ffa");
 	
 	@Getter
 	private Inventory inventory;
