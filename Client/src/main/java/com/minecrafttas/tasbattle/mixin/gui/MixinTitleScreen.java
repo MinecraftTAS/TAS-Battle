@@ -86,11 +86,7 @@ By playing on our server you give us permission to store the following informati
 	@Overwrite
 	private void createNormalMenuOptions(int height, int distanceBtn) {
 		this.addRenderableWidget(Button.builder(Component.literal("Join TAS Battle"), b -> {
-			String address;
-			if(hasControlDown() && hasShiftDown())
-				address = "preview.mgnet.work";
-            else
-                address = "mgnet.work";
+			String address = "mgnet.work";
 
 			var file = new File(this.minecraft.gameDirectory, ".gdpr");
 			if (file.exists()) {
