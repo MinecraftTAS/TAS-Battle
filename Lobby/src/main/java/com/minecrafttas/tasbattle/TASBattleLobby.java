@@ -9,24 +9,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@Getter
 public class TASBattleLobby extends JavaPlugin implements Listener {
 
-	@Getter
 	private TickrateChanger tickrateChanger;
-
-	@Getter
 	private DimensionChanger dimensionChanger;
-
-	@Getter
 	private EntityManager entityManager;
-
-	@Getter
 	private BasicRestrictions basicRestrictions;
-
-	@Getter
 	private ScoreboardManager scoreboardManager;
-
-	@Getter
 	private LobbyTelemetry lobbyTelemetry;
 
 	/**
