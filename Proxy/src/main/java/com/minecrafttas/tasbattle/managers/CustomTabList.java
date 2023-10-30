@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class CustomTabList {
 
-    private static final List<String> TASBATTLE_SERVERS = List.of("lobbypreview", "gameserver01preview");
+    private static final List<String> TASBATTLE_SERVERS = List.of("lobby", "gameserver01");
     private static final List<String> LAMP_SERVERS = List.of("lamp");
 
     /**
@@ -26,7 +26,7 @@ public class CustomTabList {
         var server = plugin.getServer();
         server.getEventManager().register(plugin, this);
         server.getScheduler().buildTask(plugin, () -> {
-            server.getServer("lobbypreview").ifPresent(c -> {
+            server.getServer("lobby").ifPresent(c -> {
                 Component msg;
                 if (server.getPlayerCount() == 1)
                     msg = MiniMessage.miniMessage().deserialize("<white>There is currently <green>" + server.getPlayerCount() + " player</green> online.</white>");
