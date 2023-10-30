@@ -14,9 +14,9 @@ base {
 // Compile with UTF-8
 compileJava.options.encoding = 'UTF-8'
 
-// Compile for java 21
+// Compile for java 20
 java {
-	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_20
 }
 
 // Add repositories required for project
