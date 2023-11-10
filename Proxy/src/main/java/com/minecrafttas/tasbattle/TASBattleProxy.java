@@ -16,7 +16,7 @@ import java.nio.file.Path;
  * Proxy plugin class
  * @author Pancake
  */
-@Plugin(name = "TAS-Battle-Proxy", version = "1.0.0-SNAPSHOT", id = "proxy", authors = { "Pancake" },
+@Plugin(name = "TAS-Battle-Proxy", version = "1.0.0", id = "proxy", authors = { "Pancake" },
 		url = "https://github.com/MinecraftTAS/TAS-Battle", description = "tas battle proxy plugin")
 @Getter
 public class TASBattleProxy {
