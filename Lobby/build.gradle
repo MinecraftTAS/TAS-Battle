@@ -10,7 +10,7 @@ plugins {
 base {
 	group = "com.minecrafttas.tasbattle"
 	archivesName = "lobby"
-	version = "1.0.0-SNAPSHOT"
+	version = "1.0.0"
 }
 
 // Compile with UTF-8
