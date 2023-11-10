@@ -14,14 +14,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -71,7 +70,14 @@ public class StatsManager implements CommandExecutor {
                 action.accept(stats);
 
                 stats.getPlayers().sort(Comparator.comparingInt(PlayerData::calculateIndex).reversed());
-                Files.writeString(this.storage, GSON.toJson(stats), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.SYNC);
+
+                // empty the file first
+                try (var pw = new PrintWriter(this.storage.toFile())) {
+                    pw.write("");
+                }
+
+                // then write it - shouldn't be necessary but for some reason it doesn't work otherwise
+                Files.writeString(this.storage, GSON.toJson(stats), StandardCharsets.UTF_8);
 
                 this.cachedStats = stats;
             } catch (IOException e) {
