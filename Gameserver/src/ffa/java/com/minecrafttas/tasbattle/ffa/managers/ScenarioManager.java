@@ -82,7 +82,8 @@ public class ScenarioManager extends LobbyManager {
 				new BetterExplosionsScenario(plugin),
 				new NoDurabilityScenario(plugin),
 				new InfiniteConsumablesScenario(plugin),
-				new HardScenario()
+				new HardScenario(),
+				new NoPearlCooldownScenario(plugin)
 		);
 		
 		for (var scenario : scenarioList) {
