@@ -1,0 +1,31 @@
+{
+  "required": true,
+  "package": "com.minecrafttas.tasbattle.mixin",
+  "mixins": [
+  ],
+  "client": [
+    "MixinMinecraft",
+    "cosmetics.MixinAbstractClientPlayer",
+    "cosmetics.MixinEntityRenderer",
+    "gui.MixinDeathScreen",
+    "gui.MixinRealmsNotificationsScreen",
+    "gui.MixinSpectatorGui",
+    "gui.MixinTitleScreen",
+    "hooks.HookClientAdvancements",
+    "hooks.HookClientHandshakePacketListenerImpl",
+    "hooks.HookClientPacketListener",
+    "hooks.HookOptions",
+    "hooks.HookRecipeToast",
+    "spectator.MixinArmorStandRenderer",
+    "spectator.MixinCamera",
+    "spectator.MixinMouseHandler",
+    "tickratechanger.MixinItemRenderer",
+    "tickratechanger.MixinLevelRenderer",
+    "tickratechanger.MixinSoundEngine",
+    "tickratechanger.MixinSubtitleOverlay",
+    "tickratechanger.MixinToastInstance"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

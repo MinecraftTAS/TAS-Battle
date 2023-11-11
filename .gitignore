@@ -1,21 +1,24 @@
 # Gradle
-.gradle
-build
+**/.gradle
+**/build
 
 # Eclipse
-bin
-.settings
-.classpath
-.project
+**/bin
+**/.settings
+**/.classpath
+**/.project
 
 # IntelliJ
-.idea/
+**/.idea/
+**/out/
 
 # Minecraft
-run
+**/run
 
 # Fabric Files
-*.launch
+**/*.launch
 
 # Custom Files
 Private.java
+Server/patched_1.17.1.jar
+bot.properties

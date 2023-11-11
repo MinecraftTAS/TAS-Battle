@@ -1,0 +1,76 @@
+plugins {
+	id 'fabric-loom' version "${loom_version}"
+}
+
+java {
+	sourceCompatibility = targetCompatibility = 17
+}
+
+repositories {
+	maven { url = 'https://maven.mgnet.work' }
+	maven { url = 'https://jitpack.io' }
+	maven { url = 'https://nexus.covers1624.net/repository/maven-releases/'}
+}
+
+loom {
+	// set access widener
+	accessWidenerPath = file('src/main/resources/tasbattle.accesswidener')
+	
+	// add log4jconfig
+	log4jConfigs.from(file('log4j.xml'))
+	
+	runs {
+	    run_instance1 {
+	         inherit runs.client
+	         programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient', '--launch_profile', 'instance1'
+	         mainClass.set 'net.covers1624.devlogin.DevLogin'
+	         ideConfigGenerated true
+	    }
+		run_instance2 {
+			inherit runs.client
+			programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient', '--launch_profile', 'instance2'
+			mainClass.set 'net.covers1624.devlogin.DevLogin'
+			ideConfigGenerated true
+		}
+		run_instance3 {
+			inherit runs.client
+			programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient', '--launch_profile', 'instance3'
+			mainClass.set 'net.covers1624.devlogin.DevLogin'
+			ideConfigGenerated true
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	
+	compileOnly "org.projectlombok:lombok:${lombok_version}"
+	annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+	
+	localRuntime "net.covers1624:DevLogin:0.1.0.2"
+}
+
+processResources {
+	inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft_version
+
+
+    filesMatching("fabric.mod.json") {
+        expand 'mod_url': project.mod_url, 'name': project.mod_name, 'mod_version': project.mod_version, 'mod_description': project.mod_description, 'mod_sources': project.mod_sources
+    }
+}
+
+base {
+	archivesName = "client"
+}
+
+// Upload plugin to server [login via key]
+tasks.register('upload', Exec) {
+	workingDir "${buildDir}/libs"
+	commandLine "cmd.exe /k echo put client.jar | sftp -oPort=13524 root@mgnet.work:/srv/http/data/tasbattle/".split(" ")
+}
+
+upload.dependsOn = ['build']
+upload.group = 'tasbattle'

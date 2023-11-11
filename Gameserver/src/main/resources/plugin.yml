@@ -1,0 +1,31 @@
+# Plugin specific
+name: TAS-Battle-Gameserver
+version: 1.0.0
+description: tas battle gameserver plugin
+author: Pancake
+website: https://minecrafttas.com/tas-battle/
+
+# Implementation specific
+main: com.minecrafttas.tasbattle.TASBattleGameserver
+load: POSTWORLD
+api-version: 1.19
+
+commands:
+    tickrate:
+        usage: /tickrate <tickrate>
+        description: Updates the tickrate
+    ffa:
+        usage: /ffa <save/load/delete>
+        description: FFA commands
+    ready:
+        usage: /ready <force>
+        description: Set yourself to ready
+    halt:
+        usage: /halt
+        description: Halts the server immediately
+    stats:
+        usage: /stats
+        description: Show the players current statistics
+    orbit:
+        usage: /orbit <player>
+        description: Orbit a player

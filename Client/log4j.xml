@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="com.minecrafttas.">
+	<Filters>
+	</Filters>
+	<Appenders>
+		<Console name="SysOut2" target="SYSTEM_OUT">
+			<PatternLayout disableAnsi="${sys:fabric.log.disableAnsi:-true}">
+					<pattern>%style{[%d{HH:mm:ss}]}{blue} %highlight{[%t/%level]}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=blue} %style{(%logger{1}%notEmpty{/%marker})}{cyan} %highlight{%msg%n}{FATAL=red, ERROR=red, WARN=normal, INFO=normal, DEBUG=normal, TRACE=normal}</pattern>
+			</PatternLayout>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger level="${sys:tasbattle.log.level:-info}" name="TASBattle" additivity="false">
+			<AppenderRef ref="SysOut2" level="${sys:tasbattle.log.level:-info}"/>
+		</Logger>
+	</Loggers>
+</Configuration>

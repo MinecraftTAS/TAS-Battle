@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "tasbattle",
+	"version": "${mod_version}",
+	"name": "${name}",
+	"description": "${mod_description}",
+	"authors": [
+		"Pancake",
+		"Scribble"
+	],
+	"contact": {
+		"homepage": "${mod_url}",
+		"sources": "${mod_sources}"
+	},
+
+	"license": "GPLv3",
+	"icon": "",
+	"environment": "client",
+	"accessWidener": "tasbattle.accesswidener",
+	"entrypoints": {
+		"main": [
+			"com.minecrafttas.tasbattle.TASBattle"
+		]
+	},
+	"mixins": [
+		"tasbattle.mixin.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.19",
+		"minecraft": "~1.19.4",
+		"java": ">=17"
+	}
+}

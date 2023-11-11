@@ -1,0 +1,19 @@
+accessWidener v1 named
+
+accessible field net/minecraft/client/Minecraft timer Lnet/minecraft/client/Timer;
+accessible field net/minecraft/client/Timer msPerTick F
+mutable field net/minecraft/client/Timer msPerTick F
+
+accessible field net/minecraft/client/KeyMapping CATEGORY_SORT_ORDER Ljava/util/Map;
+
+accessible field net/minecraft/client/KeyMapping key Lcom/mojang/blaze3d/platform/InputConstants$Key;
+
+accessible method net/minecraft/client/Camera setPosition (Lnet/minecraft/world/phys/Vec3;)V
+accessible method net/minecraft/client/Camera setPosition (DDD)V
+accessible method net/minecraft/client/Camera getPosition ()Lnet/minecraft/world/phys/Vec3;
+accessible method net/minecraft/client/Camera setRotation (FF)V
+
+accessible field net/minecraft/client/multiplayer/ClientLevel effects Lnet/minecraft/client/renderer/DimensionSpecialEffects;
+mutable field net/minecraft/client/multiplayer/ClientLevel effects Lnet/minecraft/client/renderer/DimensionSpecialEffects;
+
+accessible class net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance
