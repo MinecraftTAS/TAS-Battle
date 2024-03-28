@@ -14,7 +14,7 @@ public class DimensionChanger implements PluginMessageListener {
 
     private static final String DC_CHANNEL = "dimensionchanger:data";
 
-    private TASBattleLobby plugin;
+    private final TASBattleLobby plugin;
 
     /**
      * Initialize dimension changer module
