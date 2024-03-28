@@ -5,7 +5,6 @@ import com.minecrafttas.tasbattle.ffa.FFA;
 import com.minecrafttas.tasbattle.gui.GuiHandler;
 import com.minecrafttas.tasbattle.lobby.Lobby;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
-import com.minecrafttas.tasbattle.managers.GameserverTelemetry;
 import com.minecrafttas.tasbattle.managers.SpectatingCommand;
 import com.minecrafttas.tasbattle.managers.TickrateChanger;
 import com.minecrafttas.tasbattle.stats.StatsManager;
@@ -41,7 +40,6 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 	private GameMode gameMode;
 	private StatsManager statsManager;
 	private Lobby lobby;
-	private GameserverTelemetry telemetry;
 	private SpectatingCommand spectatingCommand;
 	
 	/**
@@ -55,7 +53,6 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 		Bukkit.getWorlds().forEach(w -> w.setAutoSave(false));
 
 		this.tickrateChanger = new TickrateChanger(this);
-		this.telemetry = new GameserverTelemetry(this);
 		this.spectatingCommand = new SpectatingCommand(this);
 
 		var mode = System.getProperty("mode");
