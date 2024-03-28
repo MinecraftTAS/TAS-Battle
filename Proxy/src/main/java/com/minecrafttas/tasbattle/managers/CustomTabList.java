@@ -24,19 +24,16 @@ public class CustomTabList {
     public CustomTabList(TASBattleProxy plugin) {
         var server = plugin.getServer();
         server.getEventManager().register(plugin, this);
-        server.getScheduler().buildTask(plugin, () -> {
-            server.getServer("lobby").ifPresent(c -> {
-                Component msg;
-                if (server.getPlayerCount() == 1)
-                    msg = MiniMessage.miniMessage().deserialize("<white>There is currently <green>" + server.getPlayerCount() + " player</green> online.</white>");
-                else
-                    msg = MiniMessage.miniMessage().deserialize("<white>There are currently <green>" + server.getPlayerCount() + " players</green> online.</white>");
+        server.getScheduler().buildTask(plugin, () -> server.getServer("lobby").ifPresent(c -> {
+            Component msg;
+            if (server.getPlayerCount() == 1)
+                msg = MiniMessage.miniMessage().deserialize("<white>There is currently <green>" + server.getPlayerCount() + " player</green> online.</white>");
+            else
+                msg = MiniMessage.miniMessage().deserialize("<white>There are currently <green>" + server.getPlayerCount() + " players</green> online.</white>");
 
-                for (var p : c.getPlayersConnected())
-                    p.sendActionBar(msg);
-            });
-
-        }).repeat(2L, TimeUnit.SECONDS).schedule();
+            for (var p : c.getPlayersConnected())
+                p.sendActionBar(msg);
+        })).repeat(2L, TimeUnit.SECONDS).schedule();
     }
 
     /**
@@ -45,9 +42,13 @@ public class CustomTabList {
      */
     @Subscribe
     public void onPlayerJoin(ServerPostConnectEvent e) {
+        // get server
         var player = e.getPlayer();
-        var server = player.getCurrentServer().get().getServerInfo();
-        if (TASBATTLE_SERVERS.contains(server.getName())) {
+        var server = player.getCurrentServer().orElse(null);
+        if (server == null) return;
+
+        // check if server is TAS Battle server
+        if (TASBATTLE_SERVERS.contains(server.getServerInfo().getName())) {
             player.sendPlayerListHeaderAndFooter(
                     MiniMessage.miniMessage().deserialize("<bold><red>TAS</red><gold>Battle</gold></bold>"),
                     MiniMessage.miniMessage().deserialize("<gray>Official TAS Battle Minecraft Server</gray>")

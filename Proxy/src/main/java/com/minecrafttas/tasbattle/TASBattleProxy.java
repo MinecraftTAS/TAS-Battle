@@ -9,7 +9,6 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -42,7 +41,7 @@ public class TASBattleProxy {
 	 * @param e Proxy initialization event
 	 */
 	@Subscribe
-	public void onProxyInitialization(ProxyInitializeEvent e) throws IOException {
+	public void onProxyInitialization(ProxyInitializeEvent e) {
 		// initialize managers
 		this.dataManager = new DataManager(this);
 		this.lobbyCommand = new LobbyCommand(this);

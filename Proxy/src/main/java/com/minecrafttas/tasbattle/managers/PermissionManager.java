@@ -19,7 +19,7 @@ public class PermissionManager {
     /**
      * List of all admins
      */
-    private static List<UUID> ADMINS = List.of(
+    private final static List<UUID> ADMINS = List.of(
             UUID.fromString("f3112feb-00c1-4de8-9829-53b940342996"),
             UUID.fromString("b8abdafc-5002-40df-ab68-63206ea4c7e8"),
             UUID.fromString("faed0946-bb7f-4fcc-bff1-5fb9ef75a066"),
