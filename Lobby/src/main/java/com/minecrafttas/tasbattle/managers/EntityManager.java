@@ -147,9 +147,9 @@ public class EntityManager implements Listener {
         // dataValues.add(synchedEntityDataDataValue);
         dataValues.getClass().getMethod("add", Object.class).invoke(dataValues, synchedEntityDataDataValue);
         // var playerInfo = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer);
-        var playerInfo = playerInfoClass.getConstructors()[1].newInstance(playerInfoActionClass.getEnumConstants()[0], fakePlayer);
+        var playerInfo = playerInfoClass.getConstructors()[2].newInstance(playerInfoActionClass.getEnumConstants()[0], fakePlayer);
         // var addPlayer = new ClientboundAddPlayerPacket(fakePlayer);
-        var addPlayer = addPlayerClass.getConstructors()[0].newInstance(fakePlayer);
+        var addPlayer = addPlayerClass.getConstructors()[1].newInstance(fakePlayer);
         // var changeSkin = new ClientboundSetEntityDataPacket(fakePlayerId, dataValues);
         var changeSkin = changeSkinClass.getConstructors()[1].newInstance(fakePlayerId, dataValues);
         // var connection = player.connection;
