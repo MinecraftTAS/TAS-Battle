@@ -27,7 +27,6 @@ public class TASBattleProxy {
 	private PermissionManager permissionManager;
 	private ChatSystem chatSystem;
 	private CustomTabList customTabList;
-	private ProxyTelemetry proxyTelemetry;
 
 	/**
      * Construct proxy plugin
@@ -50,7 +49,6 @@ public class TASBattleProxy {
 		this.permissionManager = new PermissionManager(this);
 		this.chatSystem = new ChatSystem(this);
 		this.customTabList = new CustomTabList(this);
-		this.proxyTelemetry = new ProxyTelemetry(this);
 	}
 
 }
