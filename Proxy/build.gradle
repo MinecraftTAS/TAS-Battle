@@ -39,15 +39,8 @@ dependencies {
 // Upload plugin to server [login via key]
 tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${project.version}.jar | sftp -oPort=13524 root@mgnet.work:/home/tasbattle/proxy/plugins/".split(" ")
-}
-
-// Restart proxy server
-tasks.register('restartServer', Exec) {
-	workingDir "${buildDir}/libs"
-	commandLine "ssh mgnetwork proxy restart".split(" ")
+	commandLine "bash", "-c", "echo put ${base.archivesName.get()}-${project.version}.jar | sftp mgnetwork:/home/tasbattle/proxy/plugins/"
 }
 
 upload.dependsOn = ['build']
-upload.finalizedBy(restartServer)
 upload.group = 'tasbattle'
