@@ -41,15 +41,8 @@ dependencies {
 // Upload plugin to server [login via key]
 tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${version}.jar | sftp -oPort=13524 root@mgnet.work:/home/tasbattle/lobby/plugins/".split(" ")
-}
-
-// Restart server
-tasks.register('restartServer', Exec) {
-	workingDir "${buildDir}/libs"
-	commandLine "ssh mgnetwork lobby restart".split(" ")
+	commandLine "bash", "-c", "echo put ${base.archivesName.get()}-${project.version}.jar | sftp mgnetwork:/home/tasbattle/lobby/plugins/"
 }
 
 upload.dependsOn = ['build']
-upload.finalizedBy(restartServer)
 upload.group = 'tasbattle'
