@@ -9,6 +9,6 @@ import java.util.List;
 public class Stats {
 
     private final String mode;
-    private final List<PlayerData> players = new ArrayList<PlayerData>();
+    private final List<PlayerData> players = new ArrayList<>();
 
 }

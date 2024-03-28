@@ -20,9 +20,9 @@ import com.minecrafttas.tasbattle.TASBattleGameserver;
  */
 public class Team implements Listener {
 
-	private World world;
-	private Location[] baseLocations;
-	private Player[][] teamPlayers;
+	private final World world;
+	private final Location[] baseLocations;
+	private final Player[][] teamPlayers;
 	
 	/**
 	 * Initialize teams

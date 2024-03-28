@@ -25,9 +25,9 @@ import org.bukkit.util.Vector;
  */
 public class ExplosivePhysics implements Listener {
 
-	private TASBattleGameserver plugin;
-	private PlacementRules placementRules;
-	private List<Player> timeout;
+	private final TASBattleGameserver plugin;
+	private final PlacementRules placementRules;
+	private final List<Player> timeout;
 	
 	/**
 	 * Initialize explosive physics
@@ -125,9 +125,7 @@ public class ExplosivePhysics implements Listener {
 
 		// add cooldown
 		this.timeout.add(player);
-		Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-			this.timeout.remove(player);
-		}, 10L);
+		Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.timeout.remove(player), 10L);
 	}
 	
 }

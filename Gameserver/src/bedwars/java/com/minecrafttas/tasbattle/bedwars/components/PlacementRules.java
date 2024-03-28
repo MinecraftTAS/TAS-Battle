@@ -17,7 +17,7 @@ import com.minecrafttas.tasbattle.TASBattleGameserver;
  */
 public class PlacementRules implements Listener {
 
-	private List<Location> placedBlocks;
+	private final List<Location> placedBlocks;
 	
 	/**
 	 * Initialize placement rules

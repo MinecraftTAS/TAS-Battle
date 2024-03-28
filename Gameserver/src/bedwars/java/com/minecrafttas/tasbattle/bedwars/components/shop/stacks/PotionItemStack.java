@@ -15,7 +15,7 @@ public class PotionItemStack extends PurchasableItemStack {
 	 * @param price Price type
 	 * @param amount Price amount
 	 * @param effect Potion effect
-	 * @param color Potion color
+	 * @param potion Potion color
 	 * @param name Item name
 	 */
 	public PotionItemStack(Price price, int amount, PotionEffect effect, Color potion, String name) {

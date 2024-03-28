@@ -8,8 +8,8 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
+import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -22,20 +22,23 @@ import java.nio.file.Path;
 public class TASBattleProxy {
 
 	private final ProxyServer server;
+	private final Logger logger;
 	private DataManager dataManager;
 	private LobbyCommand lobbyCommand;
 	private PermissionManager permissionManager;
 	private ChatSystem chatSystem;
 	private CustomTabList customTabList;
-	private ProxyTelemetry proxyTelemetry;
 
 	/**
      * Construct proxy plugin
      * @param server Proxy server instance
+	 * @param logger Logger instance
+	 * @param dataDirectory Data directory
      */
 	@Inject
-	public TASBattleProxy(ProxyServer server, @DataDirectory Path dataDirectory) {
+	public TASBattleProxy(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
 		this.server = server;
+		this.logger = logger;
 	}
 
 	/**
@@ -43,14 +46,13 @@ public class TASBattleProxy {
 	 * @param e Proxy initialization event
 	 */
 	@Subscribe
-	public void onProxyInitialization(ProxyInitializeEvent e) throws IOException {
+	public void onProxyInitialization(ProxyInitializeEvent e) {
 		// initialize managers
 		this.dataManager = new DataManager(this);
 		this.lobbyCommand = new LobbyCommand(this);
 		this.permissionManager = new PermissionManager(this);
 		this.chatSystem = new ChatSystem(this);
 		this.customTabList = new CustomTabList(this);
-		this.proxyTelemetry = new ProxyTelemetry(this);
 	}
 
 }

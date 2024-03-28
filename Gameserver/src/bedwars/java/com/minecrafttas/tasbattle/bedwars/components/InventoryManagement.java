@@ -40,11 +40,11 @@ public class InventoryManagement implements Listener {
 		Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS
 	);
 	
-	private List<Player> players;
-	private Map<Player, Integer> pickaxeTiers;
-	private Map<Player, Integer> axeTiers;
-	private Map<Player, Integer> shearsTiers;	
-	private Map<Player, Integer> armorTiers;
+	private final List<Player> players;
+	private final Map<Player, Integer> pickaxeTiers;
+	private final Map<Player, Integer> axeTiers;
+	private final Map<Player, Integer> shearsTiers;
+	private final Map<Player, Integer> armorTiers;
 	
 	/**
 	 * Initialize inventory management
@@ -76,7 +76,7 @@ public class InventoryManagement implements Listener {
 				inv.remove(Material.WOODEN_SWORD);
 			} else if (woodenSwords.size() > 1)
 				inv.remove(woodenSwords.values().iterator().next());
-			else if (woodenSwords.size() == 0)
+			else if (woodenSwords.isEmpty())
 				inv.addItem(new ItemStack(Material.WOODEN_SWORD));
 			
 			// verify the correct tier of armor is in the inventory

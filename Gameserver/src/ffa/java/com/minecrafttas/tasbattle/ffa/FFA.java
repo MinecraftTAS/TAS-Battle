@@ -1,24 +1,6 @@
 package com.minecrafttas.tasbattle.ffa;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Date;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.minecrafttas.tasbattle.TASBattleGameserver;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.apache.commons.lang3.tuple.Pair;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-
 import com.minecrafttas.tasbattle.TASBattleGameserver.GameMode;
 import com.minecrafttas.tasbattle.ffa.components.GameLogic;
 import com.minecrafttas.tasbattle.ffa.managers.KitManager;
@@ -27,36 +9,35 @@ import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager;
 import com.minecrafttas.tasbattle.ffa.utils.SpreadplayersUtils;
 import com.minecrafttas.tasbattle.loading.WorldUtils;
 import com.minecrafttas.tasbattle.lobby.LobbyManager;
-
 import lombok.Getter;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 
-import static com.minecrafttas.tasbattle.managers.GameserverTelemetry.FORMAT;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * FFA gamemode
  * @author Pancake
  */
+@Getter
 public class FFA implements GameMode {
 	
-	@Getter
-	private TASBattleGameserver plugin;
-	
-	@Getter
-	private World world;
-	
-	@Getter
-	private KitManager kitManager;
-	
-	@Getter
-	private ScenarioManager scenarioManager;
-	
-	@Getter
+	private final TASBattleGameserver plugin;
+	private final World world;
+	private final KitManager kitManager;
+	private final ScenarioManager scenarioManager;
 	private GameLogic gameLogic;
 		
 	/**
 	 * Initialize ffa gamemode
 	 * @param plugin Plugin
-	 * @param dev Development moed
 	 */
 	public FFA(TASBattleGameserver plugin) {
 		this.plugin = plugin;
@@ -71,7 +52,7 @@ public class FFA implements GameMode {
 		var worldName = availableWorlds[(int) (Math.random() * availableWorlds.length)].getName();
 		this.world = WorldUtils.loadWorld(worldName);
 
-		this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: FFA: %s (%s kits available) (%s scenarios available)\n", FORMAT.format(Date.from(Instant.now())), worldName, this.kitManager.getKits().size() + "", this.scenarioManager.getScenarios().size()));
+		this.plugin.getSLF4JLogger().info("Finished loading ffa gamemode on world {}, with {} kits available and {} scenarios available", worldName, this.kitManager.getKits().size(), this.scenarioManager.getScenarios().size());
 	}
 	
 	@Override
@@ -97,12 +78,12 @@ public class FFA implements GameMode {
 		// print messages
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>The game has started.</green>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The most voted kit is: <green>" + kit.getName() + "</green></gray>"));
-		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>and the enabled scenarios are: <green>" + scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", ")) + "</green></gray>"));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>and the enabled scenarios are: <green>" + scenarios.stream().map(ScenarioManager.AbstractScenario::getTitle).collect(Collectors.joining(", ")) + "</green></gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize(""));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>Every player has been spread across the map. <red>Cross teaming is not allowed!</red></gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The last person alive will be the winner.</gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize(""));
-		this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: players: %s, scenarios: %s, kit: %s\n", FORMAT.format(Date.from(Instant.now())), players.stream().map(Player::getName).collect(Collectors.joining(", ")), scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", ")), kit.getName()));
+		this.plugin.getSLF4JLogger().info("Started game with {} players, kit: {}, scenarios: {}", players.size(), kit.getName(), scenarios.stream().map(ScenarioManager.AbstractScenario::getTitle).collect(Collectors.joining(", ")));
 
 		// update players
 		for (var p : players) {

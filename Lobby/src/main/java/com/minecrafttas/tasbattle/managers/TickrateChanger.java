@@ -29,8 +29,8 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	
 	private static final String TRC_CHANNEL = "tickratechanger:data";
 
-	private HashMap<UUID, BukkitTask> verificationTimers = new HashMap<>();
-	private TASBattleLobby plugin;
+	private final HashMap<UUID, BukkitTask> verificationTimers = new HashMap<>();
+	private final TASBattleLobby plugin;
 	private float tickrate;
 	
 	/**
@@ -79,7 +79,7 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	
 	/**
 	 * Update tickrate for player
-	 * @param p
+	 * @param p Player
 	 */
 	private void updatePlayer(Player p) {
 		p.sendPluginMessage(plugin, TickrateChanger.TRC_CHANNEL, ByteBuffer.allocate(4).putFloat(this.tickrate).array());

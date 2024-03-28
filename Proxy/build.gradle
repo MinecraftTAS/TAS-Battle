@@ -14,9 +14,9 @@ base {
 // Compile with UTF-8
 compileJava.options.encoding = 'UTF-8'
 
-// Compile for java 20
+// Compile for java 21
 java {
-	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_20
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 // Add repositories required for project
@@ -28,8 +28,8 @@ repositories {
 // Add velocity api
 dependencies {
 	// Add velocity api for compile time and as annotation processor
-    compileOnly "com.velocitypowered:velocity-api:3.2.0-SNAPSHOT"
-    annotationProcessor "com.velocitypowered:velocity-api:3.2.0-SNAPSHOT"
+    compileOnly "com.velocitypowered:velocity-api:3.3.0-SNAPSHOT"
+    annotationProcessor "com.velocitypowered:velocity-api:3.3.0-SNAPSHOT"
     
 	// Add lombok processor
 	compileOnly "org.projectlombok:lombok:1.18.30"
@@ -39,15 +39,8 @@ dependencies {
 // Upload plugin to server [login via key]
 tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${project.version}.jar | sftp -oPort=13524 root@mgnet.work:/home/tasbattle/proxy/plugins/".split(" ")
-}
-
-// Restart proxy server
-tasks.register('restartServer', Exec) {
-	workingDir "${buildDir}/libs"
-	commandLine "ssh mgnetwork proxy restart".split(" ")
+	commandLine "bash", "-c", "echo put ${base.archivesName.get()}-${project.version}.jar | sftp mgnetwork:/home/tasbattle/proxy/plugins/"
 }
 
 upload.dependsOn = ['build']
-upload.finalizedBy(restartServer)
 upload.group = 'tasbattle'

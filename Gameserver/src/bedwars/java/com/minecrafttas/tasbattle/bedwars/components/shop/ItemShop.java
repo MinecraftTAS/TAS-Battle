@@ -19,14 +19,12 @@ import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.PurchasableItem
 import com.minecrafttas.tasbattle.bedwars.components.shop.stacks.PurchasableItemStack.Price;
 import com.minecrafttas.tasbattle.gui.PagedInventory;
 
-import net.kyori.adventure.text.Component;
-
 /**
  * Bedwards item shop
  */
 public class ItemShop extends PagedInventory {
 
-	private InventoryManagement invMng;
+	private final InventoryManagement invMng;
 	
 	/**
 	 * Initialize item shop
@@ -63,7 +61,7 @@ public class ItemShop extends PagedInventory {
 			new PurchasableItemStack(Price.GOLD, 4, Material.OAK_PLANKS, 16, "Wood"),
 			new PurchasableItemStack(Price.EMERALD, 4, Material.OBSIDIAN, 4, "Obsidian"),
 		};
-		this.setPage(1, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
+		this.setPage(1, new Page(item, items, Arrays.stream(items).map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		// weapons page
 		item = new NamedItemStack(Material.GOLDEN_SWORD, 1, "Weapons");
@@ -74,7 +72,7 @@ public class ItemShop extends PagedInventory {
 			new PurchasableItemStack(Price.EMERALD, 4, Material.DIAMOND_SWORD, 1, "Diamond Sword"),
 			new EnchantedItemStack(Price.GOLD, 5, Material.STICK, new Enchantment[] { Enchantment.KNOCKBACK }, new int[] { 2 }, "Knockback Stick"),
 		};
-		this.setPage(2, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
+		this.setPage(2, new Page(item, items, Arrays.stream(items).map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		// armor page
 		item = new NamedItemStack(Material.CHAINMAIL_BOOTS, 1, "Armor");
@@ -102,7 +100,7 @@ public class ItemShop extends PagedInventory {
 				return false;
 			}),
 		};
-		this.setPage(3, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
+		this.setPage(3, new Page(item, items, Arrays.stream(items).map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		// tools page
 		item = new NamedItemStack(Material.STONE_PICKAXE, 1, "Tools");
@@ -122,10 +120,10 @@ public class ItemShop extends PagedInventory {
 		// pickaxe
 		var pickaxeTier = this.invMng.getPickaxeTier(p);
 		items[1] = switch (pickaxeTier) {
-			case -1: yield new CustomItemStack(Price.IRON, 10, Material.WOODEN_PICKAXE, 1, "Wooden Pickaxe", player -> this.invMng.increasePickaxeTier(player));
-			case 0: yield new CustomItemStack(Price.IRON, 10, Material.STONE_PICKAXE, 1, "Stone Pickaxe", player -> this.invMng.increasePickaxeTier(player));
-			case 1: yield new CustomItemStack(Price.GOLD, 3, Material.IRON_PICKAXE, 1, "Iron Pickaxe", player -> this.invMng.increasePickaxeTier(player));
-			case 2: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_PICKAXE, 1, "Diamond Pickaxe", player -> this.invMng.increasePickaxeTier(player));
+			case -1: yield new CustomItemStack(Price.IRON, 10, Material.WOODEN_PICKAXE, 1, "Wooden Pickaxe", this.invMng::increasePickaxeTier);
+			case 0: yield new CustomItemStack(Price.IRON, 10, Material.STONE_PICKAXE, 1, "Stone Pickaxe", this.invMng::increasePickaxeTier);
+			case 1: yield new CustomItemStack(Price.GOLD, 3, Material.IRON_PICKAXE, 1, "Iron Pickaxe", this.invMng::increasePickaxeTier);
+			case 2: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_PICKAXE, 1, "Diamond Pickaxe", this.invMng::increasePickaxeTier);
 			case 3: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_PICKAXE, 1, "Diamond Pickaxe", player -> false);
 			default: throw new IllegalArgumentException("Unexpected value: " + pickaxeTier);
 		};
@@ -133,15 +131,15 @@ public class ItemShop extends PagedInventory {
 		// axe
 		var axeTier = this.invMng.getAxeTier(p);
 		items[2] = switch (axeTier) {
-			case -1: yield new CustomItemStack(Price.IRON, 10, Material.WOODEN_AXE, 1, "Wooden Axe", player -> this.invMng.increaseAxeTier(player));
-			case 0: yield new CustomItemStack(Price.IRON, 10, Material.STONE_AXE, 1, "Stone Axe", player -> this.invMng.increaseAxeTier(player));
-			case 1: yield new CustomItemStack(Price.GOLD, 3, Material.IRON_AXE, 1, "Iron Axe", player -> this.invMng.increaseAxeTier(player));
-			case 2: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_AXE, 1, "Diamond Axe", player -> this.invMng.increaseAxeTier(player));
+			case -1: yield new CustomItemStack(Price.IRON, 10, Material.WOODEN_AXE, 1, "Wooden Axe", this.invMng::increaseAxeTier);
+			case 0: yield new CustomItemStack(Price.IRON, 10, Material.STONE_AXE, 1, "Stone Axe", this.invMng::increaseAxeTier);
+			case 1: yield new CustomItemStack(Price.GOLD, 3, Material.IRON_AXE, 1, "Iron Axe", this.invMng::increaseAxeTier);
+			case 2: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_AXE, 1, "Diamond Axe", this.invMng::increaseAxeTier);
 			case 3: yield new CustomItemStack(Price.GOLD, 6, Material.DIAMOND_AXE, 1, "Diamond Axe", player -> false);
 			default: throw new IllegalArgumentException("Unexpected value: " + axeTier);
 		};
 		
-		this.setPage(4, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
+		this.setPage(4, new Page(item, items, Arrays.stream(items).map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		// bows page
 		item = new NamedItemStack(Material.BOW, 1, "Bows");
@@ -152,7 +150,7 @@ public class ItemShop extends PagedInventory {
 			new EnchantedItemStack(Price.GOLD, 24, Material.BOW, new Enchantment[] { Enchantment.ARROW_DAMAGE }, new int[] { 1 }, "Bow II"),
 			new EnchantedItemStack(Price.EMERALD, 6, Material.BOW, new Enchantment[] { Enchantment.ARROW_DAMAGE, Enchantment.ARROW_KNOCKBACK }, new int[] { 1, 1 }, "Bow III"),
 		};
-		this.setPage(5, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
+		this.setPage(5, new Page(item, items, Arrays.stream(items).map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		// potions page
 		item = new NamedItemStack(Material.BREWING_STAND, 1, "Potions");
@@ -162,7 +160,7 @@ public class ItemShop extends PagedInventory {
 			new PotionItemStack(Price.EMERALD, 1, new PotionEffect(PotionEffectType.JUMP, 45*20, 4), Color.fromRGB(0xE6E6FA), "Jump Boost V Potion"),
 			new PotionItemStack(Price.EMERALD, 2, new PotionEffect(PotionEffectType.INVISIBILITY, 30*20, 0), Color.fromRGB(0x9c9d97), "Invisibility Potion")
 		};
-		this.setPage(6, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
+		this.setPage(6, new Page(item, items, Arrays.stream(items).map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		// secondaries page
 		item = new NamedItemStack(Material.TNT, 1, "Utilities");
@@ -174,7 +172,7 @@ public class ItemShop extends PagedInventory {
 			new PurchasableItemStack(Price.EMERALD, 4, Material.ENDER_PEARL, 1, "Obsidian"),
 			new PurchasableItemStack(Price.GOLD, 3, Material.WATER_BUCKET, 1, "Obsidian"),
 		};
-		this.setPage(7, new Page(item, items, Arrays.asList(items).stream().map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
+		this.setPage(7, new Page(item, items, Arrays.stream(items).map(i -> i == null ? null : i.purchase()).toArray(Interaction[]::new)));
 		
 		this.onInteract(null, 1);
 //		this.onInteract(0);

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SlowerTickrateScenario extends AbstractScenario {
 
-	private TASBattleGameserver plugin;
+	private final TASBattleGameserver plugin;
 
 	public SlowerTickrateScenario(TASBattleGameserver plugin) {
 		super("Slower Tickrate", new String[] {"Slow down the game to 3.33333tps"}, Material.SOUL_SAND);

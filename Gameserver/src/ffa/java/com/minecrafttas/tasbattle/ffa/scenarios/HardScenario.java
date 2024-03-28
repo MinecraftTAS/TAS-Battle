@@ -3,7 +3,6 @@ package com.minecrafttas.tasbattle.ffa.scenarios;
 import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager.AbstractScenario;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.List;

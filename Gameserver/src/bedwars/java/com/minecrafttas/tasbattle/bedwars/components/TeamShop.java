@@ -23,16 +23,14 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import com.minecrafttas.tasbattle.TASBattleGameserver;
 import com.minecrafttas.tasbattle.bedwars.components.shop.ItemShop;
 
-import net.kyori.adventure.text.Component;
-
 /**
  * Shop villager
  */
 public class TeamShop implements Listener {
 
-	private World world;
-	private InventoryManagement invMng;
-	private List<Villager> itemShopLocations;
+	private final World world;
+	private final InventoryManagement invMng;
+	private final List<Villager> itemShopLocations;
 	
 	/**
 	 * Initialize team shop

@@ -14,10 +14,10 @@ import net.kyori.adventure.text.Component;
  * @author Pancake
  */
 public class ClickableInventory {
-	public static interface Interaction extends Consumer<Player> {}
+	public interface Interaction extends Consumer<Player> {}
 	
-	private Inventory inv;
-	private Interaction[] interactions;
+	private final Inventory inv;
+	private final Interaction[] interactions;
 	
 	/**
 	 * Initialize inventory with actions

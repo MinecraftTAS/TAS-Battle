@@ -14,7 +14,7 @@ import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager.AbstractScenario;
 
 public class DisableDropsScenario extends AbstractScenario {
 
-	private JavaPlugin plugin;
+	private final JavaPlugin plugin;
 	
 	public DisableDropsScenario(JavaPlugin plugin) {
 		super("Disable Drops", new String[] {"Items and players don't drop anymore"}, Material.BARRIER);

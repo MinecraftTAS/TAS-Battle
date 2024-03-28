@@ -17,7 +17,6 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 	private EntityManager entityManager;
 	private BasicRestrictions basicRestrictions;
 	private ScoreboardManager scoreboardManager;
-	private LobbyTelemetry lobbyTelemetry;
 
 	/**
 	 * Enable tasbattle lobby mod
@@ -32,13 +31,6 @@ public class TASBattleLobby extends JavaPlugin implements Listener {
 		this.entityManager = new EntityManager(this);
 		this.basicRestrictions = new BasicRestrictions(this);
 		this.scoreboardManager = new ScoreboardManager(this);
-		this.lobbyTelemetry = new LobbyTelemetry(this);
-	}
-
-	@SneakyThrows
-	@Override
-	public void onDisable() {
-		this.lobbyTelemetry.onShutdown();
 	}
 
 	@EventHandler

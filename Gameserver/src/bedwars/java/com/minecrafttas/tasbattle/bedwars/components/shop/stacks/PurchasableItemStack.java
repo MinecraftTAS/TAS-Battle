@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,6 +17,7 @@ import java.util.List;
 /**
  * Purchasable item stack in shop inventory
  */
+@Getter
 public class PurchasableItemStack extends ItemStack {
 	
 	/**
@@ -32,8 +32,8 @@ public class PurchasableItemStack extends ItemStack {
 		
 	}
 	
-	@Getter private final Price price;
-	@Getter private final int priceAmount;
+	private final Price price;
+	private final int priceAmount;
 	
 	/**
 	 * Initialize purchasable item stack

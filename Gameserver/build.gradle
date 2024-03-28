@@ -2,8 +2,6 @@
 plugins {
 	// Add java library
     id 'java-library'
-    // Add eclipse project
-    id 'eclipse'
 }
 
 // Update plugin info
@@ -44,15 +42,8 @@ sourceSets.main.java.srcDirs += ['src/ffa/java', 'src/bedwars/java']
 // Upload plugin to server [login via key]
 tasks.register('upload', Exec) {
 	workingDir "${buildDir}/libs"
-	commandLine "cmd.exe /k echo put ${base.archivesName.get()}-${version}.jar | sftp -oPort=13524 root@mgnet.work:/home/tasbattle/default/plugins/".split(" ")
-}
-
-// Restart server
-tasks.register('restartServer', Exec) {
-	workingDir "${buildDir}/libs"
-	commandLine "ssh mgnetwork gs01 restart".split(" ")
+	commandLine "bash", "-c", "echo put ${base.archivesName.get()}-${project.version}.jar | sftp mgnetwork:/home/tasbattle/default/plugins/"
 }
 
 upload.dependsOn = ['build']
-upload.finalizedBy(restartServer)
 upload.group = 'tasbattle'

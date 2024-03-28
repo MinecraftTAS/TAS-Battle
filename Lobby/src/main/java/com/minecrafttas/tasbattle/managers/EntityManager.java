@@ -28,13 +28,12 @@ public class EntityManager implements Listener {
 
     private static final String BUNGEE_CHANNEL = "BungeeCord";
 
-    private TASBattleLobby plugin;
-    private Slime actionSlime;
+    private final TASBattleLobby plugin;
 
     private Location location;
     private UUID uuid;
     private String name;
-    private Component customName = Component.text("Action Slime");
+    private final Component customName = Component.text("Action Slime");
 
     /**
      * Initialize entity manager
@@ -55,16 +54,16 @@ public class EntityManager implements Listener {
             this.location = new Location(world, config.getDouble("posX"), config.getDouble("posY") + .5, config.getDouble("posZ"));
             this.uuid = UUID.fromString(config.getString("uuid"));
             this.name = config.getString("name");
-            this.actionSlime = (Slime) world.spawnEntity(location, EntityType.SLIME);
-            this.actionSlime.customName(this.customName);
-            this.actionSlime.setAI(false);
-            this.actionSlime.setInvulnerable(true);
-            this.actionSlime.setSize(5);
-            this.actionSlime.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 0, false, false));
+            var actionSlime = (Slime) world.spawnEntity(location, EntityType.SLIME);
+            actionSlime.customName(this.customName);
+            actionSlime.setAI(false);
+            actionSlime.setInvulnerable(true);
+            actionSlime.setSize(5);
+            actionSlime.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 0, false, false));
 
             // delete previous action slimes
             for (var entity : world.getChunkAt(this.location).getEntities())
-                if (entity instanceof Slime && entity != this.actionSlime)
+                if (entity instanceof Slime && entity != actionSlime)
                     entity.remove();
 
         } catch (Exception e) {
@@ -148,9 +147,9 @@ public class EntityManager implements Listener {
         // dataValues.add(synchedEntityDataDataValue);
         dataValues.getClass().getMethod("add", Object.class).invoke(dataValues, synchedEntityDataDataValue);
         // var playerInfo = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer);
-        var playerInfo = playerInfoClass.getConstructors()[1].newInstance(playerInfoActionClass.getEnumConstants()[0], fakePlayer);
+        var playerInfo = playerInfoClass.getConstructors()[2].newInstance(playerInfoActionClass.getEnumConstants()[0], fakePlayer);
         // var addPlayer = new ClientboundAddPlayerPacket(fakePlayer);
-        var addPlayer = addPlayerClass.getConstructors()[0].newInstance(fakePlayer);
+        var addPlayer = addPlayerClass.getConstructors()[1].newInstance(fakePlayer);
         // var changeSkin = new ClientboundSetEntityDataPacket(fakePlayerId, dataValues);
         var changeSkin = changeSkinClass.getConstructors()[1].newInstance(fakePlayerId, dataValues);
         // var connection = player.connection;

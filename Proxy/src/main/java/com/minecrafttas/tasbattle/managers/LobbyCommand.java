@@ -23,13 +23,13 @@ public class LobbyCommand {
         var server = plugin.getServer();
 
         // register command
-        var lobby = server.getServer("lobby").get();
+        var lobby = server.getServer("lobby").orElseThrow();
         server.getCommandManager().register("lobby", (RawCommand) invocation -> {
-            if (invocation.source() instanceof Player player && ALLOWED_SERVERS.contains(player.getCurrentServer().get().getServerInfo().getName()))
+            if (invocation.source() instanceof Player player && ALLOWED_SERVERS.contains(player.getCurrentServer().orElseThrow().getServerInfo().getName()))
                 player.createConnectionRequest(lobby).fireAndForget();
             else
                 invocation.source().sendMessage(MiniMessage.miniMessage().deserialize("<red>You cannot use that here.</red>"));
-        }, new String[] {"l", "spawn", "leave", "hub"});
+        }, "l", "spawn", "leave", "hub");
     }
 
 }
