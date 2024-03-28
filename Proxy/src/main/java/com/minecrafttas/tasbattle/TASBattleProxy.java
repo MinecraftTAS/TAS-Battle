@@ -8,6 +8,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
+import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
@@ -21,6 +22,7 @@ import java.nio.file.Path;
 public class TASBattleProxy {
 
 	private final ProxyServer server;
+	private final Logger logger;
 	private DataManager dataManager;
 	private LobbyCommand lobbyCommand;
 	private PermissionManager permissionManager;
@@ -30,10 +32,13 @@ public class TASBattleProxy {
 	/**
      * Construct proxy plugin
      * @param server Proxy server instance
+	 * @param logger Logger instance
+	 * @param dataDirectory Data directory
      */
 	@Inject
-	public TASBattleProxy(ProxyServer server, @DataDirectory Path dataDirectory) {
+	public TASBattleProxy(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
 		this.server = server;
+		this.logger = logger;
 	}
 
 	/**

@@ -37,6 +37,9 @@ public class ChatSystem {
      */
     @Subscribe
     public void onChat(PlayerChatEvent e) {
+        // log chat message
+        this.plugin.getLogger().info("[connected player] {} (/{}:{}) -> sent message: {}", e.getPlayer().getUsername(), e.getPlayer().getRemoteAddress().getHostString(), e.getPlayer().getRemoteAddress().getPort(), e.getMessage());
+
         // check if server has global chat enabled
         var server = e.getPlayer().getCurrentServer().orElse(null);
         if (server == null || !CHAT_SERVERS.contains(server.getServerInfo().getName()))
