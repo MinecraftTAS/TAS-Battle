@@ -36,9 +36,9 @@ import org.bukkit.scoreboard.RenderType;
  */
 public class Lobby implements Listener {
 
-	private StatsManager statsManager;
-	private LobbyTimer timer;
-	private List<LobbyManager> managers;
+	private final StatsManager statsManager;
+	private final LobbyTimer timer;
+	private final List<LobbyManager> managers;
 	
 	/**
 	 * Initialize lobby
@@ -83,9 +83,7 @@ public class Lobby implements Listener {
 		}
 		
 		var leaveItem = new ItemStack(Material.RED_BED);
-		leaveItem.editMeta(m -> {
-			m.displayName(MiniMessage.miniMessage().deserialize("<!italic><red>Leave the game</red>"));
-		});
+		leaveItem.editMeta(m -> m.displayName(MiniMessage.miniMessage().deserialize("<!italic><red>Leave the game</red>")));
 		inv.setItem(8, leaveItem);
 		
 		player.updateInventory(); // not taking any risks ._.

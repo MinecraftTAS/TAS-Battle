@@ -19,7 +19,6 @@ public class SerializationUtils {
 	 *
 	 * @param playerInventory Inventory
 	 * @param stream Stream
-	 * @return Serialized inventory
 	 * @throws IOException Filesystem exception
 	 */
 	public static void serializeInventory(PlayerInventory playerInventory, DataOutputStream stream) throws IOException {

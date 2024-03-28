@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import com.minecrafttas.tasbattle.TASBattleGameserver;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -45,7 +44,7 @@ public class ResourceSpawner implements Listener {
 		@NonNull private Integer[] tiers;
 		@NonNull private ItemStack item;
 		
-		private int currentTier = 0;
+		private final int currentTier = 0;
 		private int lastSpawnAt = -1;
 		
 		/**
@@ -66,13 +65,13 @@ public class ResourceSpawner implements Listener {
 		
 	}
 	
-	private World world;
-	private List<Runnable> armorStandUpdates;
+	private final World world;
+	private final List<Runnable> armorStandUpdates;
 	private int tick;
 	
-	private Spawner[][] teamSpawners;
-	private Spawner[] diamondSpawners;
-	private Spawner[] emeraldSpawners;
+	private final Spawner[][] teamSpawners;
+	private final Spawner[] diamondSpawners;
+	private final Spawner[] emeraldSpawners;
 	
 	/**
 	 * Initialize resource spawner
@@ -107,7 +106,7 @@ public class ResourceSpawner implements Listener {
 		var emeraldItem = new ItemStack(Material.EMERALD);
 		
 		// create team spawners
-		var teamLocations = config.getStringList("teamSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).collect(Collectors.toList());
+		var teamLocations = config.getStringList("teamSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).toList();
 		this.teamSpawners = new Spawner[teamLocations.size()][3];
 		for (int team = 0; team < this.teamSpawners.length; team++) {
 			var loc = teamLocations.get(team);
@@ -119,8 +118,8 @@ public class ResourceSpawner implements Listener {
 		}
 		
 		// create special spawners
-		this.diamondSpawners = config.getStringList("diamondSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).map(loc -> new Spawner(loc, diamondTicks, diamondItem)).collect(Collectors.toList()).toArray(Spawner[]::new);
-		this.emeraldSpawners = config.getStringList("emeraldSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).map(loc -> new Spawner(loc, emeraldTicks, emeraldItem)).collect(Collectors.toList()).toArray(Spawner[]::new);
+		this.diamondSpawners = config.getStringList("diamondSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).map(loc -> new Spawner(loc, diamondTicks, diamondItem)).toList().toArray(Spawner[]::new);
+		this.emeraldSpawners = config.getStringList("emeraldSpawners").stream().map(s -> s.split(" ")).map(s -> new Location(this.world, Double.parseDouble(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]))).map(loc -> new Spawner(loc, emeraldTicks, emeraldItem)).toList().toArray(Spawner[]::new);
 		
 		// create emerald spawner armor stands
 		for (var spawner : this.emeraldSpawners) {

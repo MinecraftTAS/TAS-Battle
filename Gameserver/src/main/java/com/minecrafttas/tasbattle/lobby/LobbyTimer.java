@@ -22,14 +22,16 @@ import java.util.function.Consumer;
  */
 class LobbyTimer implements CommandExecutor {
 	
-	private List<Player> players = new ArrayList<>();
+	private final List<Player> players = new ArrayList<>();
 
-	private List<Player> readyPlayers = new ArrayList<>();
+	private final List<Player> readyPlayers = new ArrayList<>();
 
-	private BukkitTask task;
-	private int startTime, time;
-	private int minPlayers, maxPlayers;
-	private Consumer<List<Player>> start;
+	private final BukkitTask task;
+	private final int startTime;
+    private int time;
+	private final int minPlayers;
+    private final int maxPlayers;
+	private final Consumer<List<Player>> start;
 
 	/**
 	 * Create new lobby timer

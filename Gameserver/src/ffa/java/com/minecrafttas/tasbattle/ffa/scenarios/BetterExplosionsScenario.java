@@ -10,14 +10,13 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 public class BetterExplosionsScenario extends AbstractScenario {
 
-	private JavaPlugin plugin;
+	private final JavaPlugin plugin;
 
 	public BetterExplosionsScenario(JavaPlugin plugin) {
 		super("Better explosions", new String[] {"Velocity of explosions is increased", "and damage is reduced"}, Material.TNT);
@@ -37,7 +36,7 @@ public class BetterExplosionsScenario extends AbstractScenario {
 		}
 	}
 
-	private volatile List<UUID> invinciblePlayers = new LinkedList<>();
+	private final List<UUID> invinciblePlayers = new LinkedList<>();
 
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent e) {

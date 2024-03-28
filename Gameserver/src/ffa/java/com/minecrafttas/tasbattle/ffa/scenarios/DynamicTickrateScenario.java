@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DynamicTickrateScenario extends AbstractScenario {
 
-	private TASBattleGameserver plugin;
+	private final TASBattleGameserver plugin;
 
 	private float latestTickrate = 20.0f;
 

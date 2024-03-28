@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
  * FFA Kit manager
  * @author Pancake
  */
+@Getter
 public class KitManager extends LobbyManager implements CommandHandler {
 
 	/**
@@ -86,7 +87,6 @@ public class KitManager extends LobbyManager implements CommandHandler {
 		
 		/**
 		 * Save kit to file
-		 * @param f File
 		 * @throws IOException Filesystem exception
 		 */
 		public void saveToFile() throws IOException {
@@ -125,14 +125,9 @@ public class KitManager extends LobbyManager implements CommandHandler {
 	
 	public static final File FFA_KITS = new File("/home/tasbattle/default/plugins/TAS-Battle-Gameserver/ffa");
 	
-	@Getter
-	private Inventory inventory;
-
-	@Getter
-	private BiMap<Kit, ItemStack> kits;
-	
-	@Getter
-	private Map<Player, Kit> votes;
+	private final Inventory inventory;
+	private final BiMap<Kit, ItemStack> kits;
+	private final Map<Player, Kit> votes;
 	
 	/**
 	 * Initialize kit manager
@@ -224,82 +219,86 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>/ffa <green>load <aqua>\\<name></aqua></green></gray>"));
 			return true;
 		}
-		
-		if (args[0].equals("save")) {
-			// try to find material fragment
-			int typeFrag = -1;
-			for (int i = 1; i < args.length; i++)
-				if (args[i].toLowerCase().startsWith("minecraft:"))
-					typeFrag = i;
-			
-			if (typeFrag == -1) {
-				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Material must start with \"minecraft:\"</red>"));
-				return true;
-			}
-			
-			// try to parse material
-			var material = Material.matchMaterial(args[typeFrag]);
-			if (material == null) {
-				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Invalid material</red>"));
-				return true;
-			}
-			
-			// try to find kit name and description
-			var name = Arrays.stream(Arrays.copyOfRange(args, 1, typeFrag)).collect(Collectors.joining(" "));
-			var description = Arrays.stream(Arrays.copyOfRange(args, typeFrag + 1, args.length)).collect(Collectors.joining(" ")).split("\\|");
-			
-			if (description.length == 0) {
-				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Invalid description</red>"));
-				return true;
-			}
-			
-			// create kit
-			try {
-				var file = new File(KitManager.FFA_KITS, name.replace(' ', '_').replace('.', '_').replace('/', '_'));
-				var kit = new Kit(file, name, description, material, null);
-				kit.serializeKit(((Player) sender).getInventory());
-				kit.saveToFile();
-			} catch (IOException e) {
-				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Unable to write file, check console for stacktrace</red>"));
-				e.printStackTrace();
-				return true;
-			}
-			
-			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>Kit successfully saved.</green>"));
-		} else if (args[0].equals("delete")) {
-			var name = Arrays.stream(Arrays.copyOfRange(args, 1, args.length)).collect(Collectors.joining("_")).replace('.', '_').replace('/', '_');
-			
-			if (name.isEmpty())
-				return true;
-			
-			// try to delete kit
-			var file = new File(KitManager.FFA_KITS, name);
-			if (!file.exists()) {
-				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Kit not found.</red>"));
-				return true;
-			}
 
-			file.delete();
-			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Kit successfully deleted.</red>"));
-		} else if (args[0].equals("load")) {
-			var name = Arrays.stream(Arrays.copyOfRange(args, 1, args.length)).collect(Collectors.joining("_")).replace('.', '_').replace('/', '_');
-			
-			if (name.isEmpty())
-				return true;
-			
-			// try to load kit
-			try {
-				var file = new File(KitManager.FFA_KITS, name);
-				var kit = Kit.loadFromFile(file);
-				kit.deserializeKit(((Player) sender).getInventory());
-			} catch (IOException e) {
-				sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Unable to read file, check console for stacktrace</red>"));
-				e.printStackTrace();
-				return true;
-			}
-			
-			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>Kit successfully loaded.</green>"));
-		}
+        switch (args[0]) {
+            case "save" -> {
+                // try to find material fragment
+                int typeFrag = -1;
+                for (int i = 1; i < args.length; i++)
+                    if (args[i].toLowerCase().startsWith("minecraft:"))
+                        typeFrag = i;
+
+                if (typeFrag == -1) {
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Material must start with \"minecraft:\"</red>"));
+                    return true;
+                }
+
+                // try to parse material
+                var material = Material.matchMaterial(args[typeFrag]);
+                if (material == null) {
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Invalid material</red>"));
+                    return true;
+                }
+
+                // try to find kit name and description
+                var name = String.join(" ", Arrays.copyOfRange(args, 1, typeFrag));
+                var description = String.join(" ", Arrays.copyOfRange(args, typeFrag + 1, args.length)).split("\\|");
+
+                if (description.length == 0) {
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Invalid description</red>"));
+                    return true;
+                }
+
+                // create kit
+                try {
+                    var file = new File(KitManager.FFA_KITS, name.replace(' ', '_').replace('.', '_').replace('/', '_'));
+                    var kit = new Kit(file, name, description, material, null);
+                    kit.serializeKit(((Player) sender).getInventory());
+                    kit.saveToFile();
+                } catch (IOException e) {
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Unable to write file, check console for stacktrace</red>"));
+                    e.printStackTrace();
+                    return true;
+                }
+
+                sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>Kit successfully saved.</green>"));
+            }
+            case "delete" -> {
+                var name = String.join("_", Arrays.copyOfRange(args, 1, args.length)).replace('.', '_').replace('/', '_');
+
+                if (name.isEmpty())
+                    return true;
+
+                // try to delete kit
+                var file = new File(KitManager.FFA_KITS, name);
+                if (!file.exists()) {
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Kit not found.</red>"));
+                    return true;
+                }
+
+                file.delete();
+                sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Kit successfully deleted.</red>"));
+            }
+            case "load" -> {
+                var name = String.join("_", Arrays.copyOfRange(args, 1, args.length)).replace('.', '_').replace('/', '_');
+
+                if (name.isEmpty())
+                    return true;
+
+                // try to load kit
+                try {
+                    var file = new File(KitManager.FFA_KITS, name);
+                    var kit = Kit.loadFromFile(file);
+                    kit.deserializeKit(((Player) sender).getInventory());
+                } catch (IOException e) {
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Unable to read file, check console for stacktrace</red>"));
+                    e.printStackTrace();
+                    return true;
+                }
+
+                sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>Kit successfully loaded.</green>"));
+            }
+        }
 		return true;
 	}
 	
@@ -312,7 +311,7 @@ public class KitManager extends LobbyManager implements CommandHandler {
 			return Arrays.asList("save", "load", "delete");
 		
 		if (args.length == 1)
-			return Arrays.asList("save", "load", "delete").stream().filter(i -> i.startsWith(args[0])).toList();
+			return Stream.of("save", "load", "delete").filter(i -> i.startsWith(args[0])).toList();
 		
 		if (args[args.length-1].startsWith("minecraft:"))
 			return Arrays.stream(Material.values()).filter(i -> i.toString().startsWith(args[args.length-1].replace("minecraft:", ""))).map(f -> f.toString().toLowerCase()).toList();

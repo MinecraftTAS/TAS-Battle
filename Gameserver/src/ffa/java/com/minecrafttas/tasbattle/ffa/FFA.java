@@ -36,27 +36,18 @@ import static com.minecrafttas.tasbattle.managers.GameserverTelemetry.FORMAT;
  * FFA gamemode
  * @author Pancake
  */
+@Getter
 public class FFA implements GameMode {
 	
-	@Getter
-	private TASBattleGameserver plugin;
-	
-	@Getter
-	private World world;
-	
-	@Getter
-	private KitManager kitManager;
-	
-	@Getter
-	private ScenarioManager scenarioManager;
-	
-	@Getter
+	private final TASBattleGameserver plugin;
+	private final World world;
+	private final KitManager kitManager;
+	private final ScenarioManager scenarioManager;
 	private GameLogic gameLogic;
 		
 	/**
 	 * Initialize ffa gamemode
 	 * @param plugin Plugin
-	 * @param dev Development moed
 	 */
 	public FFA(TASBattleGameserver plugin) {
 		this.plugin = plugin;
@@ -97,12 +88,12 @@ public class FFA implements GameMode {
 		// print messages
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <green>The game has started.</green>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The most voted kit is: <green>" + kit.getName() + "</green></gray>"));
-		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>and the enabled scenarios are: <green>" + scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", ")) + "</green></gray>"));
+		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>and the enabled scenarios are: <green>" + scenarios.stream().map(ScenarioManager.AbstractScenario::getTitle).collect(Collectors.joining(", ")) + "</green></gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize(""));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>Every player has been spread across the map. <red>Cross teaming is not allowed!</red></gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>The last person alive will be the winner.</gray>"));
 		Bukkit.broadcast(MiniMessage.miniMessage().deserialize(""));
-		this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: players: %s, scenarios: %s, kit: %s\n", FORMAT.format(Date.from(Instant.now())), players.stream().map(Player::getName).collect(Collectors.joining(", ")), scenarios.stream().map(e -> e.getTitle()).collect(Collectors.joining(", ")), kit.getName()));
+		this.plugin.getTelemetry().write(String.format("[%s SERVER  ]: players: %s, scenarios: %s, kit: %s\n", FORMAT.format(Date.from(Instant.now())), players.stream().map(Player::getName).collect(Collectors.joining(", ")), scenarios.stream().map(ScenarioManager.AbstractScenario::getTitle).collect(Collectors.joining(", ")), kit.getName()));
 
 		// update players
 		for (var p : players) {

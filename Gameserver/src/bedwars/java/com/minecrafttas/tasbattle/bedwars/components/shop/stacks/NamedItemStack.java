@@ -4,8 +4,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import net.kyori.adventure.text.Component;
-
 public class NamedItemStack extends ItemStack {
 	
 	/**

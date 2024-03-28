@@ -29,9 +29,9 @@ public class GameLogic implements Listener {
 
 	private static final String SPEC_CHANNEL = "spectatingsystem:data";
 
-	private TASBattleGameserver plugin;
-	private World world;
-	private List<Player> players;
+	private final TASBattleGameserver plugin;
+	private final World world;
+	private final List<Player> players;
 	@Getter
 	private boolean finished;
 
@@ -39,7 +39,7 @@ public class GameLogic implements Listener {
 	 * Initialize game logic
 	 * @param plugin Plugin
 	 * @param world World
-	 * @param player Participating players
+	 * @param players Players
 	 */
 	public GameLogic(TASBattleGameserver plugin, World world, List<Player> players) {
 		var messenger = Bukkit.getMessenger();
@@ -177,9 +177,7 @@ public class GameLogic implements Listener {
 		p.teleport(this.world.getSpawnLocation());
 
 		e.joinMessage(null);
-		Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-			p.sendPluginMessage(this.plugin, SPEC_CHANNEL, new byte[1]);
-		}, 4L);
+		Bukkit.getScheduler().runTaskLater(this.plugin, () -> p.sendPluginMessage(this.plugin, SPEC_CHANNEL, new byte[1]), 4L);
 	}
 
 	/**

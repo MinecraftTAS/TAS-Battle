@@ -129,7 +129,7 @@ public class StatsManager implements CommandExecutor {
                     "<aqua>»</aqua> <white>Losses:</white> <green><plosses></green><newline>" +
                     "<aqua>»</aqua> <white>WLR</white> <green><pwlr></green><newline>"
             ,
-                    Placeholder.unparsed("player", "" + stats.getUsername()),
+                    Placeholder.unparsed("player", stats.getUsername()),
                     Placeholder.unparsed("prank", "" + (this.cachedStats.getPlayers().indexOf(stats) + 1)),
                     Placeholder.unparsed("pkills", "" + stats.getKills()),
                     Placeholder.unparsed("pdeaths", "" + stats.getDeaths()),
@@ -152,7 +152,7 @@ public class StatsManager implements CommandExecutor {
                                 "<aqua>»</aqua> <white>Losses:</white> <green><plosses></green><newline>" +
                                 "<aqua>»</aqua> <white>WLR</white> <green><pwlr></green><newline>"
                         ,
-                                Placeholder.unparsed("player", "" + stats.getUsername()),
+                                Placeholder.unparsed("player", stats.getUsername()),
                                 Placeholder.unparsed("prank", "" + (this.cachedStats.getPlayers().indexOf(stats) + 1)),
                                 Placeholder.unparsed("pkills", "" + stats.getKills()),
                                 Placeholder.unparsed("pdeaths", "" + stats.getDeaths()),

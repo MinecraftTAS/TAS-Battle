@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class ShowHealthScenario extends AbstractScenario {
 
-	private JavaPlugin plugin;
+	private final JavaPlugin plugin;
 
 	public ShowHealthScenario(JavaPlugin plugin) {
 		super("Show Health", new String[] {"Shows the players health on tab", "and popped totems in chat"}, Material.RED_DYE);

@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,8 +33,8 @@ public class GameserverTelemetry implements Listener {
     public static final File LOG_DIR = new File("/home/tasbattle/telemetry/games/");
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss", Locale.ENGLISH);
 
-    private FileWriter logWriter;
-    private ExecutorService logWriterExecutor;
+    private final FileWriter logWriter;
+    private final ExecutorService logWriterExecutor;
 
     /**
      * Initialize lobby telemetry
@@ -45,7 +46,7 @@ public class GameserverTelemetry implements Listener {
 
         // open log file
         this.logWriter = new FileWriter(new File(LOG_DIR, "game_" + Instant.now().getEpochSecond() + ".log"), StandardCharsets.UTF_8);
-        this.logWriter.write(String.format("[%s STARTUP ]: plugins: %s\n", FORMAT.format(Date.from(Instant.now())), Arrays.stream(plugin.getServer().getPluginManager().getPlugins()).map(p -> p.getName()).collect(Collectors.joining(", "))));
+        this.logWriter.write(String.format("[%s STARTUP ]: plugins: %s\n", FORMAT.format(Date.from(Instant.now())), Arrays.stream(plugin.getServer().getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.joining(", "))));
         this.logWriter.flush();
 
         // create executor
@@ -75,7 +76,7 @@ public class GameserverTelemetry implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onConnect(PlayerJoinEvent e) throws IOException {
+    public void onConnect(PlayerJoinEvent e) {
         var player = e.getPlayer();
         this.write(String.format("[%s CONNECT ]: %s %s (%s)\n", FORMAT.format(Date.from(Instant.now())), player.getName(), player.getUniqueId(), player.getAddress().getHostString()));
     }
@@ -85,7 +86,7 @@ public class GameserverTelemetry implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onChat(AsyncChatEvent e) throws IOException {
+    public void onChat(AsyncChatEvent e) {
         this.write(String.format("[%s CHAT    ]: %s: %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getName(), ((TextComponent) e.message()).content()));
     }
 
@@ -94,7 +95,7 @@ public class GameserverTelemetry implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent e) throws IOException {
+    public void onCommand(PlayerCommandPreprocessEvent e) {
         this.write(String.format("[%s CHAT    ]: %s: %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getName(), e.getMessage()));
     }
 
@@ -103,13 +104,12 @@ public class GameserverTelemetry implements Listener {
      * @param e Event
      */
     @EventHandler
-    public void onDisconnect(PlayerQuitEvent e) throws IOException {
+    public void onDisconnect(PlayerQuitEvent e) {
         this.write(String.format("[%s DCONNECT]: %s\n", FORMAT.format(Date.from(Instant.now())), e.getPlayer().getName()));
     }
 
     /**
      * Log proxy shutdowns
-     * @param e Event
      */
     public void onShutdown() throws IOException {
         this.logWriterExecutor.close();

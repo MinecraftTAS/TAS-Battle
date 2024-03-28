@@ -18,7 +18,7 @@ public class PagedInventory extends ClickableInventory {
 		private final Interaction[] interactions;
 	}
 
-	private Page[] pages;
+	private final Page[] pages;
 	
 	/**
 	 * Initialize paged inventory

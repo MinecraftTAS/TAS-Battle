@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  */
 public class CustomItemStack extends PurchasableItemStack {
 
-	private Function<Player, Boolean> purchase;
+	private final Function<Player, Boolean> purchase;
 	
 	/**
 	 * Initialize purchasable item stack with custom buy logic

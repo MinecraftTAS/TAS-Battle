@@ -1,7 +1,6 @@
 package com.minecrafttas.tasbattle.managers;
 
 import com.minecrafttas.tasbattle.TASBattleGameserver;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -9,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -21,9 +21,9 @@ import java.util.Map;
  */
 public class SpectatingCommand implements CommandExecutor {
 
-    private TASBattleGameserver plugin;
+    private final TASBattleGameserver plugin;
 
-    private Map<String, ArmorStand> entities = new HashMap<>();
+    private final Map<String, ArmorStand> entities = new HashMap<>();
 
     /**
      * Initialize spectating command
@@ -62,7 +62,7 @@ public class SpectatingCommand implements CommandExecutor {
 
                     Bukkit.getScheduler().runTaskLater(this.plugin, () -> player.setSpectatorTarget(target), 2L);
                 } else {
-                    this.entities.put(targetString, target);
+                    this.entities.put(targetString, null);
 
                     var finalTarget = player.getWorld().spawn(player.getLocation(), ArmorStand.class, armorStand -> {
                         armorStand.setInvisible(true);
@@ -73,7 +73,7 @@ public class SpectatingCommand implements CommandExecutor {
 
                     // calculate center of triangle and teleport armor stand every tick
                     Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
-                        var center = targets.stream().filter(p -> p.isOnline() && p.getGameMode() == GameMode.SURVIVAL).map(p -> p.getLocation().toVector()).reduce((a, b) -> a.add(b)).get().multiply(1.0 / targets.size());
+                        var center = targets.stream().filter(p -> p.isOnline() && p.getGameMode() == GameMode.SURVIVAL).map(p -> p.getLocation().toVector()).reduce(Vector::add).orElseThrow().multiply(1.0 / targets.size());
                         finalTarget.teleport(center.toLocation(player.getWorld()));
                     }, 0L, 1L);
 

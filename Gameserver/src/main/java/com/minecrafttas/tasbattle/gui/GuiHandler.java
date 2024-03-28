@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 
 public class GuiHandler implements Listener {
 
-	public static Map<Inventory, ClickableInventory> instances = new HashMap<>();
+	public static final Map<Inventory, ClickableInventory> instances = new HashMap<>();
 	
 	@EventHandler
 	public void onInteract(InventoryClickEvent e) {

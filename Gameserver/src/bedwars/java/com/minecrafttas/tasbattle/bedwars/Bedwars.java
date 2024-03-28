@@ -17,30 +17,16 @@ import java.util.List;
  * Bedwars gamemode
  * @author Pancake
  */
+@Getter
 public class Bedwars implements GameMode {
 	
-	@Getter
-	private TASBattleGameserver plugin;
-	
-	@Getter
-	private World world;
-	
-	@Getter
+	private final TASBattleGameserver plugin;
+	private final World world;
 	private ResourceSpawner spawner;
-	
-	@Getter
 	private PlacementRules placementRules;
-	
-	@Getter
 	private ExplosivePhysics explosivePhysics;
-	
-	@Getter
 	private InventoryManagement inventoryManagement;
-	
-	@Getter
 	private TeamShop teamShop;
-	
-	@Getter
 	private Team team;
 	
 	/**

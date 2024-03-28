@@ -12,7 +12,7 @@ import java.util.List;
 
 public class NoPearlCooldownScenario extends AbstractScenario {
 
-	private JavaPlugin plugin;
+	private final JavaPlugin plugin;
 
 	public NoPearlCooldownScenario(JavaPlugin plugin) {
 		super("No pearl cooldown", new String[] {"This scenario disables ender pearl cooldown"}, Material.ENDER_PEARL);

@@ -31,6 +31,7 @@ import java.util.List;
  * FFA Scenario Manager
  * @author Pancake
  */
+@Getter
 public class ScenarioManager extends LobbyManager {
 
 	/**
@@ -50,14 +51,9 @@ public class ScenarioManager extends LobbyManager {
 		
 	}
 	
-	@Getter
-	private Inventory inventory;
-
-	@Getter
-	private BiMap<AbstractScenario, ItemStack> scenarios;
-	
-	@Getter
-	private List<AbstractScenario> enabled;
+	private final Inventory inventory;
+	private final BiMap<AbstractScenario, ItemStack> scenarios;
+	private final List<AbstractScenario> enabled;
 	
 	/**
 	 * Initialize scenario manager

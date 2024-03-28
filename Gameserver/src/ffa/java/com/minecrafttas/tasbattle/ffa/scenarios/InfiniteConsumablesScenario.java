@@ -1,14 +1,12 @@
 package com.minecrafttas.tasbattle.ffa.scenarios;
 
 import com.minecrafttas.tasbattle.ffa.managers.ScenarioManager.AbstractScenario;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPlaceEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +16,7 @@ import java.util.List;
 
 public class InfiniteConsumablesScenario extends AbstractScenario {
 
-	private JavaPlugin plugin;
+	private final JavaPlugin plugin;
 
 	public InfiniteConsumablesScenario(JavaPlugin plugin) {
 		super("Infinite consumables", new String[] {"Most consumables won't be... consumed?"}, Material.ARROW);

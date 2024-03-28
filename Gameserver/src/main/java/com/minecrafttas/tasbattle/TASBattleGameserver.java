@@ -30,11 +30,11 @@ import java.util.List;
 @Getter
 public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, Listener {
 	
-	public static interface GameMode {
-		public static interface CommandHandler extends CommandExecutor, TabCompleter {}
-		abstract void startGameMode(List<Player> players);
-		abstract List<LobbyManager> createManagers();
-		abstract List<Pair<String, CommandHandler>> createCommands();
+	public interface GameMode {
+		interface CommandHandler extends CommandExecutor, TabCompleter {}
+		void startGameMode(List<Player> players);
+		List<LobbyManager> createManagers();
+		List<Pair<String, CommandHandler>> createCommands();
 	}
 
 	private TickrateChanger tickrateChanger;
