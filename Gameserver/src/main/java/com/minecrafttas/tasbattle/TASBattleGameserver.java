@@ -11,6 +11,7 @@ import com.minecrafttas.tasbattle.stats.StatsManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -90,7 +91,7 @@ public class TASBattleGameserver extends JavaPlugin implements CommandExecutor, 
 		if (sender.isOp())
 			Runtime.getRuntime().halt(0);
 		else
-			sender.sendMessage(Bukkit.getServer().permissionMessage());
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Insufficient permissions</red>"));
 
 		return true;
 	}

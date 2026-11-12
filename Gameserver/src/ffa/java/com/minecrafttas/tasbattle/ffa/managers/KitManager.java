@@ -209,9 +209,11 @@ public class KitManager extends LobbyManager implements CommandHandler {
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-		if (!sender.isOp())
+		if (!sender.isOp()) {
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Insufficient permissions</red>"));
 			return true;
-		
+		}
+
 		// print help
 		if (args.length == 0) {
 			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <gray>/ffa <green>save <aqua>\\<name> \\<material> \\<description></aqua></green></gray>"));

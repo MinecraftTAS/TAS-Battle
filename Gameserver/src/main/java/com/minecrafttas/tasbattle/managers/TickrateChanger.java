@@ -121,8 +121,10 @@ public class TickrateChanger implements PluginMessageListener, Listener, Command
 	 */
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-		if (!sender.isOp() || args.length != 1)
+		if (!sender.isOp() || args.length != 1) {
+			sender.sendMessage(MiniMessage.miniMessage().deserialize("<aqua>»</aqua> <red>Insufficient permissions</red>"));
 			return true;
+		}
 
 		try {
 			// parse and update tickrate
